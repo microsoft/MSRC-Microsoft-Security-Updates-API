@@ -5,7 +5,7 @@ It is comprised of two main components, Documentation and example code.
 
 **The documentation** (in the form of swagger documentation) can be used to help developers who wish to implement their own API requests / response handling to get the correct responses and fields. For more information check out http://swagger.io It is a great project and has great staff working on it. To view the API, you can open the [swagger-ui demo](http://petstore.swagger.io/) and put the link to the raw swagger.json in the top bar then click explore. swagger-ui can be downloaded locally and ran if you need to integrate this into how you interact with the api.
 
-*as a note about the swagger, there are two response models defined for the CVRD endpoint. one for json and the other for xml. please swap out the return definition line as necessary* 
+*as a note about the swagger, there are two response models defined for the CVRF endpoint. one for json and the other for xml. please swap out the return definition line as necessary* 
 
 **The sample code** serves as an example on how to interact with the API. Currently, the sample code consists of one PowerShell project, however more languages may be provided in the future. In the PowerShell project, you will see three small functions that show how to interact with the API, as well as two larger functions that may facilitate automation and reporting on the most common data needed.
 
