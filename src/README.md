@@ -1,4 +1,6 @@
-**The sample code** serves as an example on how to interact with the API. Currently, the sample code consists of one PowerShell project, however more languages may be provided in the future. In the PowerShell project, you will see three small functions that show how to interact with the API, as well as two larger functions that may facilitate automation and reporting on the most common data needed.
+# Sample Code
+
+The sample code serves as an example on how to interact with the API. Currently, the sample code consists of one PowerShell project, however more languages may be provided in the future. In the PowerShell project, you will see three small functions that show how to interact with the API, as well as two larger functions that may facilitate automation and reporting on the most common data needed.
 
 The function `getAffectedProducts` will build an array of PowerShell objects that contain the most commonly used fields, such as affected product name, ID, CVE name, description of the vulnerability, CVSS score information, links to knowledge base articles and downloads, and lastly a list of updates that supersedes the update links given. This function is not all encompassing of the data returned by the API, however other fields are easy to add if needed.
 
