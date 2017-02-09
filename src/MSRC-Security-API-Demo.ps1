@@ -1,4 +1,11 @@
-﻿#Define Rest API endpoints
+﻿#------------------------------------------------------
+# Copyright (c) Microsoft. All rights reserved.
+# Licensed under the MIT license. See LICENSE file in the project root for full license information.
+#
+# This project serves as example code on how to interact with the Microsoft Security Updates API.
+#------------------------------------------------------
+
+#Define Rest API endpoints
 $updateAllUrl  = "https://api.msrc.microsoft.com/Updates?api-Version=2016"
 $updateByIDUrl = "https://api.msrc.microsoft.com/Updates('{0}')?api-version=2016-01-01"
 $cvrfByIDUrl   = "https://api.msrc.microsoft.com/cvrf/{0}?api-version=2016-08-01"
@@ -101,9 +108,7 @@ function GetAffectedProducts
     
 
     #First, we need to create mappings of all products to the cve
-
-    #currently, there is duplicates in the Full product Name. this should change soon.
-    foreach( $product in $($cvrfDoc.ProductTree.FullProductName | Sort-Object -Property ProductID | Get-Unique -AsString))
+    foreach( $product in $cvrfDoc.ProductTree.FullProductName)
     {
         #for each vulnerability listed
         foreach( $vuln in $cvrfDoc.Vulnerability )
@@ -267,7 +272,7 @@ function generateReport
     #add a div to keep the tables in a html object for styling
     "<div>" >> "report.html"
 
-    #now for the more detailed affected products list
+    #now for the more detailed affected products list. We want to get a list of unique product names for the headers here, as product name alone is not a unique key.
     foreach( $productName in $($AffectedProducts.productName | Sort-Object | Get-Unique ))
     {
         #make a new table for the affected peice of software
