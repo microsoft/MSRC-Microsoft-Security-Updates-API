@@ -1,7 +1,7 @@
 # Welcome
 This project serves to help developers quickly start processing data from the Microsoft Security Updates API (https://portal.msrc.microsoft.com/en-us/developer)
 
-It is comprised of two main components, documentation and sample code. To see information about these, please view the README.md in the relevant folder.
+It is comprised of two main components, documentation and sample code. To see information about these, please view the README.md in the relevant folders.
 
 # Latest News
 **Feb 9, 2017** - Project is going live!
