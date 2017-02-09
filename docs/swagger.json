@@ -85,7 +85,7 @@
                     "application/xml",
                     "application/json"
                 ],
-                "description": "Gets a CVRF document by ID (ie: 2016-Aug)\n\nNote: to view the correct XML response, please change *$ref: '#/definitions/cvrfReturnTypes200'* to *$ref: '#/definitions/cvrfReturnTypes200_xml'* on line 89 of the swagger deffinition.\n",
+                "description": "Gets a CVRF document by ID (ie: 2016-Aug)\n\nNote: to view the correct XML response, please change *$ref: '#/definitions/cvrfReturnTypes200'* to *$ref: '#/definitions/cvrfReturnTypes200_xml'* in the swagger.json or swagger.yaml file\n",
                 "parameters": [
                     {
                         "name": "api-version",
@@ -111,6 +111,7 @@
                     "200": {
                         "description": "Successful responset",
                         "schema": {
+						    "__comment": "#CHANGE THIS $ref TO '#/definitions/cvrfReturnTypes200_xml' IF YOU WANT ACCURATE XML RESPONSE DEFFINITIONS!",
                             "$ref": "#/definitions/cvrfReturnTypes200"
                         }
                     }

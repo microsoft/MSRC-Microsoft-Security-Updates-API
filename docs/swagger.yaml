@@ -65,10 +65,13 @@ paths:
       produces:
         - application/xml
         - application/json
-      description: |
+      description: >
         Gets a CVRF document by ID (ie: 2016-Aug)
-        
-        Note: to view the correct XML response, please change *$ref: '#/definitions/cvrfReturnTypes200'* to *$ref: '#/definitions/cvrfReturnTypes200_xml'* on line 89 of the swagger deffinition.
+
+
+        Note: to view the correct XML response, please change *$ref:
+        '#/definitions/cvrfReturnTypes200'* to *$ref:
+        '#/definitions/cvrfReturnTypes200_xml'* in the swagger.json or swagger.yaml file
       parameters:
         - name: api-version
           in: query
@@ -87,6 +90,8 @@ paths:
         '200':
           description: Successful responset
           schema:
+            #CHANGE THIS $ref TO '#/definitions/cvrfReturnTypes200_xml' IF YOU WANT ACCURATE XML
+            #RESPONSE DEFFINITIONS!
             $ref: '#/definitions/cvrfReturnTypes200'
 definitions:
   UpdatesReturnTypes200:
@@ -648,7 +653,7 @@ definitions:
                   properties:
                     Threat:
                       xml:
-                        prefix: "vuln"
+                        prefix: vuln
                       type: object
                       properties:
                         Type:
@@ -657,11 +662,11 @@ definitions:
                           type: string
                         Description:
                           xml:
-                            prefix: "vuln"
+                            prefix: vuln
                           type: string
                         ProductID:
                           xml:
-                            prefix: "vuln"
+                            prefix: vuln
                           type: string
               CVSSScoreSets:
                 xml:
