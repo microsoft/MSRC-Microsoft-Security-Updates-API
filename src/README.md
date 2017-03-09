@@ -1,11 +1,11 @@
 # Sample Code
 
-The sample code serves as an example on how to interact with the MSRC Security Updates API through Powershell.  You will need to log into the MSRC Portal.   
+The sample code serves as an example on how to interact with the MSRC Security Updates API through Powershell.  You will need to log into the MSRC Portal and obtain an API key.   
 
 In the PowerShell module, you will see script functions that show how to interact with the API, as well 
 as functions that organize data from the industry-standard CVRF document format to show some reporting scenarios.
 
-You can clone this repo, or download the latest modules directly from the Microsoft Powershell Gallery Powershell v3 and higher). 
+You can clone this repo, or download the latest modules directly from the Microsoft Powershell Gallery (Powershell v3 and higher). 
 
 ## Installing directly from Microsoft Powershell Gallery
 
