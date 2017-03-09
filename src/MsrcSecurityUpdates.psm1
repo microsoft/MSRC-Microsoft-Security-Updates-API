@@ -430,11 +430,25 @@ function Get-MsrcSecurityBulletinHtml
     $htmlDocumentTemplate = @'
 <html>
 <head>
+    <!-- this is the css from the old bulletin site. Change this to better style your report to your liking -->
     <link rel="stylesheet" href="https://i-technet.sec.s-msft.com/Combined.css?resources=0:ImageSprite,0:TopicResponsive,0:TopicResponsive.MediaQueries,1:CodeSnippet,1:ProgrammingSelector,1:ExpandableCollapsibleArea,0:CommunityContent,1:TopicNotInScope,1:FeedViewerBasic,1:ImageSprite,2:Header.2,2:HeaderFooterSprite,2:Header.MediaQueries,2:Banner.MediaQueries,3:megabladeMenu.1,3:MegabladeMenu.MediaQueries,3:MegabladeMenuSpriteCluster,0:Breadcrumbs,0:Breadcrumbs.MediaQueries,0:ResponsiveToc,0:ResponsiveToc.MediaQueries,1:NavSidebar,0:LibraryMemberFilter,4:StandardRating,2:Footer.2,5:LinkList,2:Footer.MediaQueries,0:BaseResponsive,6:MsdnResponsive,0:Tables.MediaQueries,7:SkinnyRatingResponsive,7:SkinnyRatingV2;/Areas/Library/Content:0,/Areas/Epx/Content/Css:1,/Areas/Epx/Themes/TechNet/Content:2,/Areas/Epx/Themes/Shared/Content:3,/Areas/Global/Content:4,/Areas/Epx/Themes/Base/Content:5,/Areas/Library/Themes/Msdn/Content:6,/Areas/Library/Themes/TechNet/Content:7&amp;v=9192817066EC5D087D15C766A0430C95">
+    
+    <!-- this style section changes cell widths in the exec header table so that the affected products at the end are wide enough to read -->
     <style>
         #execHeader td:first-child  {{ width: 10% ;}}
-        #execHeader td:nth-child(3) {{ width: 35% ;}}
+        #execHeader td:nth-child(5) {{ width: 37% ;}}
     </style>
+
+    <!-- this section defines explicit width for all cells in the affected software tables. This is so the column width is the same across each product -->
+    <style>
+        .affected_software td:first-child {{ width: 20% ; }}
+        .affected_software td:nth-child(2) {{ width: 20% ; }}
+        .affected_software td:nth-child(3) {{ width: 15% ; }}
+        .affected_software td:nth-child(4) {{ width: 22.5% ; }}
+        .affected_software td:nth-child(5) {{ width: 22.5% ; }}
+
+    </style>
+
 </head>
 
 <body lang=EN-US link=blue>
@@ -466,15 +480,13 @@ Updates are issued, subscribe to <a href="http://go.microsoft.com/fwlink/?LinkId
 For details on affected software, see the next section, Affected Software.
 </p>
 
-<table border=1 cellpadding=0 width="99%">
+<table id="execHeader" border=1 cellpadding=0 width="99%">
  <thead style="background-color: #ededed">
   <tr>
    <td><b>CVE ID</b></td>
    <td><b>Vulnerability Description</b></td>
    <td><b>Maximum Severity Rating</b></td>
    <td><b>Vulnerability Impact</b></td>
-   <td><b>Restart Requirement</b></td>
-   <td><b>Known Issues</b></td>
    <td><b>Affected Software</b></td>
   </tr>
  </thead>
@@ -511,18 +523,9 @@ For details on affected software, see the next section, Affected Software.
 <p>Use these tables to learn about the security updates that you may need to install. You should review each software program or component listed to see whether any security updates pertain to your installation. If a software program or component is listed, then the severity rating of the software update is also listed.</p>
 <p><b>Note:</b> You may have to install several security updates for a single vulnerability. Review the whole column for each bulletin identifier that is listed to verify the updates that you have to install, based on the programs or components that you have installed on your system.</p>
 
-<table border=1 cellpadding=0 width="99%">
- <thead style="background-color: #ededed">
-  <tr>
-   <td><b>Product</b></td>
-   <td><b>KB Article</b></td>
-   <td><b>Details</b></td>
-   <td><b>Severity</b></td>  
-   <td><b>Impact</b></td>  
-  </tr>
- </thead>
+<!-- Affected software tables -->
 {3}
-</table>
+<!-- End Affected software tables -->
 
 <h1>Detection and Deployment Tools and Guidance</h1>
 
@@ -630,8 +633,6 @@ damages so the foregoing limitation may not apply.</p>
      <td>{2}</td>
      <td>{3}</td>
      <td>{4}</td>
-     <td>{5}</td>
-     <td>{6}</td>
  </tr>
 '@
     $cveSummaryTableHtml = ''
@@ -673,14 +674,13 @@ damages so the foregoing limitation may not apply.</p>
             Select -ExpandProperty Value
         } | Select -Unique
 
+        $vulnTableColumn = $vuln.CVE + "<br>" + "<a href=`"http://www.cve.mitre.org/cgi-bin/cvename.cgi?name=$($vuln.CVE)`">MITRE</a>" + "<br>" + "<a href=`"https://web.nvd.nist.gov/view/vuln/detail?vulnId=$($vuln.CVE)`">NVD</a>"
 
         $cveSummaryTableHtml += $cveSummaryRowTemplate -f @(
-            $vuln.CVE #TODO - make this an href
+            $vulnTableColumn #TODO - make this an href
             $vuln.Notes | Where Title -eq Description | Select -ExpandProperty Value
             $maximumSeverity
             $ImpactValues -join ',<br>'
-            'TODO'
-            'TODO'
             $AffectedSoftware -join ',<br>'
         )
     }
@@ -721,6 +721,27 @@ damages so the foregoing limitation may not apply.</p>
 
     #region Affected Software Table
     
+
+
+    $affectedSoftwareNameHeaderTemplate = @'
+    <table class="affected_software" border=1 cellpadding=0 width="99%">
+        <thead style="background-color: #ededed">
+            <tr>
+                <td colspan="5"><b>{0}</b></td>
+            </tr>
+        </thead>
+            <tr>
+                <td><b>CVE ID</b></td>
+                <td><b>KB Article</b></td>
+                <td><b>Restart Required</b></td>
+                <td><b>Severity</b></td>  
+                <td><b>Impact</b></td>  
+            </tr>
+        {1}
+    </table>
+'@
+
+
     $affectedSoftwareRowTemplate = @'
     <tr>
          <td>{0}</td>
@@ -732,16 +753,25 @@ damages so the foregoing limitation may not apply.</p>
 '@
 
     $affectedSoftwareTableHtml = ''
+    $affectedSoftwareDocumentHtml = ''
     $affectedSoftware = Get-MsrcCvrfAffectedSoftware -Vulnerability $Vulnerability -ProductTree $ProductTree
 
-    foreach($affectedSoftwareItem in $affectedSoftware)
-    {        
-        $affectedSoftwareTableHtml += $affectedSoftwareRowTemplate -f @(
-            $affectedSoftwareItem.FullProductName
-            $affectedSoftwareItem.KBArticle
-            $affectedSoftwareItem.CVE
-            $affectedSoftwareItem.Severity
-            $affectedSoftwareItem.Impact
+    foreach($productName in $($affectedSoftware.FullProductName | Sort-Object | Get-Unique ))
+    {
+        $affectedSoftwareTableHtml = ''
+        foreach($affectedSoftwareItem in $affectedSoftware | Where-Object {$_.FullProductName -eq $productName})
+        {        
+            $affectedSoftwareTableHtml += $affectedSoftwareRowTemplate -f @(
+                $affectedSoftwareItem.CVE
+                $affectedSoftwareItem.KBArticle
+                $affectedSoftwareItem.RestartRequired
+                $affectedSoftwareItem.Severity
+                $affectedSoftwareItem.Impact
+            )
+        }
+        $affectedSoftwareDocumentHtml += $affectedSoftwareNameHeaderTemplate -f @(
+            $ProductName
+            $affectedSoftwareTableHtml
         )
     }
 
@@ -751,7 +781,7 @@ damages so the foregoing limitation may not apply.</p>
         $DocumentTitle.Value          #Title
         $cveSummaryTableHtml          #CVE Summary Rows
         $exploitabilityIndexTableHtml #Expoitability Rows
-        $affectedSoftwareTableHtml    #Affected Software Rows
+        $affectedSoftwareDocumentHtml    #Affected Software Rows
     ))
 
 }
@@ -854,6 +884,8 @@ function Get-MsrcCvrfAffectedSoftware
             $FullProductName = $ProductTree.FullProductName | Where-Object ProductID -EQ $vulnProductID | Select -ExpandProperty Value        
 
             $KBArticle = $vuln.Remediations | Where-Object ProductID -Contains $vulnProductID | Select -ExpandProperty Description | Select -ExpandProperty Value
+
+            $RestartRequired = $($vuln.Remediations | Where-Object ProductID -Contains $vulnProductID | Select -ExpandProperty RestartRequired | Select Value).Value | foreach {if(!$_){"Unknown"}else{$_}}
         
             $Severity = $vuln.Threats | Where Type -EQ 3 | Where-Object ProductID -Contains $vulnProductID | Select -ExpandProperty Description | Select -ExpandProperty Value
 
@@ -865,6 +897,7 @@ function Get-MsrcCvrfAffectedSoftware
                 CVE             = $vuln.CVE
                 Severity        = $Severity
                 Impact          = $Impact
+                RestartRequired = $RestartRequired
             }
         }
     }
