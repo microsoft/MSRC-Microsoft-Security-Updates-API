@@ -1,10 +1,16 @@
 # Welcome
 This project serves to help developers quickly start processing data from the Microsoft Security Updates API (https://portal.msrc.microsoft.com/en-us/developer)
 
-It is comprised of two main components, documentation and sample code. To see information about these, please view the README.md in the relevant folders.
+It is comprised of two main components, documentation and sample code. You'll find OpenAPI/Swagger definitions in the docs folder, which you can use to generate your own client via swagger.io.  
+
+If you are a PowerShell developer, you can install PowerShell cmdlets directly by adding ``import module MSRCsecurityupdates`` to your PowerShell script, or download the source code from this repo and tailor it according to your requirements. These PowerShell cmdlets abstract CVRF data into data structure tailored for common reporting & automation scenarios. 
+
+To see information about these, please view the README.md in the relevant folders.
 
 # Latest News
-**Feb 9, 2017** - Project is going live!
+**March 9, 2017** – Added revised PowerShell cmdlets. 
+
+**Feb 9, 2017** - Project is going live.
 
 **Something to remember** - Security bulletins are being replaced with the industry standard CVRF report type. View our [blog post](https://blogs.technet.microsoft.com/msrc/2016/11/08/furthering-our-commitment-to-security-updates/) for more info. Please use the [Security Updates Guide](https://portal.msrc.microsoft.com/en-us/security-guidance) to view vulnerabilities, or use this project to help automate Microsoft's vulnerability reports into your org.
 
