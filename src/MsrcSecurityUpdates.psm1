@@ -732,7 +732,7 @@ damages so the foregoing limitation may not apply.</p>
 '@
 
     $affectedSoftwareTableHtml = ''
-    $affectedSoftware = Get-MsrcCvrfDocumentAffectedSoftware -Vulnerability $Vulnerability -ProductTree $ProductTree
+    $affectedSoftware = Get-MsrcCvrfAffectedSoftware -Vulnerability $Vulnerability -ProductTree $ProductTree
 
     foreach($affectedSoftwareItem in $affectedSoftware)
     {        
@@ -822,11 +822,11 @@ function Get-MsrcCvrfAffectedSoftware
 
 .EXAMPLE
    #Get product details from a CVRF document using the pipeline   
-   Get-MsrcCvrfDocument -ID 2016-Nov -ApiKey 'YOUR API KEY' | Get-MsrcCvrfDocumentAffectedSoftware
+   Get-MsrcCvrfDocument -ID 2016-Nov -ApiKey 'YOUR API KEY' | Get-MsrcCvrfAffectedSoftware
 .EXAMPLE
    #Get product details from a CVRF document using a variable and parameters
    $cvrfDocument = Get-MsrcCvrfDocument -ID 2016-Nov -ApiKey 'YOUR API KEY'
-   Get-MsrcCvrfDocumentAffectedSoftware -Vulnerability $cvrfDocument.Vulnerability -ProductTree $cvrfDocument.ProductTree
+   Get-MsrcCvrfAffectedSoftware -Vulnerability $cvrfDocument.Vulnerability -ProductTree $cvrfDocument.ProductTree
 #>
     Param
     (

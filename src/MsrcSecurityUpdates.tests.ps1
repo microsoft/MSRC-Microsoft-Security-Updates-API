@@ -2,7 +2,7 @@
 
 $msrcApiKey = ''
 
-Import-Module -Name C:\.....\MsrcSecurityUpdates -Force
+Import-Module -Name MsrcSecurityUpdates -Force
 
 Get-Help Get-MsrcSecurityUpdate
 Get-Help Get-MsrcSecurityUpdate -Examples
@@ -13,8 +13,8 @@ Get-Help Get-MsrcCvrfDocument -Examples
 Get-Help Get-MsrcSecurityBulletinHtml
 Get-Help Get-MsrcSecurityBulletinHtml -Examples
 
-Get-Help Get-MsrcCvrfDocumentAffectedSoftware
-Get-Help Get-MsrcCvrfDocumentAffectedSoftware -Examples
+Get-Help Get-MsrcCvrfAffectedSoftware
+Get-Help Get-MsrcCvrfAffectedSoftware -Examples
 
 Describe 'Function: Get-MsrcSecurityUpdateMSRC (calls the /Updates API)' {
 
@@ -80,16 +80,16 @@ Describe 'Function: Get-MsrcSecurityBulletinHtml (generates the MSRC Security Bu
     }
 }
 
-Describe 'Function: Get-MsrcCvrfDocumentAffectedSoftware' {
-    It 'Get-MsrcCvrfDocumentAffectedSoftware by pipeline' {
+Describe 'Function: Get-MsrcCvrfAffectedSoftware' {
+    It 'Get-MsrcCvrfAffectedSoftware by pipeline' {
         Get-MsrcCvrfDocument -ID 2016-Nov -ApiKey $msrcApiKey -Verbose |
-        Get-MsrcCvrfDocumentAffectedSoftware -Verbose |
+        Get-MsrcCvrfAffectedSoftware -Verbose |
         Should Not BeNullOrEmpty
     }
 
-    It 'Get-MsrcCvrfDocumentAffectedSoftware by parameters' {
+    It 'Get-MsrcCvrfAffectedSoftware by parameters' {
         $cvrfDocument = Get-MsrcCvrfDocument -ID 2016-Nov -ApiKey $msrcApiKey -Verbose
-        Get-MsrcCvrfDocumentAffectedSoftware -Vulnerability $cvrfDocument.Vulnerability -ProductTree $cvrfDocument.ProductTree |
+        Get-MsrcCvrfAffectedSoftware -Vulnerability $cvrfDocument.Vulnerability -ProductTree $cvrfDocument.ProductTree |
         Should Not BeNullOrEmpty
     }
 }
