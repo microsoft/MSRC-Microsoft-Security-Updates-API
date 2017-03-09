@@ -885,7 +885,7 @@ function Get-MsrcCvrfAffectedSoftware
 
             $KBArticle = $vuln.Remediations | Where-Object ProductID -Contains $vulnProductID | Select -ExpandProperty Description | Select -ExpandProperty Value
 
-            $RestartRequired = $($vuln.Remediations | Where-Object ProductID -Contains $vulnProductID | Select -ExpandProperty RestartRequired | Select Value).Value | foreach {if(!$_){"Unknown"}else{$_}}
+            $RestartRequired = $($vuln.Remediations | Where-Object ProductID -Contains $vulnProductID | Select -ExpandProperty RestartRequired | Select Value).Value | foreach {if(!$_){"Maybe"}else{$_}}
         
             $Severity = $vuln.Threats | Where Type -EQ 3 | Where-Object ProductID -Contains $vulnProductID | Select -ExpandProperty Description | Select -ExpandProperty Value
 
