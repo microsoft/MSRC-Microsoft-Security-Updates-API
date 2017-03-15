@@ -22,7 +22,7 @@ Major  Minor  Build  Revision
 Once you meet the above conditions, add the following to your Powershell script:
 
 ```Powershell
-Install-Module MSRCSecurityUpdates -force
+Install-Module MSRCSecurityUpdates -force 
 ````
 
 
