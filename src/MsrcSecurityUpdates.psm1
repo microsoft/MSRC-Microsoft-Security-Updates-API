@@ -763,10 +763,10 @@ damages so the foregoing limitation may not apply.</p>
         {        
             $affectedSoftwareTableHtml += $affectedSoftwareRowTemplate -f @(
                 $affectedSoftwareItem.CVE
-                $affectedSoftwareItem.KBArticle
-                $affectedSoftwareItem.RestartRequired
-                $affectedSoftwareItem.Severity
-                $affectedSoftwareItem.Impact
+                $( if (!$affectedSoftwareItem.KBArticle){"None"}else{$affectedSoftwareItem.KBArticle} )
+                $( if (!$affectedSoftwareItem.RestartRequired){"Unknown"}else{$affectedSoftwareItem.RestartRequired} )
+                $( if (!$affectedSoftwareItem.Severity){"Unknown"}else{$affectedSoftwareItem.Severity} )
+                $( if (!$affectedSoftwareItem.Impact){"Unknown"}else{$affectedSoftwareItem.Impact} )
             )
         }
         $affectedSoftwareDocumentHtml += $affectedSoftwareNameHeaderTemplate -f @(
@@ -881,15 +881,52 @@ function Get-MsrcCvrfAffectedSoftware
         foreach($vulnProductID in $vuln.ProductStatuses.ProductID)
         {
     
-            $FullProductName = $ProductTree.FullProductName | Where-Object ProductID -EQ $vulnProductID | Select -ExpandProperty Value        
+            try
+            {
+                $FullProductName = $ProductTree.FullProductName | Where-Object ProductID -EQ $vulnProductID | Select -ExpandProperty Value -ErrorAction Stop
+            }
+            catch
+            {
+                $FullProductName = $null
+            }
 
-            $KBArticle = $vuln.Remediations | Where-Object ProductID -Contains $vulnProductID | Select -ExpandProperty Description | Select -ExpandProperty Value
 
-            $RestartRequired = $($vuln.Remediations | Where-Object ProductID -Contains $vulnProductID | Select -ExpandProperty RestartRequired | Select Value).Value | foreach {if(!$_){"Maybe"}else{$_}}
-        
-            $Severity = $vuln.Threats | Where Type -EQ 3 | Where-Object ProductID -Contains $vulnProductID | Select -ExpandProperty Description | Select -ExpandProperty Value
+            try
+            {
+                $KBArticle = $vuln.Remediations | Where-Object ProductID -Contains $vulnProductID | Select -ExpandProperty Description | Select -ExpandProperty Value -ErrorAction Stop
+            }
+            catch
+            {
+                $KBArticle = $null
+            }
 
-            $Impact = $vuln.Threats | Where Type -EQ 0 | Where-Object ProductID -Contains $vulnProductID | Select -ExpandProperty Description | Select -ExpandProperty Value
+            try
+            {
+                $RestartRequired = $($vuln.Remediations | Where-Object ProductID -Contains $vulnProductID | Select -ExpandProperty RestartRequired | Select Value -ErrorAction Stop).Value | foreach {if(!$_){"Maybe"}else{$_}}
+            }
+            catch
+            {
+                $RestartRequired = $null
+            }
+
+            try
+            {
+                $Severity = $vuln.Threats | Where Type -EQ 3 | Where-Object ProductID -Contains $vulnProductID | Select -ExpandProperty Description | Select -ExpandProperty Value -ErrorAction Stop
+            }
+            catch
+            {
+                $Severity = $null
+            }
+
+            try
+            {
+                $Impact = $vuln.Threats | Where Type -EQ 0 | Where-Object ProductID -Contains $vulnProductID | Select -ExpandProperty Description | Select -ExpandProperty Value -ErrorAction Stop
+            }
+            catch
+            {
+                $Impact = $null
+            }
+
 
             [PSCustomObject] @{
                 FullProductName = $FullProductName
