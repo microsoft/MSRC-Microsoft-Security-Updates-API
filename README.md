@@ -12,11 +12,11 @@ Security bulletins are being replaced with the industry standard CVRF report typ
 
 # Change Log
 
-**March 14, 2017** – Minor changes to Powershell module to fix a CVRF->Powershell object conversion issue. Republished new Powershell module to [the Microsoft Powershell Gallery](https://www.powershellgallery.com/packages/MsrcSecurityUpdates/1.2). 
+**March 14, 2017** - v1.2 – Minor changes to Powershell module to fix a CVRF->Powershell object conversion issue. Republished new Powershell module to [the Microsoft Powershell Gallery](https://www.powershellgallery.com/packages/MsrcSecurityUpdates/1.2). 
 
-**March 09, 2017** – Added revised PowerShell cmdlets. 
+**March 09, 2017** - v1.1 – Added revised PowerShell cmdlets. 
 
-**February 09, 2017** - Project is going live.
+**February 09, 2017** - v1.1 - Project is going live.
 
 
 
