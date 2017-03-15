@@ -11,6 +11,9 @@ To see information about these, please view the README.md in the relevant folder
 Security bulletins are being replaced with the industry standard CVRF report type. View our [blog post](https://blogs.technet.microsoft.com/msrc/2016/11/08/furthering-our-commitment-to-security-updates/) for more info. Please use the [Security Updates Guide](https://portal.msrc.microsoft.com/en-us/security-guidance) to view vulnerabilities, or use this project to help automate Microsoft's vulnerability reporting & automation within your organization.
 
 # Change Log
+
+**March 14, 2017** – Minor changes to Powershell module to fix a CVRF->Powershell object conversion issue. Republished new Powershell module to [the Microsoft Powershell Gallery](https://www.powershellgallery.com/packages/MsrcSecurityUpdates/1.2). 
+
 **March 09, 2017** – Added revised PowerShell cmdlets. 
 
 **February 09, 2017** - Project is going live.
