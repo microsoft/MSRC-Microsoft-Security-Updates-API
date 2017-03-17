@@ -3,7 +3,7 @@
 The sample code serves as an example on how to interact with the MSRC Security Updates API through Powershell.  You will need to log into the MSRC Portal and obtain an API key.   
 
 In the PowerShell module, you will see script functions that show how to interact with the API, as well 
-as functions that organize data from the industry-standard CVRF document format to show some reporting scenarios.
+as functions that organize data from the industry-standard [CVRF document format](http://www.icasi.org/cvrf-v1-1-dictionary-of-elements/#40rem)  to show some reporting scenarios.
 
 You can clone this repo, or download the latest modules directly from the Microsoft Powershell Gallery (Powershell v3 and higher). 
 
@@ -48,12 +48,35 @@ Function        Get-MsrcSecurityUpdate                             1.1        Ms
 In this common scenario, the *Get-MsrcCvrfDocument* and *Get-MsrcSecurityBulletinHtml* can be pipelined together to generate a HTML document with *out-file*:
 
 ```Powershell
+### Install the module from the PowerShell Gallery (must be run as Admin)
+Install-Module -Name MsrcSecurityUpdates
 $msrcAPIKey = "<your API key>"
 $monthOfInterest = "2016-Nov"
 
 Get-MsrcCvrfDocument -ID $monthOfInterest -ApiKey $msrcApiKey -Verbose | Get-MsrcSecurityBulletinHtml -Verbose | Out-File c:\temp\MSRCNovSecurityUpdates.html
 ```
 
+## Finding Mitigations and Workarounds
+
+In this scenario, you can use the *Get-MsrcCvrfDocument* and extract the migrations & remediations from each vulnerability.
+
+```Powershell
+### Install the module from the PowerShell Gallery (must be run as Admin)
+
+Install-Module -Name MsrcSecurityUpdates
+
+### Download the March CVRF as an object
+$cvrfDoc = Get-MsrcCvrfDocument -ApiKey 'YOUR API KEY GOES HERE' -ID 2017-Mar
+
+### Get the Remediations of Type 'Workaround' (0)
+$cvrfDoc.Vulnerability.Remediations | Where Type -EQ 0
+
+### Get the Remediations of Type 'Mitigation' (1)
+$cvrfDoc.Vulnerability.Remediations | Where Type -EQ 1
+
+### Get the Remediations of Type 'VendorFix' (2)
+$cvrfDoc.Vulnerability.Remediations | Where Type -EQ 2 
+```
 
 ## Help!
 You'll find help via ``get-help`` for each cmdlet:
