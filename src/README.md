@@ -55,6 +55,30 @@ $monthOfInterest = "2016-Nov"
 
 Get-MsrcCvrfDocument -ID $monthOfInterest -ApiKey $msrcApiKey -Verbose | Get-MsrcSecurityBulletinHtml -Verbose | Out-File c:\temp\MSRCNovSecurityUpdates.html
 ```
+You can also build a modified object to pass into *Get-MsrcSecurityBulletinHtml*. This allows more cusomization of the report being generated. In this example, the generated report will only have the wanted CVE's included:
+
+```Powershell
+Import-Module -Name MsrcSecurityUpdates -Force
+
+$msrcApiKey = '<your API key>'
+$monthOfInterest = "2017-Mar"
+
+$CVEsWanted = @(
+        "CVE-2017-0001", 
+        "CVE-2017-0005"
+        )
+$Output_Location = "C:\your\path\here"
+
+$CVRFDoc = Get-MsrcCvrfDocument -ID $monthOfInterest -ApiKey $msrcApiKey -Verbose
+$CVRFHtmlProperties = @{
+    Vulnerability = $CVRFDoc.Vulnerability | Where-Object {$_.CVE -in $CVEsWanted}
+    ProductTree = $CVRFDoc.ProductTree
+    DocumentTracking = $CVRFDoc.DocumentTracking
+    DocumentTitle = $CVRFDoc.DocumentTitle
+}
+
+Get-MsrcSecurityBulletinHtml @CVRFHtmlProperties -Verbose | Out-File $Output_Location
+```
 
 ## Finding Mitigations and Workarounds
 
