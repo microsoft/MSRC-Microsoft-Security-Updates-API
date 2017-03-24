@@ -71,7 +71,7 @@ Function Get-MsrcSecurityUpdate {
         To get an API key, please visit https://portal.msrc.microsoft.com
 
 #>
-[CmdletBinding()]      
+[CmdletBinding(DefaultParameterSetName='All')]      
 Param (
 
     [Parameter(ParameterSetName='ByDate')]
@@ -132,20 +132,24 @@ Process {
             
                 $url = $sb.ToString()
 
+                break
 
-                }
+            }
             ByYear {
-                    $url = "{0}/Updates('{1}')?{2}" -f $msrcApiUrl,$Year,$msrcApiVersion
-                }
+                $url = "{0}/Updates('{1}')?{2}" -f $msrcApiUrl,$Year,$msrcApiVersion
+                break
+            }
             ByVulnerability {
-                    $url = "{0}/Updates('{1}')?{2}" -f $msrcApiUrl,$Vulnerability,$msrcApiVersion
-                }
+                $url = "{0}/Updates('{1}')?{2}" -f $msrcApiUrl,$Vulnerability,$msrcApiVersion
+                break
+            }
             ByCVRF {
-                    $url = "{0}/Updates('{1}')?{2}" -f $msrcApiUrl,$Cvrf,$msrcApiVersion
-                }
+                $url = "{0}/Updates('{1}')?{2}" -f $msrcApiUrl,$Cvrf,$msrcApiVersion
+                break
+            }
             Default {
-                    $url = "{0}/Updates?{1}" -f $msrcApiUrl,$Cvrf,$msrcApiVersion
-                }
+                $url = "{0}/Updates?{1}" -f $msrcApiUrl,$msrcApiVersion
+            }
         }
 
         try {
