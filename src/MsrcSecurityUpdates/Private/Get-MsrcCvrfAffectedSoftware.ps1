@@ -46,12 +46,12 @@ Process {
             [PSCustomObject] @{
                 FullProductName = $(
                     $ProductTree.FullProductName  | 
-                    Where { $_.ProductID -EQ $id} | 
+                    Where { $_.ProductID -eq $id} | 
                     Select -ExpandProperty Value
                 ) ;
                 KBArticle = $(
                     $v.Remediations | 
-                    Where { $_.ProductID -Contains $id }| 
+                    Where { $_.ProductID -contains $id }| 
                     Select -ExpandProperty Description  | 
                     Select -ExpandProperty Value
                 ) ;
@@ -59,21 +59,21 @@ Process {
                 Severity = $(
                     $v.Threats | 
                     Where {$_.Type -eq 3 } | 
-                    Where { $_.ProductID -Contains $id } | 
+                    Where { $_.ProductID -contains $id } | 
                     Select -ExpandProperty Description | 
                     Select -ExpandProperty Value
                 ) ;
                 Impact = $(
                     $v.Threats | 
                     Where {$_.Type -eq 0 } | 
-                    Where { $_.ProductID -Contains $id } | 
+                    Where { $_.ProductID -contains $id } | 
                     Select -ExpandProperty Description | 
                     Select -ExpandProperty Value
                 )
                 RestartRequired = $(
                     (
                     $v.Remediations | 
-                    Where { $_.ProductID -Contains $id }|
+                    Where { $_.ProductID -contains $id }|
                     Select -ExpandProperty RestartRequired |
                     Select Value
                     ).Value | ForEach-Object {
