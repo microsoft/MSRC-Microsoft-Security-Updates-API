@@ -91,11 +91,38 @@ Param (
     [Int]$Year,
 
     [Parameter(Mandatory,ParameterSetName='ByVulnerability')]
-    [String]$Vulnerability,
-
-    [Parameter(Mandatory,ParameterSetName='ByCVRF')]
-    [String]$Cvrf
+    [String]$Vulnerability
 )
+DynamicParam {
+
+    if (-not ($global:MSRCApiKey)) {
+
+	    Write-Warning -Message 'You need to use Set-MSRCApiKey first to set your API Key'
+
+    } else {  
+        $Dictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
+
+        $ParameterName = 'CVRF'
+        $AttribColl1 = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
+        $Param1Att = New-Object System.Management.Automation.ParameterAttribute
+        $Param1Att.Mandatory = $true
+        # $Param1Att.ValueFromPipeline = $true
+        $Param1Att.ParameterSetName = 'ByCVRF'
+        $AttribColl1.Add($Param1Att)
+
+        try {
+            $allCVRFID = Get-CVRFID
+        } catch {
+            Throw 'Unable to get online the list of CVRF ID'
+        }
+        if ($allCVRFID) {
+            $AttribColl1.Add((New-Object System.Management.Automation.ValidateSetAttribute($allCVRFID)))
+            $Dictionary.Add($ParameterName,(New-Object System.Management.Automation.RuntimeDefinedParameter($ParameterName, [string], $AttribColl1)))
+        
+            $Dictionary
+        }
+    }
+}
 Begin {}
 Process {
 
@@ -133,7 +160,6 @@ Process {
                 $url = $sb.ToString()
 
                 break
-
             }
             ByYear {
                 $url = "{0}/Updates('{1}')?{2}" -f $msrcApiUrl,$Year,$msrcApiVersion
@@ -144,7 +170,7 @@ Process {
                 break
             }
             ByCVRF {
-                $url = "{0}/Updates('{1}')?{2}" -f $msrcApiUrl,$Cvrf,$msrcApiVersion
+                $url = "{0}/Updates('{1}')?{2}" -f $msrcApiUrl,$($PSBoundParameters['CVRF']),$msrcApiVersion
                 break
             }
             Default {

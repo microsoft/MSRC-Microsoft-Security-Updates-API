@@ -30,6 +30,13 @@ Function Get-MsrcCvrfDocument {
 [CmdletBinding()]     
 Param (
     [Parameter(Mandatory)]
+    [ValidateScript({
+        if(Test-CVRFID -ID $_) {
+            $true
+        } else {
+            Throw 'Sorry CVRF ID entered is not valid'
+        }
+    })]
     [String]$ID,
 
     [Parameter(ParameterSetName='XmlOutput')]
@@ -48,15 +55,14 @@ Process {
 
         $Header = @{ 'Api-Key' = $global:MSRCApiKey }
 
+        if ($AsXml) {
+            $Header.Add('Accept','application/xml')
+        } else {
+            $Header.Add('Accept','application/json')
+        }
         try {
     
             Write-Verbose -Message "Calling $($url)"
-
-            if ($AsXml) {
-                $Header.Add('Accept','application/xml')
-            } else {
-                $Header.Add('Accept','application/json')
-            }
 
             # Invoke-WebRequest -Uri $url -Headers $Header -ErrorAction Stop #).Content
             Invoke-RestMethod -Uri $url -Headers $Header -ErrorAction Stop
