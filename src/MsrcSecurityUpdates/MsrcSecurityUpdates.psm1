@@ -881,52 +881,61 @@ function Get-MsrcCvrfAffectedSoftware
         foreach($vulnProductID in $vuln.ProductStatuses.ProductID)
         {
     
-            try
+            $FullProductName = $ProductTree.FullProductName | Where-Object ProductID -EQ $vulnProductID | Select -ExpandProperty Value
+            if (-not $FullProductName)
             {
-                $FullProductName = $ProductTree.FullProductName | Where-Object ProductID -EQ $vulnProductID | Select -ExpandProperty Value -ErrorAction Stop
-            }
-            catch
-            {
-                $FullProductName = $null
+                $FullProductName = "Could not find FullProductName for $vulnProductID"
             }
 
-
-            try
+            $VendorFixes = $vuln.Remediations | Where-Object ProductID -Contains $vulnProductID | Where-Object Type -EQ 2            
+            if ($VendorFixes)
             {
-                $KBArticle = $vuln.Remediations | Where-Object ProductID -Contains $vulnProductID | Select -ExpandProperty Description | Select -ExpandProperty Value -ErrorAction Stop
-            }
-            catch
-            {
-                $KBArticle = $null
-            }
-
-            try
-            {
-                $RestartRequired = $($vuln.Remediations | Where-Object ProductID -Contains $vulnProductID | Select -ExpandProperty RestartRequired | Select Value -ErrorAction Stop).Value | foreach {if(!$_){"Maybe"}else{$_}}
-            }
-            catch
-            {
-                $RestartRequired = $null
+                $KBArticle = ''
+                foreach($fix in $VendorFixes)
+                {
+                    $KBArticle += '<a href="{0}">{1}</a><br>' -f $fix.URL, $fix.Description.Value
+                }
             }
 
-            try
+            $SeverityValues = $vuln.Threats | Where Type -EQ 3 | Where-Object ProductID -Contains $vulnProductID
+            if ($SeverityValues)
             {
-                $Severity = $vuln.Threats | Where Type -EQ 3 | Where-Object ProductID -Contains $vulnProductID | Select -ExpandProperty Description | Select -ExpandProperty Value -ErrorAction Stop
+                $Severity = $SeverityValues.Description.Value -join '<br>'                
             }
-            catch
+            else
             {
-                $Severity = $null
+                $Severity = 'Unknown'
+            }
+            
+            $ImpactValues = $vuln.Threats | Where Type -EQ 0 | Where-Object ProductID -Contains $vulnProductID
+            if ($ImpactValues)
+            {
+                $Impact = $ImpactValues.Description.Value -join '<br>'                
+            }
+            else
+            {
+                $Impact = 'Unknown'
             }
 
-            try
+            $SupercedenceValues = $vuln.Remediations | Where-Object ProductID -Contains $vulnProductID
+            if ($SupercedenceValues)
             {
-                $Impact = $vuln.Threats | Where Type -EQ 0 | Where-Object ProductID -Contains $vulnProductID | Select -ExpandProperty Description | Select -ExpandProperty Value -ErrorAction Stop
+                $Supercedence = $SupercedenceValues.Supercedence -join '<br>'     
             }
-            catch
+            else
             {
-                $Impact = $null
+                $Supercedence = 'Unknown'
             }
 
+            $RestartRequiredValues = $vuln.Remediations | Where-Object ProductID -Contains $vulnProductID | Select -ExpandProperty RestartRequired
+            if ($RestartRequiredValues.Value -contains 'Yes')
+            {
+                $RestartRequired = 'Yes'
+            }
+            else
+            {
+                $RestartRequired = 'Maybe'
+            }
 
             [PSCustomObject] @{
                 FullProductName = $FullProductName
@@ -935,7 +944,453 @@ function Get-MsrcCvrfAffectedSoftware
                 Severity        = $Severity
                 Impact          = $Impact
                 RestartRequired = $RestartRequired
+                Supercedence    = $Supercedence
             }
         }
     }
+}
+
+function Get-MsrcVulnerabilityReportHtml
+{
+<#
+.Synopsis
+   Use a CVRF document to create a Vulnerability summary
+.EXAMPLE
+   #Create a report with all the Vulnerabilities in a CVRF document
+   Get-MsrcCvrfDocument -ID 2016-Aug -ApiKey 'YOUR API KEY' | 
+   Get-MsrcVulnerabilityReportHtml | 
+   Out-File -FilePath Cvrf-CVE-Summary.html
+.EXAMPLE
+    #Create a report for each of the Vulnerabilities in a CVRF document
+    $cvrfDocument = Get-MsrcCvrfDocument -ID 2016-Nov -ApiKey 'YOUR API KEY'
+    foreach ($vulnerability in $cvrfDocument.Vulnerability)
+    {
+        $vulnerability.CVE
+        Get-MsrcVulnerabilityReportHtml -Vulnerability $vulnerability -ProductTree $cvrfDocument.ProductTree | 
+        Out-File -FilePath "Cvrf-$($vulnerability.CVE)-Summary.html"
+    }
+.EXAMPLE
+    #Create a report for specific Vulnerabilities in a CVRF document
+    $cvrfDocument = Get-MsrcCvrfDocument -ID 2016-Nov -ApiKey 'YOUR API KEY'    
+    Get-MsrcVulnerabilityReportHtml -Vulnerability ($cvrfDocument.Vulnerability | Where-Object CVE -In @('CVE-2016-0026','CVE-2016-7202','CVE-2016-3343'))  -ProductTree $cvrfDocument.ProductTree | 
+    Out-File -FilePath Cvrf-CVE-Summary.html
+#>
+    [OutputType([string])]
+    Param
+    (
+        <#
+        The Vulnerability node of a CVRF document        
+        #> 
+        [Parameter(Mandatory=$true, 
+                   ValueFromPipelineByPropertyName=$true)]
+        $Vulnerability,
+
+        <#
+        The ProductTree node of a CVRF document
+        #>
+        [Parameter(Mandatory=$true, 
+                   ValueFromPipelineByPropertyName=$true)]
+        $ProductTree
+    )
+    $htmlDocumentTemplate = @'
+<html>
+<head>
+    <!-- this is the css from the old bulletin site. Change this to better style your report to your liking -->
+    <link rel="stylesheet" href="https://i-technet.sec.s-msft.com/Combined.css?resources=0:ImageSprite,0:TopicResponsive,0:TopicResponsive.MediaQueries,1:CodeSnippet,1:ProgrammingSelector,1:ExpandableCollapsibleArea,0:CommunityContent,1:TopicNotInScope,1:FeedViewerBasic,1:ImageSprite,2:Header.2,2:HeaderFooterSprite,2:Header.MediaQueries,2:Banner.MediaQueries,3:megabladeMenu.1,3:MegabladeMenu.MediaQueries,3:MegabladeMenuSpriteCluster,0:Breadcrumbs,0:Breadcrumbs.MediaQueries,0:ResponsiveToc,0:ResponsiveToc.MediaQueries,1:NavSidebar,0:LibraryMemberFilter,4:StandardRating,2:Footer.2,5:LinkList,2:Footer.MediaQueries,0:BaseResponsive,6:MsdnResponsive,0:Tables.MediaQueries,7:SkinnyRatingResponsive,7:SkinnyRatingV2;/Areas/Library/Content:0,/Areas/Epx/Content/Css:1,/Areas/Epx/Themes/TechNet/Content:2,/Areas/Epx/Themes/Shared/Content:3,/Areas/Global/Content:4,/Areas/Epx/Themes/Base/Content:5,/Areas/Library/Themes/Msdn/Content:6,/Areas/Library/Themes/TechNet/Content:7&amp;v=9192817066EC5D087D15C766A0430C95">
+    
+    <!-- this style section changes cell widths in the exec header table so that the affected products at the end are wide enough to read -->
+    <style>
+        #execHeader td:first-child  {{ width: 10% ;}}
+        #execHeader td:nth-child(5) {{ width: 37% ;}}
+    </style>
+
+    <!-- this section defines explicit width for all cells in the affected software tables. This is so the column width is the same across each product -->
+    <style>
+        .affected_software td:first-child {{ width: 20% ; }}
+        .affected_software td:nth-child(2) {{ width: 20% ; }}
+        .affected_software td:nth-child(3) {{ width: 15% ; }}
+        .affected_software td:nth-child(4) {{ width: 22.5% ; }}
+        .affected_software td:nth-child(5) {{ width: 22.5% ; }}
+
+    </style>
+
+</head>
+
+<body lang=EN-US link=blue>
+<div id="documentWrapper" style="width: 90%; margin-left: auto; margin-right: auto;">
+
+<h1>Microsoft CVE Summary</h1>
+
+<h1>CVE Summaries</h1>
+
+<p>The following table summarizes the vulnerabilities for this review.</p>
+
+<table id="execHeader" border=1 cellpadding=0 width="99%">
+ <thead style="background-color: #ededed">
+  <tr>
+   <td><b>CVE ID</b></td>
+   <td><b>Vulnerability Description</b></td>
+   <td><b>Maximum Severity Rating</b></td>
+   <td><b>Vulnerability Impact</b></td>   
+  </tr>
+ </thead>
+ {0}
+</table>
+
+<h1>Exploitability Index</h1>
+
+<p>The following table provides an exploitability assessment of each of the vulnerabilities addressed this month. The vulnerabilities are listed in order of bulletin ID then CVE ID. Only vulnerabilities that have a severity rating of Critical or Important in the bulletins are included.</p>
+
+<table border=1 cellpadding=0 width="99%">
+ <thead style="background-color: #ededed">
+  <tr>
+   <td><b>CVE ID</b></td>
+   <td><b>Vulnerability Title</b></td>
+   <td><b>Exploitability Assessment for Latest Software Release</b></td>
+   <td><b>Exploitability Assessment for Older Software Release</b></td>
+   <td><b>Denial of Service Exploitability Assessment</b></td>   
+  </tr>
+ </thead>
+ {1}
+</table>
+
+<h1>Affected Software</h1>
+
+<p>The following tables list the bulletins in order of major software category and severity.</p>
+
+<!-- Affected software tables -->
+ {2}
+<!-- End Affected software tables -->
+
+<h1>Acknowledgements</h1>
+<table border=1 cellpadding=0 width="99%">
+ <thead style="background-color: #ededed">
+  <tr>
+   <td><b>CVE ID</b></td>
+   <td><b>Acknowledgements</b></td>  
+  </tr>
+ </thead>
+ {3}
+</table>
+
+</div>
+
+ </body>
+</html>
+'@
+
+    #region CVE Summary Table
+    $cveSummaryRowTemplate = @'
+<tr>
+     <td>{0}</td>
+     <td>{1}</td>
+     <td>{2}</td>
+     <td>{3}</td>
+ </tr>
+'@
+    $cveSummaryTableHtml = ''
+
+    foreach($vuln in $Vulnerability)
+    {
+        $SeverityValues = $vuln.Threats | Where-Object Type -EQ 3 | 
+          Select @{Name='Severity' ;Expression={$_.Description.Value}} -Unique |
+          Select -ExpandProperty Severity
+
+        if ($SeverityValues -contains 'Critical')
+        {
+            $maximumSeverity = 'Critical'
+        }
+        elseif ($SeverityValues -contains 'Important')
+        {
+            $maximumSeverity = 'Important'
+        }
+        elseif ($SeverityValues -contains 'Moderate')
+        {
+            $maximumSeverity = 'Moderate'
+        }
+        elseif ($SeverityValues -contains 'Low')
+        {
+            $maximumSeverity = 'Low'
+        }
+        else
+        {
+            Write-Warning "Could not determine the Maximum Severity from the Threats for $($vuln.CVE)"
+            $maximumSeverity = 'Unknown'
+        } 
+        
+        $ImpactValues = $vuln.Threats | Where-Object Type -EQ 0 | ForEach-Object {$_.Description.Value} | Select-Object -Unique
+        if ($ImpactValues)
+        {
+            $impactColumn = $ImpactValues -join ',<br>'
+        }
+        else
+        {
+            Write-Warning "Could not determine the Impact from the Threats for $($vuln.CVE)"
+            $impactColumn = 'Unknown'
+        }
+
+        $vulnTableColumn = $vuln.CVE + "<br>" + "<a href=`"http://www.cve.mitre.org/cgi-bin/cvename.cgi?name=$($vuln.CVE)`">MITRE</a>" + "<br>" + "<a href=`"https://web.nvd.nist.gov/view/vuln/detail?vulnId=$($vuln.CVE)`">NVD</a>"
+
+        $vulnDescriptionColumnTemplate = @'
+        <b>CVE Title:</b> {0}
+        <br>
+        <b>Description:</b> <br>{1}
+        <br>
+        <b>FAQ:</b><br>{2}
+        <br>
+        <b>Mitigations:</b><br>{3}
+        <br>
+        <b>Workarounds:</b><br>{4}
+        <br>
+'@
+        if ($vuln.Title.Value)
+        {
+            $cveTitle = $vuln.Title.Value
+        }
+        else
+        {
+            Write-Warning "Missing Title for $($vuln.CVE)"
+            $cveTitle = 'Unknown'
+        }
+
+        if ($vuln.Notes | Where-Object Title -eq Description)
+        {
+            $cveDescription = $vuln.Notes | Where Title -eq Description | Select -ExpandProperty Value
+        }
+        else
+        {
+            Write-Warning "Missing Description for $($vuln.CVE)"
+            $cveDescription = 'Unknown'
+        }
+
+        $cveFaqs = $vuln.Notes | Where Title -eq FAQ | Select -ExpandProperty Value
+        if ($cveFaqs)
+        {
+            $cveFaq = $cveFaqs -join '<br>'
+        }
+        else
+        {            
+            $cveFaq = "No FAQ for $($vuln.CVE)"
+        }
+
+        $cveMitigations = $vuln.Remediations | Where-Object Type -EQ 1
+        if ($cveMitigations)
+        {
+            $cveMitigation = $cveMitigations.URL -join '<br>'
+        }
+        else
+        {            
+            $cveMitigation = "No mitigations for $($vuln.CVE)"
+        }
+
+        $cveWorkarounds = $vuln.Remediations | Where-Object Type -EQ 0 | Select-Object -ExpandProperty Description | Select-Object -ExpandProperty Value
+        if ($cveWorkarounds)
+        {
+            $cveWorkaround = $cveWorkarounds -join '<br>'
+        }
+        else
+        {            
+            $cveWorkaround = "No workarounds for $($vuln.CVE)"
+        }
+
+        $vulnDescriptionColumn = $vulnDescriptionColumnTemplate -f @(
+            $cveTitle
+            $cveDescription
+            $cveFaq
+            $cveMitigation
+            $cveWorkaround
+        )
+
+        $cveSummaryTableHtml += $cveSummaryRowTemplate -f @(
+            $vulnTableColumn 
+            $vulnDescriptionColumn
+            $maximumSeverity
+            $impactColumn
+        )
+    }
+
+    #endregion
+
+    #region Exploitability Index Table
+    $exploitabilityRowTemplate = @'
+<tr>
+     <td>{0}</td>
+     <td>{1}</td>
+     <td>{2}</td>
+     <td>{3}</td>
+     <td>{4}</td>
+ </tr>
+'@
+
+    $exploitabilityIndexTableHtml = ''
+
+    foreach($vuln in $Vulnerability)
+    {
+        $ExploitStatusLatest = ''
+        $ExploitStatusOlder  = ''
+
+        if ($vuln.Title.Value)
+        {
+            $cveTitle = $vuln.Title.Value
+        }
+        else
+        {
+            Write-Warning "Missing Title for $($vuln.CVE)"
+            $cveTitle = 'Unknown'
+        }
+
+        $ExploitStatusThreat = $vuln.Threats | Where Type -EQ 1 | Select -Last 1
+        if ($ExploitStatusThreat.Description.Value)
+        {
+            $ExploitStatus = Get-MsrcThreatExploitStatus -ExploitStatusString $ExploitStatusThreat.Description.Value 
+        }
+        else
+        {
+            Write-Warning "Missing ExploitStatus for $($vuln.CVE)"
+        }       
+
+        if ($ExploitStatus.LatestSoftwareRelease)
+        {
+            $LatestSoftwareRelease = $ExploitStatus.LatestSoftwareRelease
+        }
+        else
+        {
+            $LatestSoftwareRelease = 'Not Found'
+        }
+        if ($ExploitStatus.OlderSoftwareRelease)
+        {
+            $OlderSoftwareRelease = $ExploitStatus.OlderSoftwareRelease
+        }
+        else
+        {
+            $OlderSoftwareRelease = 'Not Found'
+        }
+        if ($ExploitStatus.DenialOfService)
+        {
+            $DenialOfService = $ExploitStatus.DenialOfService
+        }
+        else
+        {
+            $DenialOfService = 'Not Found'
+        }
+
+        $exploitabilityIndexTableHtml += $exploitabilityRowTemplate -f @(
+            $vuln.CVE
+            $cveTitle
+            $LatestSoftwareRelease
+            $OlderSoftwareRelease
+            $DenialOfService           
+        )
+    }
+    
+    #endregion
+
+    #region Affected Software Table
+    
+    $affectedSoftwareNameHeaderTemplate = @'
+    <table class="affected_software" border=1 cellpadding=0 width="99%">
+        <thead style="background-color: #ededed">
+            <tr>
+                <td colspan="6"><b>{0}</b></td>
+            </tr>
+        </thead>
+            <tr>
+                <td><b>CVE</b></td>
+                <td><b>KB Article</b></td>                
+                <td><b>Severity</b></td>  
+                <td><b>Impact</b></td>  
+                <td><b>Supersedence</b></td>
+                <td><b>Restart Required</b></td>
+            </tr>
+        {1}
+    </table>
+    <br>
+'@
+
+    $affectedSoftwareRowTemplate = @'
+    <tr>
+         <td>{0}</td>
+         <td>{1}</td>
+         <td>{2}</td>
+         <td>{3}</td>
+         <td>{4}</td>
+         <td>{5}</td>
+    </tr>
+'@
+
+    $affectedSoftwareTableHtml = ''
+    $affectedSoftwareDocumentHtml = ''
+    $affectedSoftware = Get-MsrcCvrfAffectedSoftware -Vulnerability $Vulnerability -ProductTree $ProductTree
+
+    foreach($productName in $($affectedSoftware.FullProductName | Sort-Object | Get-Unique ))
+    {
+        $affectedSoftwareTableHtml = ''
+        foreach($affectedSoftwareItem in $affectedSoftware | Where-Object {$_.FullProductName -eq $productName})
+        {        
+            $affectedSoftwareTableHtml += $affectedSoftwareRowTemplate -f @(
+                $affectedSoftwareItem.CVE                
+                $( if (!$affectedSoftwareItem.KBArticle){"None"}else{$affectedSoftwareItem.KBArticle} )
+                $( if (!$affectedSoftwareItem.Severity){"Unknown"}else{$affectedSoftwareItem.Severity} )
+                $( if (!$affectedSoftwareItem.Impact){"Unknown"}else{$affectedSoftwareItem.Impact} )
+                $( if (!$affectedSoftwareItem.Supercedence){"Unknown"}else{$affectedSoftwareItem.Supercedence} )
+                $( if (!$affectedSoftwareItem.RestartRequired){"Unknown"}else{$affectedSoftwareItem.RestartRequired} )
+            )
+        }
+        $affectedSoftwareDocumentHtml += $affectedSoftwareNameHeaderTemplate -f @(
+            $ProductName
+            $affectedSoftwareTableHtml
+        )
+    }
+
+    #endregion
+
+    #region Acknowledgments Table
+    $acknowledgmentRowTemplate = @'
+<tr>
+     <td>{0}</td>
+     <td>{1}</td>
+ </tr>
+'@
+    $acknowledgmentTableHtml = ''
+
+    foreach($vuln in $Vulnerability)
+    {         
+        if ($vuln.Acknowledgments)
+        {
+            $acknowledgmentsValue = ''
+            foreach ($ack in $vuln.Acknowledgments)
+            {
+                if ($ack.Name.Value)
+                {
+                    $acknowledgmentsValue += $ack.Name.Value
+                    $acknowledgmentsValue += '<br>'
+                }
+                if ($ack.URL)
+                {
+                    $acknowledgmentsValue += $ack.URL
+                    $acknowledgmentsValue += '<br>'
+                }
+                $acknowledgmentsValue += '<br><br>'
+            }
+        }
+        else
+        {
+            Write-Warning "No Acknowledgments for $($vuln.CVE)"
+            $acknowledgmentsValue = 'No Acknowledgments'
+        }
+
+        $acknowledgmentTableHtml += $acknowledgmentRowTemplate -f @(
+            $vuln.CVE 
+            $acknowledgmentsValue
+        )
+    }
+
+    #endregion
+
+    Write-Output ($htmlDocumentTemplate -f @(        
+        $cveSummaryTableHtml          #CVE Summary Rows
+        $exploitabilityIndexTableHtml #Expoitability Rows
+        $affectedSoftwareDocumentHtml #Affected Software Rows
+        $acknowledgmentTableHtml      #Acknowlegements Rows
+    ))
 }

@@ -70,6 +70,17 @@ Describe 'Function: Get-MsrcCvrfDocument (calls the MSRC /cvrf API)' {
         Get-MsrcCvrfDocument -ID 2016-Nov -ApiKey $msrcApiKey -AsXml -Verbose | 
         Should Not BeNullOrEmpty 
     }
+
+    Get-MsrcSecurityUpdate -ApiKey $msrcApiKey | 
+    Foreach-Object {
+        It "Get-MsrcCvrfDocument - none shall throw: $($PSItem.ID)" {
+            {
+                Get-MsrcCvrfDocument -ApiKey $msrcApiKey -ID $PSItem.ID | 
+                Out-Null
+            } |
+            Should Not Throw
+        }
+    }
 }
 
 Describe 'Function: Get-MsrcSecurityBulletinHtml (generates the MSRC Security Bulletin HTML Report)' {
@@ -105,5 +116,27 @@ Describe 'Function: Get-MsrcCvrfProductVulnerability' {
         $cvrfDocument = Get-MsrcCvrfDocument -ID 2016-Nov -ApiKey $msrcApiKey -Verbose
         Get-MsrcCvrfProductVulnerability -Vulnerability $cvrfDocument.Vulnerability -ProductTree $cvrfDocument.ProductTree -DocumentTracking $cvrfDocument.DocumentTracking -DocumentTitle $cvrfDocument.DocumentTitle  |
         Should Not BeNullOrEmpty
+    }
+}
+
+Describe 'Function: Get-MsrcVulnerabilityReportHtml (generates the MSRC Vulnerability Summary HTML Report)' {
+    It 'Vulnerability Summary Report - does not throw' {
+        {
+            Get-MsrcCvrfDocument -ID 2016-Nov -ApiKey $msrcApiKey |
+            Get-MsrcVulnerabilityReportHtml -Verbose | Out-Null
+        } |
+        Should Not Throw
+    }
+
+    Get-MsrcSecurityUpdate -ApiKey $msrcApiKey | 
+    Foreach-Object {
+        It "Vulnerability Summary Report - none shall throw: $($PSItem.ID)" {
+            {
+                Get-MsrcCvrfDocument -ApiKey $msrcApiKey -ID $PSItem.ID |
+                Get-MsrcVulnerabilityReportHtml | 
+                Out-Null
+            } |
+            Should Not Throw
+        }
     }
 }
