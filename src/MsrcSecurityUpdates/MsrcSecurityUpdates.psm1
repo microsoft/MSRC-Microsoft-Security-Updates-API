@@ -1011,7 +1011,6 @@ function Get-MsrcVulnerabilityReportHtml
         .affected_software td:nth-child(3) {{ width: 15% ; }}
         .affected_software td:nth-child(4) {{ width: 22.5% ; }}
         .affected_software td:nth-child(5) {{ width: 22.5% ; }}
-
     </style>
 
 </head>
@@ -1019,12 +1018,44 @@ function Get-MsrcVulnerabilityReportHtml
 <body lang=EN-US link=blue>
 <div id="documentWrapper" style="width: 90%; margin-left: auto; margin-right: auto;">
 
-<h1>Microsoft CVE Summary</h1>
+<h1 id="top">Microsoft CVE Summary</h1>
 
-<h1>CVE Summaries</h1>
+<p>This report contains detail for the following vulnerabilities:</p>
+<ul>
+{0}
+</ul>
+{1}
+</div>
+<br>
+ </body>
+</html>
+'@
 
-<p>The following table summarizes the vulnerabilities for this review.</p>
+    
+    $cveListHtml = ''
+    
+    $cveSectionHtml = ''
+    foreach($vuln in $Vulnerability)
+    {
+        if ($vuln.Title.Value)
+        {
+            $cveTitle = $vuln.Title.Value
+        }
+        else
+        {
+            Write-Warning "Missing Title for $($vuln.CVE)"
+            $cveTitle = 'Unknown'
+        }
 
+        $cveSectionHtml += '<h1 id="{0}">{0} - {1}</h1> (<a href="#top">top</a>)' -f $vuln.CVE, $cveTitle
+
+        #region CVE Summary List
+        $cveListHtml += '<li><a href="#{0}">{0}</a> - {1}</li>' -f $vuln.CVE, $cveTitle
+        #endregion
+
+        #region CVE Summary Table
+
+        $cveSummaryTableHtml = @'
 <table id="execHeader" border=1 cellpadding=0 width="99%">
  <thead style="background-color: #ededed">
   <tr>
@@ -1034,64 +1065,15 @@ function Get-MsrcVulnerabilityReportHtml
    <td><b>Vulnerability Impact</b></td>   
   </tr>
  </thead>
- {0}
-</table>
-
-<h1>Exploitability Index</h1>
-
-<p>The following table provides an exploitability assessment of each of the vulnerabilities addressed this month. The vulnerabilities are listed in order of bulletin ID then CVE ID. Only vulnerabilities that have a severity rating of Critical or Important in the bulletins are included.</p>
-
-<table border=1 cellpadding=0 width="99%">
- <thead style="background-color: #ededed">
-  <tr>
-   <td><b>CVE ID</b></td>
-   <td><b>Vulnerability Title</b></td>
-   <td><b>Exploitability Assessment for Latest Software Release</b></td>
-   <td><b>Exploitability Assessment for Older Software Release</b></td>
-   <td><b>Denial of Service Exploitability Assessment</b></td>   
-  </tr>
- </thead>
- {1}
-</table>
-
-<h1>Affected Software</h1>
-
-<p>The following tables list the bulletins in order of major software category and severity.</p>
-
-<!-- Affected software tables -->
- {2}
-<!-- End Affected software tables -->
-
-<h1>Acknowledgements</h1>
-<table border=1 cellpadding=0 width="99%">
- <thead style="background-color: #ededed">
-  <tr>
-   <td><b>CVE ID</b></td>
-   <td><b>Acknowledgements</b></td>  
-  </tr>
- </thead>
- {3}
-</table>
-
-</div>
-
- </body>
-</html>
-'@
-
-    #region CVE Summary Table
-    $cveSummaryRowTemplate = @'
-<tr>
+ <tr>
      <td>{0}</td>
      <td>{1}</td>
      <td>{2}</td>
      <td>{3}</td>
  </tr>
+</table>        
 '@
-    $cveSummaryTableHtml = ''
 
-    foreach($vuln in $Vulnerability)
-    {
         $SeverityValues = $vuln.Threats | Where-Object Type -EQ 3 | 
           Select @{Name='Severity' ;Expression={$_.Description.Value}} -Unique |
           Select -ExpandProperty Severity
@@ -1143,16 +1125,7 @@ function Get-MsrcVulnerabilityReportHtml
         <b>Workarounds:</b><br>{4}
         <br>
 '@
-        if ($vuln.Title.Value)
-        {
-            $cveTitle = $vuln.Title.Value
-        }
-        else
-        {
-            Write-Warning "Missing Title for $($vuln.CVE)"
-            $cveTitle = 'Unknown'
-        }
-
+        
         if ($vuln.Notes | Where-Object Title -eq Description)
         {
             $cveDescription = $vuln.Notes | Where Title -eq Description | Select -ExpandProperty Value
@@ -1201,43 +1174,42 @@ function Get-MsrcVulnerabilityReportHtml
             $cveWorkaround
         )
 
-        $cveSummaryTableHtml += $cveSummaryRowTemplate -f @(
+        $cveSectionHtml += $cveSummaryTableHtml -f @(
             $vulnTableColumn 
             $vulnDescriptionColumn
             $maximumSeverity
             $impactColumn
         )
-    }
+        #endregion
 
-    #endregion
+        #region Exploitability Index Table
+        $exploitabilityIndexTableHtml = @'
+<h2>Exploitability Index</h2>
 
-    #region Exploitability Index Table
-    $exploitabilityRowTemplate = @'
-<tr>
+<p>The following table provides an exploitability assessment of each of the vulnerabilities addressed this month. The vulnerabilities are listed in order of bulletin ID then CVE ID. Only vulnerabilities that have a severity rating of Critical or Important in the bulletins are included.</p>
+
+<table border=1 cellpadding=0 width="99%">
+ <thead style="background-color: #ededed">
+  <tr>
+   <td><b>CVE ID</b></td>
+   <td><b>Vulnerability Title</b></td>
+   <td><b>Exploitability Assessment for Latest Software Release</b></td>
+   <td><b>Exploitability Assessment for Older Software Release</b></td>
+   <td><b>Denial of Service Exploitability Assessment</b></td>   
+  </tr>
+ </thead>
+ <tr>
      <td>{0}</td>
      <td>{1}</td>
      <td>{2}</td>
      <td>{3}</td>
      <td>{4}</td>
  </tr>
+</table>
 '@
 
-    $exploitabilityIndexTableHtml = ''
-
-    foreach($vuln in $Vulnerability)
-    {
         $ExploitStatusLatest = ''
-        $ExploitStatusOlder  = ''
-
-        if ($vuln.Title.Value)
-        {
-            $cveTitle = $vuln.Title.Value
-        }
-        else
-        {
-            Write-Warning "Missing Title for $($vuln.CVE)"
-            $cveTitle = 'Unknown'
-        }
+        $ExploitStatusOlder  = ''        
 
         $ExploitStatusThreat = $vuln.Threats | Where Type -EQ 1 | Select -Last 1
         if ($ExploitStatusThreat.Description.Value)
@@ -1274,87 +1246,93 @@ function Get-MsrcVulnerabilityReportHtml
             $DenialOfService = 'Not Found'
         }
 
-        $exploitabilityIndexTableHtml += $exploitabilityRowTemplate -f @(
+        $cveSectionHtml += $exploitabilityIndexTableHtml -f @(
             $vuln.CVE
             $cveTitle
             $LatestSoftwareRelease
             $OlderSoftwareRelease
             $DenialOfService           
-        )
-    }
-    
-    #endregion
+        )    
+        #endregion
 
-    #region Affected Software Table
+        #region Affected Software Table
     
-    $affectedSoftwareNameHeaderTemplate = @'
-    <table class="affected_software" border=1 cellpadding=0 width="99%">
-        <thead style="background-color: #ededed">
-            <tr>
-                <td colspan="6"><b>{0}</b></td>
-            </tr>
-        </thead>
-            <tr>
-                <td><b>CVE</b></td>
-                <td><b>KB Article</b></td>                
-                <td><b>Severity</b></td>  
-                <td><b>Impact</b></td>  
-                <td><b>Supersedence</b></td>
-                <td><b>Restart Required</b></td>
-            </tr>
+        $affectedSoftwareTableTemplate = @'
+<table class="affected_software" border=1 cellpadding=0 width="99%">
+    <thead style="background-color: #ededed">
+        <tr>
+            <td colspan="6"><b>{0}</b></td>
+        </tr>
+    </thead>
+        <tr>
+            <td><b>CVE</b></td>
+            <td><b>KB Article</b></td>                
+            <td><b>Severity</b></td>  
+            <td><b>Impact</b></td>  
+            <td><b>Supersedence</b></td>
+            <td><b>Restart Required</b></td>
+        </tr>
         {1}
-    </table>
-    <br>
+</table>
+<br>
 '@
 
-    $affectedSoftwareRowTemplate = @'
-    <tr>
-         <td>{0}</td>
-         <td>{1}</td>
-         <td>{2}</td>
-         <td>{3}</td>
-         <td>{4}</td>
-         <td>{5}</td>
-    </tr>
+        $affectedSoftwareRowTemplate = @'
+        <tr>
+                <td>{0}</td>
+                <td>{1}</td>
+                <td>{2}</td>
+                <td>{3}</td>
+                <td>{4}</td>
+                <td>{5}</td>
+        </tr>    
 '@
 
-    $affectedSoftwareTableHtml = ''
-    $affectedSoftwareDocumentHtml = ''
-    $affectedSoftware = Get-MsrcCvrfAffectedSoftware -Vulnerability $Vulnerability -ProductTree $ProductTree
+        $cveSectionHtml += @'
+<h2>Affected Software</h2>
 
-    foreach($productName in $($affectedSoftware.FullProductName | Sort-Object | Get-Unique ))
-    {
-        $affectedSoftwareTableHtml = ''
-        foreach($affectedSoftwareItem in $affectedSoftware | Where-Object {$_.FullProductName -eq $productName})
-        {        
-            $affectedSoftwareTableHtml += $affectedSoftwareRowTemplate -f @(
-                $affectedSoftwareItem.CVE                
-                $( if (!$affectedSoftwareItem.KBArticle){"None"}else{$affectedSoftwareItem.KBArticle} )
-                $( if (!$affectedSoftwareItem.Severity){"Unknown"}else{$affectedSoftwareItem.Severity} )
-                $( if (!$affectedSoftwareItem.Impact){"Unknown"}else{$affectedSoftwareItem.Impact} )
-                $( if (!$affectedSoftwareItem.Supercedence){"Unknown"}else{$affectedSoftwareItem.Supercedence} )
-                $( if (!$affectedSoftwareItem.RestartRequired){"Unknown"}else{$affectedSoftwareItem.RestartRequired} )
+<p>The following tables list the affected software details for the vulnerability.</p>
+'@
+        $affectedSoftware = Get-MsrcCvrfAffectedSoftware -Vulnerability $vuln -ProductTree $ProductTree
+
+        foreach($productName in $($affectedSoftware.FullProductName | Sort-Object | Get-Unique ))
+        {
+            $affectedSoftwareTableHtml = ''
+            foreach($affectedSoftwareItem in $affectedSoftware | Where-Object {$_.FullProductName -eq $productName})
+            {        
+                $affectedSoftwareTableHtml += $affectedSoftwareRowTemplate -f @(
+                    $affectedSoftwareItem.CVE                
+                    $( if (!$affectedSoftwareItem.KBArticle){"None"}else{$affectedSoftwareItem.KBArticle} )
+                    $( if (!$affectedSoftwareItem.Severity){"Unknown"}else{$affectedSoftwareItem.Severity} )
+                    $( if (!$affectedSoftwareItem.Impact){"Unknown"}else{$affectedSoftwareItem.Impact} )
+                    $( if (!$affectedSoftwareItem.Supercedence){"Unknown"}else{$affectedSoftwareItem.Supercedence} )
+                    $( if (!$affectedSoftwareItem.RestartRequired){"Unknown"}else{$affectedSoftwareItem.RestartRequired} )
+                )
+            }
+            $cveSectionHtml += $affectedSoftwareTableTemplate -f @(
+                $ProductName
+                $affectedSoftwareTableHtml
             )
         }
-        $affectedSoftwareDocumentHtml += $affectedSoftwareNameHeaderTemplate -f @(
-            $ProductName
-            $affectedSoftwareTableHtml
-        )
-    }
+        #endregion
 
-    #endregion
-
-    #region Acknowledgments Table
-    $acknowledgmentRowTemplate = @'
-<tr>
+        #region Acknowledgments Table
+        $acknowledgmentsTableTemplate = @'
+<h2>Acknowledgements</h2>
+<table border=1 cellpadding=0 width="99%">
+ <thead style="background-color: #ededed">
+    <tr>
+        <td><b>CVE ID</b></td>
+        <td><b>Acknowledgements</b></td>  
+    </tr>
+    </thead>
+ <tr>
      <td>{0}</td>
      <td>{1}</td>
  </tr>
+</table>
 '@
-    $acknowledgmentTableHtml = ''
 
-    foreach($vuln in $Vulnerability)
-    {         
         if ($vuln.Acknowledgments)
         {
             $acknowledgmentsValue = ''
@@ -1379,18 +1357,15 @@ function Get-MsrcVulnerabilityReportHtml
             $acknowledgmentsValue = 'No Acknowledgments'
         }
 
-        $acknowledgmentTableHtml += $acknowledgmentRowTemplate -f @(
+        $cveSectionHtml += $acknowledgmentsTableTemplate -f @(
             $vuln.CVE 
             $acknowledgmentsValue
         )
     }
-
     #endregion
 
-    Write-Output ($htmlDocumentTemplate -f @(        
-        $cveSummaryTableHtml          #CVE Summary Rows
-        $exploitabilityIndexTableHtml #Expoitability Rows
-        $affectedSoftwareDocumentHtml #Affected Software Rows
-        $acknowledgmentTableHtml      #Acknowlegements Rows
+    Write-Output ($htmlDocumentTemplate -f @( 
+        $cveListHtml
+        $cveSectionHtml
     ))
 }
