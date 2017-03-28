@@ -1,5 +1,6 @@
 Function Test-CVRFID {
 [CmdletBinding()]
+[OutputType('System.Boolean')]
 Param(
     [Parameter(Mandatory)]
     [ValidateNotNullorEmpty()]

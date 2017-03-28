@@ -22,7 +22,7 @@ Major  Minor  Build  Revision
 Once you meet the above conditions, add the following to your Powershell script:
 
 ```Powershell
-Install-Module MSRCSecurityUpdates -force 
+Install-Module MSRCSecurityUpdates -Force 
 ````
 
 
@@ -33,14 +33,16 @@ See *MsrcSecurityUpdates.tests.ps1* which exercises all of the functions.
 ## Cmdlets
 
 ```Powershell
-get-command -Module MsrcSecurityUpdates
+Get-Command -Module MsrcSecurityUpdates
 
-CommandType     Name                                               Version    Source
------------     ----                                               -------    ------
-Function        Get-MsrcCvrfDocument                               1.1        MsrcSecurityUpdates
-Function        Get-MsrcCvrfProductVulnerability                   1.1        MsrcSecurityUpdates
-Function        Get-MsrcSecurityBulletinHtml                       1.1        MsrcSecurityUpdates
-Function        Get-MsrcSecurityUpdate                             1.1        MsrcSecurityUpdates
+CommandType Name                            Version Source
+----------- ----                            ------- ------
+Function    Get-MsrcCvrfCVESummary          1.3     MsrcSecurityUpdates
+Function    Get-MsrcCvrfDocument            1.3     MsrcSecurityUpdates
+Function    Get-MsrcCvrfExploitabilityIndex 1.3     MsrcSecurityUpdates
+Function    Get-MsrcSecurityBulletinHtml    1.3     MsrcSecurityUpdates
+Function    Get-MsrcSecurityUpdate          1.3     MsrcSecurityUpdates
+Function    Set-MSRCApiKey                  1.3     MsrcSecurityUpdates
 ```
 
 ## Generating a HTML document of Monthly Updates
@@ -50,10 +52,10 @@ In this common scenario, the *Get-MsrcCvrfDocument* and *Get-MsrcSecurityBulleti
 ```Powershell
 ### Install the module from the PowerShell Gallery (must be run as Admin)
 Install-Module -Name MsrcSecurityUpdates
-$msrcAPIKey = "<your API key>"
-$monthOfInterest = "2016-Nov"
+Set-MSRCApiKey -ApiKey "<your API key>" -Verbose
+$monthOfInterest = '2016-Nov'
 
-Get-MsrcCvrfDocument -ID $monthOfInterest -ApiKey $msrcApiKey -Verbose | Get-MsrcSecurityBulletinHtml -Verbose | Out-File c:\temp\MSRCNovSecurityUpdates.html
+Get-MsrcCvrfDocument -ID $monthOfInterest -Verbose | Get-MsrcSecurityBulletinHtml -Verbose | Out-File c:\temp\MSRCNovSecurityUpdates.html
 ```
 
 ## Finding Mitigations and Workarounds
@@ -66,7 +68,7 @@ In this scenario, you can use the *Get-MsrcCvrfDocument* and extract the migrati
 Install-Module -Name MsrcSecurityUpdates
 
 ### Download the March CVRF as an object
-$cvrfDoc = Get-MsrcCvrfDocument -ApiKey 'YOUR API KEY GOES HERE' -ID 2017-Mar
+$cvrfDoc = Get-MsrcCvrfDocument -ID 2017-Mar
 
 ### Get the Remediations of Type 'Workaround' (0)
 $cvrfDoc.Vulnerability.Remediations | Where Type -EQ 0
@@ -82,30 +84,28 @@ $cvrfDoc.Vulnerability.Remediations | Where Type -EQ 2
 You'll find help via ``get-help`` for each cmdlet:
 
 ```Powershell
-get-help Get-MsrcSecurityUpdate
+Get-Help Get-MsrcSecurityUpdate
 
 NAME
     Get-MsrcSecurityUpdate
-    
+
 SYNOPSIS
     Get MSRC security updates
-    
-    
+
+
 SYNTAX
-    Get-MsrcSecurityUpdate -ApiKey <String> [<CommonParameters>]
-    
-    Get-MsrcSecurityUpdate -ApiKey <String> -Vulnerability <String> [<CommonParameters>]
-    
-    Get-MsrcSecurityUpdate -ApiKey <String> -Cvrf <String> [<CommonParameters>]
-    
-    Get-MsrcSecurityUpdate -ApiKey <String> -Year <Int32> [<CommonParameters>]
-    
-    Get-MsrcSecurityUpdate -ApiKey <String> [-After <DateTime>] [-Before <DateTime>] [<CommonParameters>]
-    
-    
+    Get-MsrcSecurityUpdate [<CommonParameters>]
+
+    Get-MsrcSecurityUpdate [-After <DateTime>] [-Before <DateTime>] [<CommonParameters>]
+
+    Get-MsrcSecurityUpdate -Year <Int32> [<CommonParameters>]
+
+    Get-MsrcSecurityUpdate -Vulnerability <String> [<CommonParameters>]
+
+
 DESCRIPTION
     Calls the CVRF Update API to get a list of security updates
-    
+
 
 RELATED LINKS
 
@@ -118,46 +118,89 @@ REMARKS
 ... as well as sample code with ``--examples``:
 
 ```Powershell
-get-help Get-MsrcSecurityUpdate -examples
+Get-Help Get-MsrcSecurityUpdate -examples
 
 NAME
     Get-MsrcSecurityUpdate
-    
+
 SYNOPSIS
     Get MSRC security updates
-    
+
     -------------------------- EXAMPLE 1 --------------------------
-    
-    PS C:\>#Get all the updates
-    Get-MsrcSecurityUpdate -ApiKey 'YOUR API KEY'
-    
+
+    PS C:\>Get-MsrcSecurityUpdate
+
+
+    Get all the updates
+
+
+
+
     -------------------------- EXAMPLE 2 --------------------------
-    
-    PS C:\>#Get all the updates containing Vulnerability CVE-2017-003
-    Get-MsrcSecurityUpdate -ApiKey 'YOUR API KEY' -Vulnerability CVE-2017-0003
-    
+
+    PS C:\>Get-MsrcSecurityUpdate -Vulnerability CVE-2017-0003
+
+
+    Get all the updates containing Vulnerability CVE-2017-003
+
+
+
+
     -------------------------- EXAMPLE 3 --------------------------
-    
-    PS C:\>#Get all the updates for the year 2017
-    Get-MsrcSecurityUpdate -ApiKey 'YOUR API KEY' -Year 2017
-    
+
+    PS C:\>Get-MsrcSecurityUpdate -Year 2017
+
+
+    Get all the updates for the year 2017
+
+
+
+
     -------------------------- EXAMPLE 4 --------------------------
-    
-    PS C:\>#Get all the updates for the CVRF document with ID of 2017-Jan
-    Get-MsrcSecurityUpdate -ApiKey 'YOUR API KEY' -Cvrf 2017-Jan
-    
+
+    PS C:\>Get-MsrcSecurityUpdate -Cvrf 2017-Jan
+
+
+    Get all the updates for the CVRF document with ID of 2017-Jan
+
+
+
+
     -------------------------- EXAMPLE 5 --------------------------
-    
-    PS C:\>#Get all the updates before January 1st, 2017
-    Get-MsrcSecurityUpdate -ApiKey 'YOUR API KEY' -Before 2017-01-01
-    
+
+    PS C:\>Get-MsrcSecurityUpdate -Before 2017-01-01
+
+
+    Get all the updates before January 1st, 2017
+
+
+
+
     -------------------------- EXAMPLE 6 --------------------------
-    
-    PS C:\>#Get all the updates after January 1st, 2017
-    Get-MsrcSecurityUpdate -ApiKey 'YOUR API KEY' -After 2017-01-01
-    
+
+    PS C:\>Get-MsrcSecurityUpdate -After 2017-01-01
+
+
+    Get all the updates after January 1st, 2017
+
+
+
+
     -------------------------- EXAMPLE 7 --------------------------
-    
-    PS C:\>#Get all the updates before January 1st, 2017 and after October 1st, 2016
-    Get-MsrcSecurityUpdate -ApiKey 'YOUR API KEY' -Before 2017-01-01 -After 2016-10-01
+
+    PS C:\>Get-MsrcSecurityUpdate -Before 2017-01-01 -After 2016-10-01
+
+
+    Get all the updates before January 1st, 2017 and after October 1st, 2016
+
+
+
+
+    -------------------------- EXAMPLE 8 --------------------------
+
+    PS C:\>Get-MsrcSecurityUpdate -After (Get-Date).AddDays(-60) -Before (Get-Date)
+
+
+    Get all updates between now and the last 60 days
+
 ```

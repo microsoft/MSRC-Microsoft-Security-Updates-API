@@ -57,7 +57,7 @@ Function Get-MsrcSecurityUpdate {
        Get all the updates after January 1st, 2017
 
     .EXAMPLE
-       Get-MsrcSecurityUpdate -ApiKey 'YOUR API KEY' -Before 2017-01-01 -After 2016-10-01
+       Get-MsrcSecurityUpdate -Before 2017-01-01 -After 2016-10-01
 
        Get all the updates before January 1st, 2017 and after October 1st, 2016
 

@@ -46,36 +46,36 @@ Process {
             [PSCustomObject] @{
                 FullProductName = $(
                     $ProductTree.FullProductName  | 
-                    Where { $_.ProductID -eq $id} | 
-                    Select -ExpandProperty Value
+                    Where-Object { $_.ProductID -eq $id} | 
+                    Select-Object -ExpandProperty Value
                 ) ;
                 KBArticle = $(
                     $v.Remediations | 
-                    Where { $_.ProductID -contains $id }| 
-                    Select -ExpandProperty Description  | 
-                    Select -ExpandProperty Value
+                    Where-Object { $_.ProductID -contains $id }| 
+                    Select-Object -ExpandProperty Description  | 
+                    Select-Object -ExpandProperty Value
                 ) ;
                 CVE = $v.CVE
                 Severity = $(
                     $v.Threats | 
-                    Where {$_.Type -eq 3 } | 
-                    Where { $_.ProductID -contains $id } | 
-                    Select -ExpandProperty Description | 
-                    Select -ExpandProperty Value
+                    Where-Object {$_.Type -eq 3 } | 
+                    Where-Object { $_.ProductID -contains $id } | 
+                    Select-Object -ExpandProperty Description | 
+                    Select-Object -ExpandProperty Value
                 ) ;
                 Impact = $(
                     $v.Threats | 
-                    Where {$_.Type -eq 0 } | 
-                    Where { $_.ProductID -contains $id } | 
-                    Select -ExpandProperty Description | 
-                    Select -ExpandProperty Value
+                    Where-Object {$_.Type -eq 0 } | 
+                    Where-Object { $_.ProductID -contains $id } | 
+                    Select-Object -ExpandProperty Description | 
+                    Select-Object -ExpandProperty Value
                 )
                 RestartRequired = $(
                     (
                     $v.Remediations | 
-                    Where { $_.ProductID -contains $id }|
-                    Select -ExpandProperty RestartRequired |
-                    Select Value
+                    Where-Object { $_.ProductID -contains $id }|
+                    Select-Object -ExpandProperty RestartRequired |
+                    Select-Object Value
                     ).Value | ForEach-Object {
                         if(-not($_)){
                             'Maybe'

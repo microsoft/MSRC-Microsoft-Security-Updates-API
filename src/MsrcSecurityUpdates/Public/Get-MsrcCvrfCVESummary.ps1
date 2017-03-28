@@ -32,6 +32,7 @@ Param (
 Begin {
     Function Get-MaxSeverity {
     [CmdletBinding()]
+    [OutputType('System.String')]
     Param($InputObject)
     Begin {}
     Process {
@@ -59,18 +60,18 @@ Process {
         [PSCustomObject]@{
             CVE = $v.CVE
             # Description = $(
-            #     ($v.Notes | Where { $_.Title -eq 'Description' }).Value
+            #     ($v.Notes | Where-Object { $_.Title -eq 'Description' }).Value
             # ) ;
             'Maximum Severity Rating' = $(
-                Get-MaxSeverity ($v.Threats | Where {$_.Type -eq 3 } ).Description.Value | Select -Unique
+                Get-MaxSeverity ($v.Threats | Where-Object {$_.Type -eq 3 } ).Description.Value | Select-Object -Unique
             ) ;
             'Vulnerability Impact' = $(
-                ($v.Threats | Where {$_.Type -eq 0 }).Description.Value | Select -Unique
+                ($v.Threats | Where-Object {$_.Type -eq 0 }).Description.Value | Select-Object -Unique
             ) ;
             'Affected Software' = $(
                 $v.ProductStatuses.ProductID | ForEach-Object {
                     $id = $_
-                    ($ProductTree.FullProductName | Where { $_.ProductID -eq $id}).Value
+                    ($ProductTree.FullProductName | Where-Object { $_.ProductID -eq $id}).Value
                 }
             ) ;
         }

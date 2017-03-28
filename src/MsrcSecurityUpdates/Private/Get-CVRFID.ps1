@@ -18,7 +18,7 @@ Process {
         try {
             if ($ID) {
                 (Invoke-RestMethod -Uri $url -Headers @{'Accept' = 'application/json' ; 'Api-Key' = $global:MSRCApiKey } -ErrorAction Stop).Value | 
-                Where { $_.ID -eq $ID }
+                Where-Object { $_.ID -eq $ID }
     
             } else {
                 ((Invoke-RestMethod -Uri $url -Headers @{'Accept' = 'application/json' ; 'Api-Key' = $global:MSRCApiKey } -ErrorAction Stop).Value).ID
