@@ -59,9 +59,9 @@ Process {
 
         [PSCustomObject]@{
             CVE = $v.CVE
-            # Description = $(
-            #     ($v.Notes | Where-Object { $_.Title -eq 'Description' }).Value
-            # ) ;
+            Description = $(
+                 ($v.Notes | Where-Object { $_.Title -eq 'Description' }).Value
+            ) ;
             'Maximum Severity Rating' = $(
                 Get-MaxSeverity ($v.Threats | Where-Object {$_.Type -eq 3 } ).Description.Value | Select-Object -Unique
             ) ;

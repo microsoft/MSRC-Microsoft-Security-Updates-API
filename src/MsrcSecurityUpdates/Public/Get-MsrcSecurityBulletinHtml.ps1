@@ -1,37 +1,21 @@
-function Get-MsrcSecurityBulletinHtml
-{
-#TODO - refactor the code used for populating the tables into functions
-    Param
-    (
-        <#
-        API Key for the MSRC CVRF API
-        To get an API key, visit https://portal.msrc.microsoft.com
-        #> 
-        [Parameter(Mandatory=$true, 
-                   ValueFromPipelineByPropertyName=$true)]
-        $Vulnerability,
+Function Get-MsrcSecurityBulletinHtml {
+[CmdletBinding()]
+Param(
 
-        <#
-        Get the CVRF document for the specified CVRF ID (ie. 2016-Aug)
-        #>
-        [Parameter(Mandatory=$true, 
-                   ValueFromPipelineByPropertyName=$true)]
-        $ProductTree,
+    [Parameter(Mandatory,ValueFromPipelineByPropertyName)]
+    $Vulnerability,
 
-        <#
-        Get the CVRF document for the specified CVRF ID (ie. 2016-Aug)
-        #>
-        [Parameter(Mandatory=$true, 
-                   ValueFromPipelineByPropertyName=$true)]
-        $DocumentTracking,
+    [Parameter(Mandatory,ValueFromPipelineByPropertyName)]
+    $ProductTree,
 
-        <#
-        Get the CVRF document for the specified CVRF ID (ie. 2016-Aug)
-        #>
-        [Parameter(Mandatory=$true, 
-                   ValueFromPipelineByPropertyName=$true)]
-        $DocumentTitle
-    )    
+
+    [Parameter(Mandatory,ValueFromPipelineByPropertyName)]
+    $DocumentTracking,
+
+    [Parameter(Mandatory,ValueFromPipelineByPropertyName)]
+    $DocumentTitle
+)    
+Begin {
 
     $htmlDocumentTemplate = @'
 <html>
@@ -231,7 +215,6 @@ damages so the foregoing limitation may not apply.</p>
 </html>
 '@ 
 
-    #region CVE Summary Table
     $cveSummaryRowTemplate = @'
 <tr>
      <td>{0}</td>
@@ -243,57 +226,6 @@ damages so the foregoing limitation may not apply.</p>
 '@
     $cveSummaryTableHtml = ''
 
-    foreach($vuln in $Vulnerability)
-    {
-        $SeverityValues = $vuln.Threats | Where-Object Type -EQ 3 | 
-          Select @{Name='Severity' ;Expression={$_.Description.Value}} -Unique |
-          Select -ExpandProperty Severity
-
-        if ($SeverityValues -contains 'Critical')
-        {
-            $maximumSeverity = 'Critical'
-        }
-        elseif ($SeverityValues -contains 'Important')
-        {
-            $maximumSeverity = 'Important'
-        }
-        elseif ($SeverityValues -contains 'Moderate')
-        {
-            $maximumSeverity = 'Moderate'
-        }
-        elseif ($SeverityValues -contains 'Low')
-        {
-            $maximumSeverity = 'Low'
-        }
-        else
-        {
-            Write-Warning "Could not determine the Maximum Severity from the Threats"
-            $maximumSeverity = 'Unknown'
-        } 
-        
-        $ImpactValues = $vuln.Threats | Where-Object Type -EQ 0 | ForEach-Object {$_.Description.Value} | Select-Object -Unique   
-
-        $AffectedSoftware = $vuln.ProductStatuses.ProductID | 
-        ForEach-Object {
-            $ProductTree.FullProductName | 
-            Where ProductID -EQ $PSItem | 
-            Select -ExpandProperty Value
-        } | Select -Unique
-
-        $vulnTableColumn = $vuln.CVE + "<br>" + "<a href=`"http://www.cve.mitre.org/cgi-bin/cvename.cgi?name=$($vuln.CVE)`">MITRE</a>" + "<br>" + "<a href=`"https://web.nvd.nist.gov/view/vuln/detail?vulnId=$($vuln.CVE)`">NVD</a>"
-
-        $cveSummaryTableHtml += $cveSummaryRowTemplate -f @(
-            $vulnTableColumn #TODO - make this an href
-            $vuln.Notes | Where Title -eq Description | Select -ExpandProperty Value
-            $maximumSeverity
-            $ImpactValues -join ',<br>'
-            $AffectedSoftware -join ',<br>'
-        )
-    }
-
-    #endregion
-
-    #region Exploitability Index Table
     $exploitabilityRowTemplate = @'
 <tr>
      <td>{0}</td>
@@ -305,29 +237,6 @@ damages so the foregoing limitation may not apply.</p>
 '@
 
     $exploitabilityIndexTableHtml = ''
-
-    foreach($vuln in $Vulnerability)
-    {
-        $ExploitStatusLatest = ''
-        $ExploitStatusOlder  = ''
-
-        $ExploitStatusThreat = $vuln.Threats | Where Type -EQ 1 | Select -Last 1
-        $ExploitStatus = Get-MsrcThreatExploitStatus -ExploitStatusString $ExploitStatusThreat.Description.Value        
-
-        $exploitabilityIndexTableHtml += $exploitabilityRowTemplate -f @(
-            $vuln.CVE #TODO - make this an href
-            $vuln.Title.Value
-            $ExploitStatus.LatestSoftwareRelease
-            $ExploitStatus.OlderSoftwareRelease
-            $ExploitStatus.DenialOfService           
-        )
-    }
-    
-    #endregion
-
-    #region Affected Software Table
-    
-
 
     $affectedSoftwareNameHeaderTemplate = @'
     <table class="affected_software" border=1 cellpadding=0 width="99%">
@@ -347,7 +256,6 @@ damages so the foregoing limitation may not apply.</p>
     </table>
 '@
 
-
     $affectedSoftwareRowTemplate = @'
     <tr>
          <td>{0}</td>
@@ -360,34 +268,110 @@ damages so the foregoing limitation may not apply.</p>
 
     $affectedSoftwareTableHtml = ''
     $affectedSoftwareDocumentHtml = ''
-    $affectedSoftware = Get-MsrcCvrfAffectedSoftware -Vulnerability $Vulnerability -ProductTree $ProductTree
+}
+Process {
 
-    foreach($productName in $($affectedSoftware.FullProductName | Sort-Object | Get-Unique ))
-    {
+    #region CVE Summary Table
+    $HT = @{
+        Vulnerability = $PSBoundParameters['Vulnerability']
+        ProductTree = $PSBoundParameters['ProductTree']
+    }
+
+    Get-MsrcCvrfCVESummary @HT | 
+    ForEach-Object {
+        $cveSummaryTableHtml += $cveSummaryRowTemplate -f @(
+            "$($_.CVE)<br><a href=`"http://www.cve.mitre.org/cgi-bin/cvename.cgi?name=$($_.CVE)`">MITRE</a><br><a href=`"https://web.nvd.nist.gov/view/vuln/detail?vulnId=$($_.CVE)`">NVD</a>"
+            $_.Description
+            $_.'Maximum Severity Rating'
+            $_.'Vulnerability Impact' -join ',<br>'
+            $_.'Affected Software' -join ',<br>'
+        )
+    }
+    #endregion
+
+    #region Exploitability Index Table
+
+    Get-MsrcCvrfExploitabilityIndex -Vulnerability $PSBoundParameters['Vulnerability'] | 
+    ForEach-Object {
+        $exploitabilityIndexTableHtml += $exploitabilityRowTemplate -f @(
+            $_.CVE #TODO - make this an href
+            $_.Title
+            $_.LatestSoftwareRelease
+            $_.OlderSoftwareRelease
+            'N/A' # was $ExploitStatus.DenialOfService           
+        )
+    }
+    #endregion
+
+    #region Affected Software Table
+
+    $affectedSoftware = Get-MsrcCvrfAffectedSoftware @HT
+
+    $affectedSoftware.FullProductName | 
+    Sort-Object -Unique | 
+    ForEach-Object {
+
+        $PN = $_
+     
         $affectedSoftwareTableHtml = ''
-        foreach($affectedSoftwareItem in $affectedSoftware | Where-Object {$_.FullProductName -eq $productName})
-        {        
+        
+        $affectedSoftware | 
+        Where-Object { $_.FullProductName -eq $PN } | 
+        ForEach-Object {
             $affectedSoftwareTableHtml += $affectedSoftwareRowTemplate -f @(
-                $affectedSoftwareItem.CVE
-                $( if (!$affectedSoftwareItem.KBArticle){"None"}else{$affectedSoftwareItem.KBArticle} )
-                $( if (!$affectedSoftwareItem.RestartRequired){"Unknown"}else{$affectedSoftwareItem.RestartRequired} )
-                $( if (!$affectedSoftwareItem.Severity){"Unknown"}else{$affectedSoftwareItem.Severity} )
-                $( if (!$affectedSoftwareItem.Impact){"Unknown"}else{$affectedSoftwareItem.Impact} )
+                $_.CVE,
+                $(
+                    if (-not($_.KBArticle)) {
+                        'None'
+                    } else {
+                        $_.KBArticle | ForEach-Object {
+                            '<a href="https://catalog.update.microsoft.com/v7/site/Search.aspx?q={0}">{0}</a><br>' -f  $_
+                        }
+                    }
+                ),
+                $(
+                    if (-not($_.RestartRequired)) {
+                        'Unknown'
+                    } else{
+                        $_.RestartRequired | ForEach-Object {
+                            '{0}<br>' -f $_
+                        }
+                    }
+                ),
+                $(
+                    if (-not($_.Severity)) {
+                        'Unknown'
+                    } else {
+                        $_.Severity | ForEach-Object {
+                            '{0}<br>' -f $_
+                        }
+                    }
+                ),
+                $(
+                    if (-not($_.Impact)) {
+                        'Unknown'
+                    } else { 
+                        $_.Impact | ForEach-Object {
+                            '{0}<br>' -f $_
+                        }
+                    }
+                )
             )
         }
         $affectedSoftwareDocumentHtml += $affectedSoftwareNameHeaderTemplate -f @(
-            $ProductName
+            $PN
             $affectedSoftwareTableHtml
         )
     }
-
     #endregion
 
-    Write-Output ($htmlDocumentTemplate -f @(
-        $DocumentTitle.Value          #Title
-        $cveSummaryTableHtml          #CVE Summary Rows
-        $exploitabilityIndexTableHtml #Expoitability Rows
-        $affectedSoftwareDocumentHtml    #Affected Software Rows
-    ))
+    $htmlDocumentTemplate -f @(
+        $DocumentTitle.Value           # Title
+        $cveSummaryTableHtml           # CVE Summary Rows
+        $exploitabilityIndexTableHtml  # Expoitability Rows
+        $affectedSoftwareDocumentHtml  # Affected Software Rows
+    )
 
+}
+End {}
 }

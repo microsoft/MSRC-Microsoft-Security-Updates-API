@@ -50,33 +50,32 @@ Process {
                     Select-Object -ExpandProperty Value
                 ) ;
                 KBArticle = $(
-                    $v.Remediations | 
-                    Where-Object { $_.ProductID -contains $id }| 
-                    Select-Object -ExpandProperty Description  | 
-                    Select-Object -ExpandProperty Value
+                    (
+                        $v.Remediations | 
+                        Where-Object { $_.ProductID -contains $id } |
+                        Where-Object { $_.Type -eq 2 }
+                    ).Description.Value
                 ) ;
                 CVE = $v.CVE
                 Severity = $(
-                    $v.Threats | 
-                    Where-Object {$_.Type -eq 3 } | 
-                    Where-Object { $_.ProductID -contains $id } | 
-                    Select-Object -ExpandProperty Description | 
-                    Select-Object -ExpandProperty Value
+                    (
+                        $v.Threats | 
+                        Where-Object {$_.Type -eq 3 } | 
+                        Where-Object { $_.ProductID -contains $id }
+                    ).Description.Value
                 ) ;
                 Impact = $(
-                    $v.Threats | 
-                    Where-Object {$_.Type -eq 0 } | 
-                    Where-Object { $_.ProductID -contains $id } | 
-                    Select-Object -ExpandProperty Description | 
-                    Select-Object -ExpandProperty Value
+                    (
+                        $v.Threats | 
+                        Where-Object {$_.Type -eq 0 } | 
+                        Where-Object { $_.ProductID -contains $id }
+                    ).Description.Value
                 )
                 RestartRequired = $(
                     (
-                    $v.Remediations | 
-                    Where-Object { $_.ProductID -contains $id }|
-                    Select-Object -ExpandProperty RestartRequired |
-                    Select-Object Value
-                    ).Value | ForEach-Object {
+                        $v.Remediations | 
+                        Where-Object { $_.ProductID -contains $id }
+                    ).RestartRequired.Value | ForEach-Object {
                         if(-not($_)){
                             'Maybe'
                         } else {
