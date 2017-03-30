@@ -12,7 +12,7 @@
 RootModule = 'MsrcSecurityUpdates.psm1'
 
 # Version number of this module.
-ModuleVersion = '1.4'
+ModuleVersion = '1.5'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -76,23 +76,16 @@ PowerShellVersion = '3.0'
 # NestedModules = @()
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-FunctionsToExport = @(
-'Get-MsrcCvrfDocument'
-'Get-MsrcCvrfAffectedSoftware'
-'Get-MsrcCvrfProductVulnerability'
-'Get-MsrcSecurityBulletinHtml'
-'Get-MsrcSecurityUpdate'
-'Get-MsrcVulnerabilityReportHtml'
-)
+FunctionsToExport = '*'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
-CmdletsToExport = @()
+CmdletsToExport = '*'
 
 # Variables to export from this module
 VariablesToExport = '*'
 
 # Aliases to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no aliases to export.
-AliasesToExport = @()
+AliasesToExport = '*'
 
 # DSC resources to export from this module
 # DscResourcesToExport = @()
@@ -112,7 +105,7 @@ PrivateData = @{
         Tags = @('MSRC','Security', 'Updates','Microsoft', 'CVRF')
 
         # A URL to the license for this module.
-        LicenseUri = 'https://github.com/Microsoft/MSRC-Microsoft-Security-Updates-API/blob/master/LICENSE'
+        LicenseUri = 'https://github.com/Microsoft/MSRC-Microsoft-Security-Updates-API/blob/master/LICENSE.md'
 
         # A URL to the main website for this project.
         ProjectUri = 'https://github.com/Microsoft/MSRC-Microsoft-Security-Updates-API'
@@ -126,6 +119,7 @@ February 9, 2017 - Initial release to https://github.com/Microsoft/MSRC-Microsof
 March 8, 2017 - Refactored into a script module and added basic Pester tests
 March 14, 2017 - Added some error handling for when fields are not in the returned CVRF api reply
 March 28, 2017 - Added Get-MsrcVulnerabilityReportHtml
+March 30, 2017 - PR from MVP (https://github.com/p0w3rsh3ll) Split module into public and private functions, etc 
 '@
 
     } # End of PSData hashtable
