@@ -62,7 +62,7 @@ You can also build a modified object to pass into *Get-MsrcSecurityBulletinHtml*
 ```Powershell
 Import-Module -Name MsrcSecurityUpdates -Force
 
-$msrcApiKey = '<your API key>'
+Set-MSRCApiKey -ApiKey "<your API key>" -Verbose
 $monthOfInterest = "2017-Mar"
 
 $CVEsWanted = @(
