@@ -19,13 +19,14 @@ Major  Minor  Build  Revision
 5      1      14393  693     
 ```
 
-Once you meet the above conditions, add the following to your Powershell script:
+Once you meet the above conditions, add the following to your Powershell script to load:
 
 ```Powershell
 Install-Module MSRCSecurityUpdates -Force 
 Import-Module MSRCSecurityUpdates
 ````
 
+Remember, if you are installing from the Powershell Gallery, you **must be run as Administrator and running Powershell v3 or higher**!
 
 ## Hello, world!
 See *MsrcSecurityUpdates.tests.ps1* which exercises all of the functions.
@@ -63,7 +64,7 @@ You can also build a modified object to pass into *Get-MsrcSecurityBulletinHtml*
 
 ```Powershell
 Install-Module -Name msrcsecurityupdates -force
-Import-Module -Name MsrcSecurityUpdates -Force
+Import-Module -Name msrcsecurityupdates -Force
 
 Set-MSRCApiKey -ApiKey "<your API key>" -Verbose
 $monthOfInterest = "2017-Mar"
