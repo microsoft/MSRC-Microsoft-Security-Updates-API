@@ -23,6 +23,7 @@ Once you meet the above conditions, add the following to your Powershell script:
 
 ```Powershell
 Install-Module MSRCSecurityUpdates -Force 
+Import-Module MSRCSecurityUpdates
 ````
 
 
@@ -51,18 +52,20 @@ In this common scenario, the *Get-MsrcCvrfDocument* and *Get-MsrcSecurityBulleti
 
 ```Powershell
 ### Install the module from the PowerShell Gallery (must be run as Admin)
-Install-Module -Name MsrcSecurityUpdates
+Install-Module -Name msrcsecurityupdates -force
+Import-module msrcsecurityupdates
 Set-MSRCApiKey -ApiKey "<your API key>" -Verbose
-$monthOfInterest = '2016-Nov'
+$monthOfInterest = '2017-Apr'
 
-Get-MsrcCvrfDocument -ID $monthOfInterest -Verbose | Get-MsrcSecurityBulletinHtml -Verbose | Out-File c:\temp\MSRCNovSecurityUpdates.html
+Get-MsrcCvrfDocument -ID $monthOfInterest -Verbose | Get-MsrcSecurityBulletinHtml -Verbose | Out-File c:\temp\MSRCAprilSecurityUpdates.html
 ```
 You can also build a modified object to pass into *Get-MsrcSecurityBulletinHtml*. This allows more cusomization of the report being generated. In this example, the generated report will only have the wanted CVE's included:
 
 ```Powershell
+Install-Module -Name msrcsecurityupdates -force
 Import-Module -Name MsrcSecurityUpdates -Force
 
-$msrcApiKey = '<your API key>'
+Set-MSRCApiKey -ApiKey "<your API key>" -Verbose
 $monthOfInterest = "2017-Mar"
 
 $CVEsWanted = @(
