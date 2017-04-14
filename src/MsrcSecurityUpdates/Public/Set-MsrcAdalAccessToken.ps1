@@ -1,133 +1,36 @@
-Function Get-MsrcCvrfProductVulnerability {
-<#
-    .SYNOPSIS
-        Get product vulnerability details from a CVRF document
+#Requires -Version 3.0
 
-    .DESCRIPTION
-       CVRF documents next products into several places, including:
-       -Vulnerabilities
-       -Threats
-       -Remediations
-       -Product Tree
-       This function gathers the details for each product identified in a CVRF document.
-       It provides a list of Threats, Remediations and CVSS Score Sets for each product.
-
-    .PARAMETER Vulnerability
-
-    .PARAMETER ProductTree
-
-    .PARMETER DocumentTracking
-
-    .PARAMETER DocumentTitle
-
-    .EXAMPLE
-        Get-MsrcCvrfDocument -ID 2016-Nov | Get-MsrcCvrfProductVulnerability
-
-        Get product vulnerability details from a CVRF document using the pipeline   
-
-    .EXAMPLE
-        $cvrfDocument = Get-MsrcCvrfDocument -ID 2016-Nov
-        Get-MsrcCvrfProductVulnerability -Vulnerability $cvrfDocument.Vulnerability -ProductTree $cvrfDocument.ProductTree -DocumentTracking $cvrfDocument.DocumentTracking -DocumentTitle $cvrfDocument.DocumentTitle
-
-        Get product vulnerability details from a CVRF document using a variable and parameters
-
-#>        
-    Param (
-
-    [Parameter(Mandatory,ValueFromPipelineByPropertyName)]
-    $Vulnerability,
-
-    [Parameter(Mandatory,ValueFromPipelineByPropertyName)]
-    $ProductTree,
-
-    [Parameter(Mandatory,ValueFromPipelineByPropertyName)]
-    $DocumentTracking,
-
-
-    [Parameter(Mandatory,ValueFromPipelineByPropertyName)]
-    $DocumentTitle
-)
+Function Set-MSRCAdalAccessToken {
 Begin {}
 Process {
+    
+    $authority = 'https://login.windows.net/microsoft.onmicrosoft.com/'
 
-    $ProductTree.Branch.Items | 
-    ForEach-Object {
-        $b = $_
+    $authContext = New-Object Microsoft.IdentityModel.Clients.ActiveDirectory.AuthenticationContext($authority)
 
-        $b.Items | ForEach-Object {
+    $rUri = New-Object System.Uri -ArgumentList 'https://msrc-api-powershell'
 
-            # $CvrfRelatedProducts += [PSCustomObject]@{
-            [PSCustomObject]@{
-                CvrfAlias   = $DocumentTracking.Identification.Alias.Value ;
-                CvrfTitle   = $DocumentTitle.Value ;
-                BranchName  = $b.Name ;
-                ProductName = $_.Value ;
-                ProductID   = $_.ProductID ;
-            }
-        }
+    $promptBehavior = [Microsoft.IdentityModel.Clients.ActiveDirectory.PromptBehavior]::Auto
 
-    } | 
-    ForEach-Object {
+    $ResourceId = 'https://msrc-api-prod.azurewebsites.net'
 
-        $Remediations  = $Threats = $CVSSScoreSets = @()
-        $MaximumSeverity = $RestartRequired = $null
-        $o = $_
+    $ClientId = 'c7fe3b9e-4d97-462d-ae1b-c16e679be355'
 
-        $Vulnerability | ForEach-Object {
+    $authResult = $authContext.AcquireToken($ResourceId, $ClientId, $rUri,$promptBehavior)
 
-            $v = $_
+	$global:MSRCAdalAccessToken = $authResult
+    Write-Verbose -Message "Successfully set your Access Token required by cmdlets of this module.    Calls to the MSRC APIs will now use your access token."
 
-            $v.Remediations | Where-Object {$_.ProductID -Contains $o.ProductID } | ForEach-Object {
+    # we also set other shared variables
+    $global:msrcApiUrl     = 'https://api.msrc.microsoft.com'
+    Write-Verbose -Message "Successfully defined a msrcApiUrl global variable that points to $($global:msrcApiUrl)"
 
-                $_ | Add-Member -NotePropertyName VulnerabilityCVE   -NotePropertyValue $v.CVE -Force
-                $_ | Add-Member -NotePropertyName VulnerabilityTitle -NotePropertyValue $v.Title.Value -Force
-                $Remediations += $_
-            }
+    $global:msrcApiVersion = 'api-version=2016-08-01'
+    Write-Verbose -Message "Successfully defined a msrcApiVersion global variable that points to $($global:msrcApiVersion)"
 
-             $v.Threats | Where-Object { $_.ProductID -Contains $ot.ProductID } | ForEach-Object {
-
-                $_ | Add-Member -NotePropertyName VulnerabilityCVE   -NotePropertyValue $v.CVE -Force
-                $_ | Add-Member -NotePropertyName VulnerabilityTitle -NotePropertyValue $v.Title.Value -Force
-                $Threats += $_
-             }
-
-             $v.CVSSScoreSets | Where-Object {$_.ProductID -Contains $o.ProductID } | ForEach-Object {
-                $_ | Add-Member -NotePropertyName VulnerabilityCVE   -NotePropertyValue $v.CVE -Force
-                $_ | Add-Member -NotePropertyName VulnerabilityTitle -NotePropertyValue $v.Title.Value -Force
-                $CVSSScoreSets += $_
-             }
-
-             $o | Add-Member -NotePropertyName Remediations  -NotePropertyValue $Remediations  -Force
-             $o | Add-Member -NotePropertyName Threats       -NotePropertyValue $Threats       -Force
-             $o | Add-Member -NotePropertyName CVSSScoreSets -NotePropertyValue $CVSSScoreSets -Force
-             
-        }
-
-        $MaximumSeverity = Switch (
-            (
-            $v.Threats | 
-            Where-Object {$_.ProductID -Contains $o.ProductID } |
-            Where-Object {$_.Type -eq 3 } 
-            ).Description.Value | Select-Object -Unique
-        ) {
-            'Critical'  { 'Critical'  ; break }
-            'Important' { 'Important' ; break }
-            'Moderate'  { 'Moderate'  ; break }
-            'Low'       { 'Low'       ; break }
-            default { 'Unkwown'}
-        }
-
-        $o | Add-Member -NotePropertyName MaximumSeverity -NotePropertyValue $MaximumSeverity -Force
-
-        $RestartRequired = Switch ($Vulnerability.Remediations.RestartRequired.Value) {
-            'Yes'   { 'Yes'   ; break }
-            'Maybe' { 'Maybe' ; break }
-            default { 'Unknown' }
-        }
-
-        $o | Add-Member -NotePropertyName RestartRequired -NotePropertyValue $RestartRequired -Force
-
-        $o
+    if ($global:MSRCApiKey)
+    {
+        Remove-Variable -Name MSRCApiKey -Scope Global
     }
 }
 End {}
@@ -135,8 +38,8 @@ End {}
 # SIG # Begin signature block
 # MIIkYQYJKoZIhvcNAQcCoIIkUjCCJE4CAQExDzANBglghkgBZQMEAgEFADB5Bgor
 # BgEEAYI3AgEEoGswaTA0BgorBgEEAYI3AgEeMCYCAwEAAAQQH8w7YFlLCE63JNLG
-# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCCaoXAF6xwzt5KZ
-# 1igMQXMmxle0pY5T6fX6xsskrtgiBaCCDZMwggYRMIID+aADAgECAhMzAAAAjoeR
+# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCCdhgO09b0Q3kKw
+# 7O6egytqVfOyWVpCU+hIPjOpi9uRc6CCDZMwggYRMIID+aADAgECAhMzAAAAjoeR
 # pFcaX8o+AAAAAACOMA0GCSqGSIb3DQEBCwUAMH4xCzAJBgNVBAYTAlVTMRMwEQYD
 # VQQIEwpXYXNoaW5ndG9uMRAwDgYDVQQHEwdSZWRtb25kMR4wHAYDVQQKExVNaWNy
 # b3NvZnQgQ29ycG9yYXRpb24xKDAmBgNVBAMTH01pY3Jvc29mdCBDb2RlIFNpZ25p
@@ -214,21 +117,21 @@ End {}
 # bjEoMCYGA1UEAxMfTWljcm9zb2Z0IENvZGUgU2lnbmluZyBQQ0EgMjAxMQITMwAA
 # AI6HkaRXGl/KPgAAAAAAjjANBglghkgBZQMEAgEFAKCCAREwGQYJKoZIhvcNAQkD
 # MQwGCisGAQQBgjcCAQQwHAYKKwYBBAGCNwIBCzEOMAwGCisGAQQBgjcCARUwLwYJ
-# KoZIhvcNAQkEMSIEIFxM+vzEu5eU1vg/4J/Ax0S8YBN+Ta5XPi5i5BoGohPSMIGk
+# KoZIhvcNAQkEMSIEIA8IpkB//o+ao5wrX2LXv3FJ34UQgaH+5eOmL6wdvyCaMIGk
 # BgorBgEEAYI3AgEMMYGVMIGSoEyASgBNAHMAcgBjAFMAZQBjAHUAcgBpAHQAeQBV
 # AHAAZABhAHQAZQBzACAAUABvAHcAZQByAFMAaABlAGwAbAAgAE0AbwBkAHUAbABl
 # oUKAQGh0dHBzOi8vZ2l0aHViLmNvbS9NaWNyb3NvZnQvTVNSQy1NaWNyb3NvZnQt
-# U2VjdXJpdHktVXBkYXRlcy1BUEkwDQYJKoZIhvcNAQEBBQAEggEAjg1J9flt5gq9
-# eXegkTPWyf0R0AhruK3y2kXfc4CDKDdj8w3MW2bK/ym4soebgtjuPbUcfPPtoVY4
-# P1TfEXt+YVsiWwubZxsYxtJuHmvGAD1MadMvnmnd9B8vW4cASW0tk8mSTDlma98H
-# rxRtgqGkRtn8BLbjVY/AjD0SEsgR4ai72azyfn9PyfQJ007gstzKaurI7kt5Ejkl
-# sYEx/W1zD4HlcxaHIzZ+jsJNVZPauToTKAdLJF+1zaXxXUVyh+FDfk9RNn4OvebP
-# WUG9k6454TfDX2I6D4Fwfgj3RNLsYIKY+LX2ELOEL3T3zTP1vqc6lUaib90UnIih
-# 69Bdas4QLaGCE0owghNGBgorBgEEAYI3AwMBMYITNjCCEzIGCSqGSIb3DQEHAqCC
+# U2VjdXJpdHktVXBkYXRlcy1BUEkwDQYJKoZIhvcNAQEBBQAEggEAyFORdBxvCxt/
+# 6d5YyfLX6lG5/xu4iukXPlyvLdYIVtEIuO3cP0HYvSNVcegpbYu4zxNpQQ5pFPyb
+# E7KvGdZjQ94e3dg+pPTQ3cNkJgO2OFsmxX81Yjk3jbEzQsMz5dExsZoRySHB/ZkZ
+# 2LIj/VmDnkp9dI/wBkPEA0w0viRnCEoByegOfwYqOuWOgUQFpu+c8qB6nqm0QbiW
+# hmUY69/QR5FgQnOesLEvBUpMiduUrAh/n4AlMs7HPSL0/R97DII27Y9SMXXALJFj
+# IaMthrovaselcIIrgU9BHtw7gVYa3tLlzgwPNB1S18H4VsaLhJMbzt41cspQAeV/
+# JcFFmlnPUqGCE0owghNGBgorBgEEAYI3AwMBMYITNjCCEzIGCSqGSIb3DQEHAqCC
 # EyMwghMfAgEDMQ8wDQYJYIZIAWUDBAIBBQAwggE9BgsqhkiG9w0BCRABBKCCASwE
-# ggEoMIIBJAIBAQYKKwYBBAGEWQoDATAxMA0GCWCGSAFlAwQCAQUABCB+zKsNx5ml
-# 67bgAT3MDZTadMsIvlj3ECR8rDw9bznH0QIGWNU3HQLkGBMyMDE3MDQxMzE4MDgz
-# MS4zMjhaMAcCAQGAAgH0oIG5pIG2MIGzMQswCQYDVQQGEwJVUzETMBEGA1UECBMK
+# ggEoMIIBJAIBAQYKKwYBBAGEWQoDATAxMA0GCWCGSAFlAwQCAQUABCD9VjKEO2vV
+# ulruFXjD2Xq7o3Uzi+u+2hS2Utt7KSqFRAIGWNU3HQLiGBMyMDE3MDQxMzE4MDgz
+# MC42MDVaMAcCAQGAAgH0oIG5pIG2MIGzMQswCQYDVQQGEwJVUzETMBEGA1UECBMK
 # V2FzaGluZ3RvbjEQMA4GA1UEBxMHUmVkbW9uZDEeMBwGA1UEChMVTWljcm9zb2Z0
 # IENvcnBvcmF0aW9uMQ0wCwYDVQQLEwRNT1BSMScwJQYDVQQLEx5uQ2lwaGVyIERT
 # RSBFU046QjFCNy1GNjdGLUZFQzIxJTAjBgNVBAMTHE1pY3Jvc29mdCBUaW1lLVN0
@@ -315,17 +218,17 @@ End {}
 # BAgTCldhc2hpbmd0b24xEDAOBgNVBAcTB1JlZG1vbmQxHjAcBgNVBAoTFU1pY3Jv
 # c29mdCBDb3Jwb3JhdGlvbjEmMCQGA1UEAxMdTWljcm9zb2Z0IFRpbWUtU3RhbXAg
 # UENBIDIwMTACEzMAAACxcRN533X2NcgAAAAAALEwDQYJYIZIAWUDBAIBBQCgggEy
-# MBoGCSqGSIb3DQEJAzENBgsqhkiG9w0BCRABBDAvBgkqhkiG9w0BCQQxIgQgEPkP
-# ZbfPfGzuB3iN4ztJnvSWkzszpNsdrea+zzaoPjYwgeIGCyqGSIb3DQEJEAIMMYHS
+# MBoGCSqGSIb3DQEJAzENBgsqhkiG9w0BCRABBDAvBgkqhkiG9w0BCQQxIgQgMpOP
+# u0/dnpfKXdePDbWjJ/FwIZmiyCo7pR1rznpjCWUwgeIGCyqGSIb3DQEJEAIMMYHS
 # MIHPMIHMMIGxBBQ6ut+TKGXketPno/bip0RuWKpT0jCBmDCBgKR+MHwxCzAJBgNV
 # BAYTAlVTMRMwEQYDVQQIEwpXYXNoaW5ndG9uMRAwDgYDVQQHEwdSZWRtb25kMR4w
 # HAYDVQQKExVNaWNyb3NvZnQgQ29ycG9yYXRpb24xJjAkBgNVBAMTHU1pY3Jvc29m
 # dCBUaW1lLVN0YW1wIFBDQSAyMDEwAhMzAAAAsXETed919jXIAAAAAACxMBYEFBem
-# AORKWsegOZVKeRg4Lr+QpKAPMA0GCSqGSIb3DQEBCwUABIIBACXaSmqt0/QhVJrF
-# MirNPxvh6WQwZYNHiF5/ldCgrLXj/3I0v1so2gBg6s5Q6a3nAz4tyOVtt5QSqU5f
-# b1G+bQpo1M0Va1DtbU7CHaqRmK8x2zVSD2OWRLRp5+6Qc9FP0mgtuu3jdLAOAvTB
-# a0TZQbVaOBxH4HyIJajvwob6P2EOC39IpN7WpewBwhcwwnkpcAMcLw8MCbg7fBgb
-# bOKwXm17OWWD1pHTYnUWHoLHTbQEX1YAuwpyC9TneHUO7TiB/KSMYxtIJKASNdBD
-# 6o+OnOmYLNjyGY/7igeaQlZr8RXJhUng8M5MtKPbj8lwQdEPecRwnsTeEeRPIoH5
-# vbFpPhY=
+# AORKWsegOZVKeRg4Lr+QpKAPMA0GCSqGSIb3DQEBCwUABIIBAKJL2X2DtwSU5Z+Y
+# OhP3GHet7O5Phts3plzKwUZDAQvce5UB5bWJUJ46kIB1qo46KFjJKiG7Km91BEDq
+# SHOspmQHABz+f297DlHRsjZ20kJ47OeGqFVFQ8sGXmfiR2Q31je3853L8KewCGdB
+# mvEYUipfzsQnnLP9RzyuLDwO5+nDhOyReUUXIsIBe4dnvMJT+jILmgQlI+DXXMuK
+# O/D3qp9Xkr+IHw+p0Ah/XrzYx7cRNujY0fZ5/vauDE0kN10onNvSzdGdaOie/1q6
+# i6EaubJ9rZhJtqceg9UEUpmF/oVT+jfclD88V2g8+2Jc8bwue7Tr/xtJ+YhhtfgW
+# /PhR4dw=
 # SIG # End signature block
