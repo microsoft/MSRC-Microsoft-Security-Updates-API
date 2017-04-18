@@ -9,7 +9,7 @@ You can clone this repo, or download the latest modules directly from the Micros
 
 ## Installing directly from Microsoft Powershell Gallery
 
-**Must be run as Administrator and running Powershell v3 or higher**  The Powershell version can be verified by checking the Major variable in the ``$psversiontable.PSVersion``  variable:
+**Must be run as Administrator and running Powershell v3 or higher**  With this solution, you do not need to download code from this Github repository. Instead, you can download the directly from the Microsoft Powershell Gallery.  The Powershell version can be verified by checking the Major variable in the ``$psversiontable.PSVersion``  variable:
 
 ```
 $psversiontable.PSVersion

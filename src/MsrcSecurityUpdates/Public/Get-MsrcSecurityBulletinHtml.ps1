@@ -46,7 +46,7 @@ Begin {
 
 <h1>Microsoft Security Bulletin Summary for {0}</h1>
 
-<p>This bulletin summary lists security bulletins released for {0}.</p>
+<p>This document is a summary for Microsoft security updates released for {0}.</p>
 
 <p>Microsoft also provides information to help customers prioritize
 monthly security updates with any non-security, high-priority updates that are being
@@ -66,7 +66,7 @@ Updates are issued, subscribe to <a href="http://go.microsoft.com/fwlink/?LinkId
 
 <h1>Executive Summaries</h1>
 
-<p>The following table summarizes the security bulletins for this month in order of severity.
+<p>The following table summarizes the security updates for this month in order of severity.
 For details on affected software, see the next section, Affected Software.
 </p>
 
