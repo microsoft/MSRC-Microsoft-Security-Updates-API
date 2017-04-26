@@ -1,6 +1,8 @@
 #Requires -Version 3.0
 
 Function Set-MSRCAdalAccessToken {
+[CmdletBinding()]
+Param()
 Begin {}
 Process {
     
