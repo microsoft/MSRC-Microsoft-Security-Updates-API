@@ -8,36 +8,43 @@ Param(
 Begin {
 }
 Process {
+
+    $url = '{0}/Updates?{1}' -f $global:msrcApiUrl,$global:msrcApiVersion
+
+    $Headers = @{
+    
+        'Accept' = 'application/json'
+    }
+
     if ($global:MSRCApiKey) {
-        $url = '{0}/Updates?{1}' -f $global:msrcApiUrl,$global:msrcApiVersion
-
-        try {
-            if ($ID) {
-                (Invoke-RestMethod -Uri $url -Headers @{'Accept' = 'application/json' ; 'Api-Key' = $global:MSRCApiKey } -ErrorAction Stop).Value | 
-                Where-Object { $_.ID -eq $ID }
+        
+        $Headers.Add('Api-Key',$global:MSRCApiKey)
     
-            } else {
-                ((Invoke-RestMethod -Uri $url -Headers @{'Accept' = 'application/json' ; 'Api-Key' = $global:MSRCApiKey } -ErrorAction Stop).Value).ID
-            }
-        } catch {
-            Throw $_
-        }
     } elseif ($global:MSRCAdalAccessToken) {
-        $url = '{0}/Updates?{1}' -f $global:msrcApiUrl,$global:msrcApiVersion
+      
+        $Headers.Add('Authorization',$($global:MSRCAdalAccessToken.CreateAuthorizationHeader()))
 
-         try {
-            if ($ID) {
-                (Invoke-RestMethod -Uri $url -Headers @{'Accept' = 'application/json' ; 'Authorization' = $global:MSRCAdalAccessToken.CreateAuthorizationHeader() } -ErrorAction Stop).Value | 
-                Where-Object { $_.ID -eq $ID }
-    
-            } else {
-                ((Invoke-RestMethod -Uri $url -Headers @{'Accept' = 'application/json' ; 'Authorization' = $global:MSRCAdalAccessToken.CreateAuthorizationHeader() } -ErrorAction Stop).Value).ID
-            }
-        } catch {
-            Throw $_
-        }        
     } else {
+    
         Throw 'You need to use Set-MSRCApiKey first to set your API Key'        
+    }
+
+    try {
+    
+        if ($ID) {
+
+            (Invoke-RestMethod -Uri $url -Headers $Headers -ErrorAction Stop).Value | 
+            Where-Object { $_.ID -eq $ID }
+    
+        } else {
+        
+            ((Invoke-RestMethod -Uri $url -Headers $Headers -ErrorAction Stop).Value).ID
+        }
+
+    } catch {
+        
+        Throw $_
+    
     }
 }
 End {}
