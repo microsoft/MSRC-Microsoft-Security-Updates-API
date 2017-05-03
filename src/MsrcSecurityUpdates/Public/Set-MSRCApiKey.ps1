@@ -4,7 +4,11 @@ Function Set-MSRCApiKey {
 [CmdletBinding(SupportsShouldProcess)]
 Param(
 	[Parameter(Mandatory)]
-	$ApiKey
+	$ApiKey,
+    [Parameter()]
+    [String]$Proxy,
+    [Parameter()]
+    [System.Management.Automation.PSCredential]$ProxyCredential
 )
 Begin {}
 Process {
@@ -20,6 +24,16 @@ Process {
         $global:msrcApiVersion = 'api-version=2016-08-01'
         Write-Verbose -Message "Successfully defined a msrcApiVersion global variable that points to $($global:msrcApiVersion)"
 
+        if ($ProxyCredential){
+            $global:msrcProxyCredential = $ProxyCredential
+            Write-Verbose -Message 'Successfully defined a msrcProxyCredential global variable'
+        }
+
+        if ($Proxy) {
+            $global:msrcProxy = $Proxy
+            Write-Verbose -Message "Successfully defined a msrcProxyCredential global variable that points to $($global:msrcProxy)"
+        }
+        
         if ($global:MSRCAdalAccessToken)
         {
             Remove-Variable -Name MSRCAdalAccessToken -Scope Global

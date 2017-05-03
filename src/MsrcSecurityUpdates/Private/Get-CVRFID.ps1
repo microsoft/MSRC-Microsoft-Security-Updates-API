@@ -8,21 +8,26 @@ Param(
 Begin {
 }
 Process {
-
-    $url = '{0}/Updates?{1}' -f $global:msrcApiUrl,$global:msrcApiVersion
-
-    $Headers = @{
-    
-        'Accept' = 'application/json'
+    $RestMethod = @{
+        uri = '{0}/Updates?{1}' -f $global:msrcApiUrl,$global:msrcApiVersion
+        Headers = @{
+            'Accept' = 'application/json'
+        }
+        ErrorAction = 'Stop'
     }
-
+    if ($global:msrcProxy){
+        $RestMethod.Add('Proxy' , $global:msrcProxy)
+    }
+    if ($global:msrcProxyCredential){
+        $RestMethod.Add('ProxyCredential',$global:msrcProxyCredential)
+    }
     if ($global:MSRCApiKey) {
         
-        $Headers.Add('Api-Key',$global:MSRCApiKey)
+        $RestMethod.Headers.Add('Api-Key',$global:MSRCApiKey)
     
     } elseif ($global:MSRCAdalAccessToken) {
       
-        $Headers.Add('Authorization',$($global:MSRCAdalAccessToken.CreateAuthorizationHeader()))
+        $RestMethod.Headers.Add('Authorization',$($global:MSRCAdalAccessToken.CreateAuthorizationHeader()))
 
     } else {
     
@@ -33,12 +38,12 @@ Process {
     
         if ($ID) {
 
-            (Invoke-RestMethod -Uri $url -Headers $Headers -ErrorAction Stop).Value | 
+            (Invoke-RestMethod @RestMethod).Value | 
             Where-Object { $_.ID -eq $ID }
     
         } else {
         
-            ((Invoke-RestMethod -Uri $url -Headers $Headers -ErrorAction Stop).Value).ID
+            ((Invoke-RestMethod @RestMethod).Value).ID
         }
 
     } catch {
