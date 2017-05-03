@@ -85,6 +85,24 @@ Describe 'Function: Get-MsrcCvrfDocument (calls the MSRC /cvrf API)' {
     }
 }
 
+Describe 'Function: Set-MSRCApiKey with proxy' {
+    if (-not ($global:msrcProxy)) {
+
+       Write-Warning -Message 'This test requires you to use Set-MSRCApiKey first to set your API Key and proxy details'
+       break
+    }
+
+    It 'Get-MsrcSecurityUpdate - all' {
+        Get-MsrcSecurityUpdate | 
+        Should Not BeNullOrEmpty 
+    }
+
+    It 'Get-MsrcCvrfDocument - 2016-Nov' {
+        Get-MsrcCvrfDocument -ID 2016-Nov | 
+        Should Not BeNullOrEmpty 
+    }
+}
+
 # May still work but not ready yet...
 # Describe 'Function: Get-MsrcSecurityBulletinHtml (generates the MSRC Security Bulletin HTML Report)' {
 #     It 'Security Bulletin Report' {
