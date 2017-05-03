@@ -174,15 +174,24 @@ Process {
                 $url = "{0}/Updates?{1}" -f $msrcApiUrl,$msrcApiVersion
             }
         }
-
-        $Headers = @{ 'Accept' = 'application/json' }
+        $RestMethod = @{
+            uri = $url
+            Headers = @{ 'Accept' = 'application/json' }
+            ErrorAction = 'Stop'
+        }
+        if ($global:msrcProxy){
+            $RestMethod.Add('Proxy' , $global:msrcProxy)
+        }
+        if ($global:msrcProxyCredential){
+            $RestMethod.Add('ProxyCredential' , $global:msrcProxyCredential)
+        }
         if ($global:MSRCAdalAccessToken)
         {
-            $Headers.Add('Authorization' , $global:MSRCAdalAccessToken.CreateAuthorizationHeader())
+            $RestMethod.Headers.Add('Authorization' , $global:MSRCAdalAccessToken.CreateAuthorizationHeader())
         }
         elseif ($global:MSRCApiKey)
         {
-            $Headers.Add('Api-Key' , $global:MSRCApiKey)
+            $RestMethod.Headers.Add('Api-Key' , $global:MSRCApiKey)
         }
         else
         {
@@ -190,9 +199,9 @@ Process {
         }
 
         try {
-            Write-Verbose -Message "Calling $($url)"
+            Write-Verbose -Message "Calling $($RestMethod.uri)"
 
-            $r = Invoke-RestMethod -Uri $url -Headers $Headers -ErrorAction Stop
+            $r = Invoke-RestMethod @RestMethod
 
         } catch {
             Write-Error "HTTP Get failed with status code $($_.Exception.Response.StatusCode): $($_.Exception.Response.StatusDescription)"       

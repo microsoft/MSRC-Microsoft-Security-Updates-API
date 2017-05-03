@@ -76,11 +76,7 @@ Process {
                         $v.Remediations | 
                         Where-Object { $_.ProductID -contains $id }
                     ).RestartRequired.Value | ForEach-Object {
-                        if(-not($_)){
-                            'Maybe'
-                        } else {
-                            "$($_)"
-                        }
+                        "$($_)"
                     }
                 ) ;
                 Supercedence = $(
@@ -88,11 +84,13 @@ Process {
                         $v.Remediations | 
                         Where-Object { $_.ProductID -contains $id }
                     ).Supercedence | ForEach-Object {
-                        if(-not($_)){
-                            'Unknown'
-                        } else {
-                            "$($_)"
-                        }
+                        "$($_)"
+                    }
+                ) ;
+                CvssScoreSet = $( [PSCustomObject] @{ 
+                        base=    ($v.CVSSScoreSets | Where-Object { $_.ProductID -contains $id } ).BaseScore;
+                        temporal=($v.CVSSScoreSets | Where-Object { $_.ProductID -contains $id } ).TemporalScore;;
+                        vector=  ($v.CVSSScoreSets | Where-Object { $_.ProductID -contains $id } ).Vector;
                     }
                 ) ;
             }

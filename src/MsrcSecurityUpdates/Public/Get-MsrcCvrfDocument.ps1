@@ -65,41 +65,54 @@ Begin {}
 Process {
 
     if ($global:MSRCApiKey){
-        
-        $url = '{0}/cvrf/{1}?{2}' -f $msrcApiUrl,$PSBoundParameters['ID'],$msrcApiVersion
-
-        $Header = @{ 'Api-Key' = $global:MSRCApiKey }
-
+        $RestMethod = @{
+            uri = '{0}/cvrf/{1}?{2}' -f $msrcApiUrl,$PSBoundParameters['ID'],$msrcApiVersion
+            Header = @{ 'Api-Key' = $global:MSRCApiKey }
+            ErrorAction = 'Stop'
+        }
+        if ($global:msrcProxy){
+            $RestMethod.Add('Proxy' , $global:msrcProxy)
+        }
+        if ($global:msrcProxyCredential){
+            $RestMethod.Add('ProxyCredential',$global:msrcProxyCredential)
+        }
         if ($AsXml) {
-            $Header.Add('Accept','application/xml')
+            $RestMethod.Header.Add('Accept','application/xml')
         } else {
-            $Header.Add('Accept','application/json')
+            $RestMethod.Header.Add('Accept','application/json')
         }
         try {
     
-            Write-Verbose -Message "Calling $($url)"
+            Write-Verbose -Message "Calling $($RestMethod.uri)"
 
-            Invoke-RestMethod -Uri $url -Headers $Header -ErrorAction Stop
+            Invoke-RestMethod @RestMethod
      
         } catch {
             Write-Error "HTTP Get failed with status code $($_.Exception.Response.StatusCode): $($_.Exception.Response.StatusDescription)"       
         }
     } 
     elseif ($global:MSRCAdalAccessToken) {
-        $url = '{0}/cvrf/{1}?{2}' -f $msrcApiUrl,$PSBoundParameters['ID'],$msrcApiVersion
-
-        $Header = @{ 'Authorization' = $global:MSRCAdalAccessToken.CreateAuthorizationHeader() }
-
+        $RestMethod = @{
+            uri = '{0}/cvrf/{1}?{2}' -f $msrcApiUrl,$PSBoundParameters['ID'],$msrcApiVersion
+            Header = @{ 'Authorization' = $global:MSRCAdalAccessToken.CreateAuthorizationHeader() }
+            ErrorAction = 'Stop'
+        }
+        if ($global:msrcProxy){
+            $RestMethod.Add('Proxy' , $global:msrcProxy)
+        }
+        if ($global:msrcProxyCredential){
+            $RestMethod.Add('ProxyCredential',$global:msrcProxyCredential)
+        }
         if ($AsXml) {
-            $Header.Add('Accept','application/xml')
+            $RestMethod.Header.Add('Accept','application/xml')
         } else {
-            $Header.Add('Accept','application/json')
+            $RestMethod.Header.Add('Accept','application/json')
         }
         try {
     
-            Write-Verbose -Message "Calling $($url)"
+            Write-Verbose -Message "Calling $($RestMethod.uri)"
 
-            Invoke-RestMethod -Uri $url -Headers $Header -ErrorAction Stop
+            Invoke-RestMethod @RestMethod
      
         } catch {
             Write-Error "HTTP Get failed with status code $($_.Exception.Response.StatusCode): $($_.Exception.Response.StatusDescription)"       
