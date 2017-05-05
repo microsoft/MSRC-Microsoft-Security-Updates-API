@@ -2,6 +2,7 @@
 # Import module would only work if the module is found in standard locations
 # Import-Module -Name MsrcSecurityUpdates -Force
 Import-Module .\MsrcSecurityUpdates.psd1 -Verbose -Force
+Set-MSRCApiKey -ApiKey "API KEY PLACEHOLDER" -Verbose
 
 if (-not ($global:MSRCApiKey)) {
 
