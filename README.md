@@ -10,6 +10,9 @@ To see information about these, please view the README.md in the relevant folder
 # Background
 Security bulletins are being replaced with the industry standard CVRF report type. View our [blog post](https://blogs.technet.microsoft.com/msrc/2016/11/08/furthering-our-commitment-to-security-updates/) for more info. Please use the [Security Updates Guide](https://portal.msrc.microsoft.com/en-us/security-guidance) to view vulnerabilities, or use this project to help automate Microsoft's vulnerability reporting & automation within your organization.
 
+# API Keys
+The Security Updates API requires an API key.  To obtain an API key please visit the [Security Updates Guide](https://portal.msrc.microsoft.com/en-us/security-guidance).  For help using the Security Updates Guide please visit the [Security Updates Guide Community Forum](https://social.technet.microsoft.com/Forums/security/en-us/home?forum=securityupdateguide).
+
 # Change Log
 
 **March 14, 2017** - v1.2 – Minor changes to Powershell module to fix a CVRF->Powershell object conversion issue. Republished new Powershell module to [the Microsoft Powershell Gallery](https://www.powershellgallery.com/packages/MsrcSecurityUpdates). 
