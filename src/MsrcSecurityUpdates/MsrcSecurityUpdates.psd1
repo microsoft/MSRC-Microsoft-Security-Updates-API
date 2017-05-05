@@ -12,7 +12,7 @@
 RootModule = 'MsrcSecurityUpdates.psm1'
 
 # Version number of this module.
-ModuleVersion = '1.6.3'
+ModuleVersion = '1.6.4'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -127,6 +127,7 @@ April 5, 2017 - Added ability to use Azure AD tokens, the module now supports ca
 April 18, 2017 - Small HTML change to Get-MsrcSecurityBulletinHtml.ps1
 April 28, 2017 - Bug fixes and some refactoring
 May 3, 2017 - Added Proxy support, Updates to Get-MsrcVulnerabilityReportHtml
+May 5, 2017 - Further updates to Get-MsrcVulnerabilityReportHtml
 '@
 
     } # End of PSData hashtable
