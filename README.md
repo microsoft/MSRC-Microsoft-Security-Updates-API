@@ -1,14 +1,25 @@
 # Welcome
-This project serves to help developers quickly start processing data from the Microsoft Security Updates API (https://portal.msrc.microsoft.com/en-us/developer)
+Microsoft provides an API for getting security update details using [Common Vulnerability Reporting Format](http://www.icasi.org/cvrf/). View our [blog post](https://blogs.technet.microsoft.com/msrc/2016/11/08/furthering-our-commitment-to-security-updates/) for more info. 
 
-It is comprised of two main components, documentation and sample code. You'll find OpenAPI/Swagger definitions in the docs folder, which you can use to generate your own client via swagger.io.  
+The [Security Updates Guide](https://portal.msrc.microsoft.com/en-us/security-guidance) is a great place to find security updates in a browser, and the Security Updates API is intended for doing automation around Microsoft security updates.
 
-If you are a PowerShell developer, you can install PowerShell cmdlets directly by adding ``import module MSRCsecurityupdates`` to your PowerShell script, or download the source code from this repo and tailor it according to your requirements. These PowerShell cmdlets abstract CVRF data into data structure tailored for common reporting & automation scenarios. 
+This project contains sample code and documentation for the Microsoft Security Updates API (https://portal.msrc.microsoft.com/en-us/developer), including:
+* source code for the [MsrcSecurityUpdates PowerShell module](https://www.powershellgallery.com/packages/MsrcSecurityUpdates)
+* sample code for using the [MsrcSecurityUpdates PowerShell module](https://www.powershellgallery.com/packages/MsrcSecurityUpdates)
+* OpenAPI/Swagger definition for the Microsoft Security Updates API
 
-To see information about these, please view the README.md in the relevant folders.
+# Getting the MsrcSecurityUpdates PowerShell Module
+Getting started with the MsrcSecurityUpdates module can be done like this:
+```PowerShell
+### Install the module from the PowerShell Gallery
+###  !! Requires PowerShell V5
+###  !! Install-Module requires admin permission
+Install-Module -Name MsrcSecurityUpdates
 
-# Background
-Security bulletins are being replaced with the industry standard CVRF report type. View our [blog post](https://blogs.technet.microsoft.com/msrc/2016/11/08/furthering-our-commitment-to-security-updates/) for more info. Please use the [Security Updates Guide](https://portal.msrc.microsoft.com/en-us/security-guidance) to view vulnerabilities, or use this project to help automate Microsoft's vulnerability reporting & automation within your organization.
+### Load the module
+Import-Module -Name MsrcSecurityUpdates
+```
+Once the module is loaded, check out our [PowerShell samples](https://github.com/Microsoft/MSRC-Microsoft-Security-Updates-API/blob/master/src/README.md)
 
 # API Keys
 The Security Updates API requires an API key.  To obtain an API key please visit the [Security Updates Guide](https://portal.msrc.microsoft.com/en-us/security-guidance).  For help using the Security Updates Guide please visit the [Security Updates Guide Community Forum](https://social.technet.microsoft.com/Forums/security/en-us/home?forum=securityupdateguide).
