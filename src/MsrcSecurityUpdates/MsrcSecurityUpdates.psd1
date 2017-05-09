@@ -12,7 +12,7 @@
 RootModule = 'MsrcSecurityUpdates.psm1'
 
 # Version number of this module.
-ModuleVersion = '1.6.5'
+ModuleVersion = '1.6.6'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
