@@ -12,7 +12,7 @@
 RootModule = 'MsrcSecurityUpdates.psm1'
 
 # Version number of this module.
-ModuleVersion = '1.6.4'
+ModuleVersion = '1.6.5'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -128,6 +128,7 @@ April 18, 2017 - Small HTML change to Get-MsrcSecurityBulletinHtml.ps1
 April 28, 2017 - Bug fixes and some refactoring
 May 3, 2017 - Added Proxy support, Updates to Get-MsrcVulnerabilityReportHtml
 May 5, 2017 - Further updates to Get-MsrcVulnerabilityReportHtml
+May 9, 2017 - Changed the string from "unknown" to "N/A" when a cvss score is null from the cvrf response
 '@
 
     } # End of PSData hashtable
