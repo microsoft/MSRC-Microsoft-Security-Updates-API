@@ -60,7 +60,7 @@ $monthOfInterest = '2017-Apr'
 
 Get-MsrcCvrfDocument -ID $monthOfInterest -Verbose | Get-MsrcSecurityBulletinHtml -Verbose | Out-File c:\temp\MSRCAprilSecurityUpdates.html
 ```
-You can also build a modified object to pass into *Get-MsrcSecurityBulletinHtml*. This allows more cusomization of the report being generated. In this example, the generated report will only have the wanted CVE's included:
+You can also build a modified object to pass into *Get-MsrcSecurityBulletinHtml*. This allows more customization of the report being generated. In this example, the generated report will only have the wanted CVE's included:
 
 ```Powershell
 Install-Module -Name msrcsecurityupdates -force
