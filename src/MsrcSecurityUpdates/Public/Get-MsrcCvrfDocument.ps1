@@ -64,62 +64,57 @@ DynamicParam {
 Begin {}
 Process {
 
-    if ($global:MSRCApiKey){
-        $RestMethod = @{
-            uri = '{0}/cvrf/{1}?{2}' -f $msrcApiUrl,$PSBoundParameters['ID'],$msrcApiVersion
-            Header = @{ 'Api-Key' = $global:MSRCApiKey }
-            ErrorAction = 'Stop'
-        }
-        if ($global:msrcProxy){
-            $RestMethod.Add('Proxy' , $global:msrcProxy)
-        }
-        if ($global:msrcProxyCredential){
-            $RestMethod.Add('ProxyCredential',$global:msrcProxyCredential)
-        }
-        if ($AsXml) {
-            $RestMethod.Header.Add('Accept','application/xml')
-        } else {
-            $RestMethod.Header.Add('Accept','application/json')
-        }
-        try {
-    
-            Write-Verbose -Message "Calling $($RestMethod.uri)"
-
-            Invoke-RestMethod @RestMethod
-     
-        } catch {
-            Write-Error "HTTP Get failed with status code $($_.Exception.Response.StatusCode): $($_.Exception.Response.StatusDescription)"       
-        }
-    } 
-    elseif ($global:MSRCAdalAccessToken) {
-        $RestMethod = @{
-            uri = '{0}/cvrf/{1}?{2}' -f $msrcApiUrl,$PSBoundParameters['ID'],$msrcApiVersion
-            Header = @{ 'Authorization' = $global:MSRCAdalAccessToken.CreateAuthorizationHeader() }
-            ErrorAction = 'Stop'
-        }
-        if ($global:msrcProxy){
-            $RestMethod.Add('Proxy' , $global:msrcProxy)
-        }
-        if ($global:msrcProxyCredential){
-            $RestMethod.Add('ProxyCredential',$global:msrcProxyCredential)
-        }
-        if ($AsXml) {
-            $RestMethod.Header.Add('Accept','application/xml')
-        } else {
-            $RestMethod.Header.Add('Accept','application/json')
-        }
-        try {
-    
-            Write-Verbose -Message "Calling $($RestMethod.uri)"
-
-            Invoke-RestMethod @RestMethod
-     
-        } catch {
-            Write-Error "HTTP Get failed with status code $($_.Exception.Response.StatusCode): $($_.Exception.Response.StatusDescription)"       
-        }
+    # Common
+    $RestMethod = @{
+        uri = '{0}/cvrf/{1}?{2}' -f $msrcApiUrl,$PSBoundParameters['ID'],$msrcApiVersion
+        ErrorAction = 'Stop'
     }
-    else { 
-        Write-Warning -Message 'You need to use Set-MSRCApiKey first to set your API Key'         
+    
+    # Add proxy and creds if required
+    if ($global:msrcProxy) {
+        
+        $RestMethod.Add('Proxy', $global:msrcProxy)
+    
+    }
+    if ($global:msrcProxyCredential) {
+        
+        $RestMethod.Add('ProxyCredential',$global:msrcProxyCredential)
+    
+    }
+
+    # Adjust header based on our variables
+    if ($global:MSRCApiKey) {
+        
+        $RestMethod.Add('Header',@{ 'Api-Key' = $global:MSRCApiKey })
+    
+    } elseif ($global:MSRCAdalAccessToken) {
+        
+        $RestMethod.Add('Header',@{ 'Authorization' = $global:MSRCAdalAccessToken.CreateAuthorizationHeader() })
+    
+    } else {
+        
+        Write-Warning -Message 'You need to use Set-MSRCApiKey first to set your API Key'        
+    
+    }
+
+    # If we have a header defined, we proceed
+    if ($RestMethod['Header']) {
+        
+        if ($AsXml) {
+            $RestMethod.Header.Add('Accept','application/xml')
+        } else {
+            $RestMethod.Header.Add('Accept','application/json')
+        }
+
+        try {
+    
+            Write-Verbose -Message "Calling $($RestMethod.uri)"
+
+            Invoke-RestMethod @RestMethod
+     
+        } catch {
+            Write-Error "HTTP Get failed with status code $($_.Exception.Response.StatusCode): $($_.Exception.Response.StatusDescription)"       
+        }
     }
 }
 End {}
