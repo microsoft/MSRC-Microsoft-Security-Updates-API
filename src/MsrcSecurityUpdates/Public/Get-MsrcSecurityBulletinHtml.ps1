@@ -317,6 +317,7 @@ Process {
         
         $affectedSoftware | 
         Where-Object { $_.FullProductName -eq $PN } | 
+        Sort-Object -Unique -Property CVE |
         ForEach-Object {
             $affectedSoftwareTableHtml += $affectedSoftwareRowTemplate -f @(
                 $_.CVE,
@@ -324,36 +325,36 @@ Process {
                     if (-not($_.KBArticle)) {
                         'None'
                     } else {
-                        $_.KBArticle | ForEach-Object {
+                        ($_.KBArticle | ForEach-Object {
                             '<a href="https://catalog.update.microsoft.com/v7/site/Search.aspx?q={0}">{0}</a><br>' -f  $_
-                        }
+                        }) -join '<br />'
                     }
                 ),
                 $(
                     if (-not($_.RestartRequired)) {
                         'Unknown'
                     } else{
-                        $_.RestartRequired | ForEach-Object {
+                        ($_.RestartRequired | ForEach-Object {
                             '{0}<br>' -f $_
-                        }
+                        })  -join '<br />'
                     }
                 ),
                 $(
                     if (-not($_.Severity)) {
                         'Unknown'
                     } else {
-                        $_.Severity | ForEach-Object {
+                        ($_.Severity | ForEach-Object {
                             '{0}<br>' -f $_
-                        }
+                        })  -join '<br />'
                     }
                 ),
                 $(
                     if (-not($_.Impact)) {
                         'Unknown'
                     } else { 
-                        $_.Impact | ForEach-Object {
+                        ($_.Impact | ForEach-Object {
                             '{0}<br>' -f $_
-                        }
+                        }) -join '<br />'
                     }
                 )
             )
