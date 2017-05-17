@@ -75,7 +75,7 @@ $CVEsWanted = @(
         )
 $Output_Location = "C:\your\path\here"
 
-$CVRFDoc = Get-MsrcCvrfDocument -ID $monthOfInterest -ApiKey $msrcApiKey -Verbose
+$CVRFDoc = Get-MsrcCvrfDocument -ID $monthOfInterest -Verbose
 $CVRFHtmlProperties = @{
     Vulnerability = $CVRFDoc.Vulnerability | Where-Object {$_.CVE -in $CVEsWanted}
     ProductTree = $CVRFDoc.ProductTree
