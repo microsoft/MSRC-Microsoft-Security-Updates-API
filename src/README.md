@@ -49,7 +49,44 @@ Function    Set-MSRCApiKey                  1.3     MsrcSecurityUpdates
 
 ## Generating a HTML document of Monthly Updates
 
-In this common scenario, the *Get-MsrcCvrfDocument* and *Get-MsrcSecurityBulletinHtml* can be pipelined together to generate a HTML document with *out-file*:
+In this common scenario, the *Get-MsrcCvrfDocument* and *Get-MsrcVulnerabilityReportHtml* can be pipelined together to generate a HTML document with *out-file*:
+
+```Powershell
+### Install the module from the PowerShell Gallery (must be run as Admin)
+Install-Module -Name msrcsecurityupdates -force
+Import-module msrcsecurityupdates
+Set-MSRCApiKey -ApiKey "<your API key>" -Verbose
+$monthOfInterest = '2017-Apr'
+
+Get-MsrcCvrfDocument -ID $monthOfInterest -Verbose | c -Verbose | Out-File c:\temp\MSRCAprilSecurityUpdates.html
+```
+You can also build a modified object to pass into *Get-MsrcVulnerabilityReportHtml*. This allows more customization of the report being generated. In this example, the generated report will only have the wanted CVE's included:
+
+```Powershell
+Install-Module -Name msrcsecurityupdates -force
+Import-Module -Name msrcsecurityupdates -Force
+
+Set-MSRCApiKey -ApiKey "<your API key>" -Verbose
+$monthOfInterest = "2017-Mar"
+
+$CVEsWanted = @(
+        "CVE-2017-0001", 
+        "CVE-2017-0005"
+        )
+$Output_Location = "C:\your\path\here"
+
+$CVRFDoc = Get-MsrcCvrfDocument -ID $monthOfInterest -Verbose
+$CVRFHtmlProperties = @{
+    Vulnerability = $CVRFDoc.Vulnerability | Where-Object {$_.CVE -in $CVEsWanted}
+    ProductTree = $CVRFDoc.ProductTree
+}
+
+Get-MsrcVulnerabilityReportHtml @CVRFHtmlProperties -Verbose | Out-File $Output_Location
+```
+
+An alternate HTML template is also avalible which generates reports which are grouped into catagories rather than by each CVE. This report may be more helpful if you are interested in all the vulnerabilities that affect a certain product and platform. This report can be ran exactly like above, however if you are filtering based on CVE's (or not piping the output from *Get-MsrcCvrfDocument*) two aditional fields are required. the above examples are replicated here for the different report type.
+
+Building a report that contains all CVE's:
 
 ```Powershell
 ### Install the module from the PowerShell Gallery (must be run as Admin)
@@ -60,7 +97,8 @@ $monthOfInterest = '2017-Apr'
 
 Get-MsrcCvrfDocument -ID $monthOfInterest -Verbose | Get-MsrcSecurityBulletinHtml -Verbose | Out-File c:\temp\MSRCAprilSecurityUpdates.html
 ```
-You can also build a modified object to pass into *Get-MsrcSecurityBulletinHtml*. This allows more customization of the report being generated. In this example, the generated report will only have the wanted CVE's included:
+
+Using powershell to filter the report to your liking:
 
 ```Powershell
 Install-Module -Name msrcsecurityupdates -force
