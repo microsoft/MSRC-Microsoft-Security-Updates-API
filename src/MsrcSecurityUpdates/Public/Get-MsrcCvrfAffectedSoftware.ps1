@@ -50,11 +50,20 @@ Process {
                     Select-Object -ExpandProperty Value
                 ) ;
                 KBArticle = $(
-                    (
-                        $v.Remediations | 
-                        Where-Object { $_.ProductID -contains $id } |
-                        Where-Object { $_.Type -eq 2 }
-                    ).Description.Value
+                    [PSCustomObject]@{
+                        ID = ( $v.Remediations | 
+                                            Where-Object { $_.ProductID -contains $id } |
+                                            Where-Object { $_.Type -eq 2 }
+                                        ).Description.Value;
+                        URL = ( $v.Remediations | 
+                                            Where-Object { $_.ProductID -contains $id } |
+                                            Where-Object { $_.Type -eq 2 }
+                                        ).URL;
+                        SubType = ( $v.Remediations | 
+                                            Where-Object { $_.ProductID -contains $id } |
+                                            Where-Object { $_.Type -eq 2 }
+                                        ).SubType;
+                        }
                 ) ;
                 CVE = $v.CVE
                 Severity = $(
