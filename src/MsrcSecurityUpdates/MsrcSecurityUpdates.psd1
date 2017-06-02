@@ -12,7 +12,7 @@
 RootModule = 'MsrcSecurityUpdates.psm1'
 
 # Version number of this module.
-ModuleVersion = '1.7.1'
+ModuleVersion = '1.7.2'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -132,6 +132,7 @@ May 9, 2017 - Changed the string from "unknown" to "N/A" when a cvss score is nu
 May 10, 2017 - fixed a typo that was causing FAQ to not display correctly
 May 30, 2017 - Added tags to the table of contents, as well as changing the KB article text to be hyperlinked, and show the subtype if possible.
 May 31, 2017 - Removed padding between table of contents cells to reduce wasted space
+June 2, 2017 - Added a fix to allow for multiline KB articles
 '@
 
     } # End of PSData hashtable
