@@ -27,13 +27,9 @@ The Security Updates API requires an API key.  To obtain an API key please visit
 __NOTE: Currently generating api keys requires an @outlook.com, @live.com, or @microsoft.com email address. If you do not have one of these email addresses, you can create a personal outlook account to access this service while we investigate this issue.__
 
 # Change Log
+**_For up to date major changes, please read the psd1 included in the src folder. This can also be seen on [the Microsoft Powershell Gallery](https://www.powershellgallery.com/packages/MsrcSecurityUpdates)._**
 
-**March 14, 2017** - v1.2 – Minor changes to Powershell module to fix a CVRF->Powershell object conversion issue. Republished new Powershell module to [the Microsoft Powershell Gallery](https://www.powershellgallery.com/packages/MsrcSecurityUpdates). 
-
-**March 09, 2017** - v1.1 – Added revised PowerShell cmdlets. 
-
-**February 09, 2017** - v1.1 - Project is going live.
-
+**May 2017** - Added RestartRequired and SubType to the remediations object in the API response. 
 
 
 # Contributing
