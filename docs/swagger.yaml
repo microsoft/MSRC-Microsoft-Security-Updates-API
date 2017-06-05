@@ -353,6 +353,13 @@ definitions:
                           format: date-time
                         FileArchitecture:
                           type: string
+                  SubType:
+                    type: string
+                  RestartRequired:
+                    type: object
+                    properties:
+                      Value:
+                        type: string            
             Acknowledgements:
               type: array
               items:
@@ -484,7 +491,7 @@ definitions:
           DocumentNotes:
             xml:
               prefix: cvrf
-              wrapped: true
+              wrapped: false
             type: array
             items:
               type: object
@@ -513,7 +520,7 @@ definitions:
                       type: string
           ProductTree:
             xml:
-              prefix: prodtest
+              prefix: prod
             type: object
             properties:
               Branch:
@@ -698,6 +705,7 @@ definitions:
               Remediations:
                 xml:
                   prefix: vuln
+                  wrapped: true
                 type: array
                 items:
                   xml:
@@ -761,6 +769,14 @@ definitions:
                             xml:
                               prefix: vuln
                             type: string
+                    RestartRequired:
+                      xml:
+                        prefix: vuln
+                      type: string
+                    SubType:
+                      xml:
+                        prefix: vuln
+                      type: string
               Acknowledgements:
                 xml:
                   prefix: vuln
@@ -777,6 +793,30 @@ definitions:
                         prefix: vuln
                       type: string
                     URL:
+                      xml:
+                        prefix: vuln
+                      type: string
+              RevisionHistory:
+                xml:
+                  prefix: vuln
+                  wrapped: true
+                type: array
+                items:
+                  xml:
+                    prefix: vuln
+                    name: Revision
+                  type: object
+                  properties:
+                    Number:
+                      xml:
+                        prefix: vuln
+                      type: number
+                    Date:
+                      xml:
+                        prefix: vuln
+                      type: string
+                      format: date-time
+                    Description:
                       xml:
                         prefix: vuln
                       type: string

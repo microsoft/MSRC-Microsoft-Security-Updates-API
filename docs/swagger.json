@@ -1,1157 +1,1216 @@
 {
-    "swagger": "2.0",
-    "info": {
-        "version": "1.0.0",
-        "title": "Microsoft Security Updates API"
-    },
-    "host": "api.msrc.microsoft.com",
-    "schemes": [
-        "https"
-    ],
-    "paths": {
-        "/Updates": {
-            "get": {
-                "produces": [
-                    "application/json",
-                    "application/xml"
-                ],
-                "description": "Get all updates with a link to the CVRF document\n",
-                "parameters": [
-                    {
-                        "name": "api-version",
-                        "in": "query",
-                        "required": true,
-                        "type": "string",
-                        "default": "2016-08-01"
-                    },
-                    {
-                        "name": "api-key",
-                        "in": "header",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Successful responset",
-                        "schema": {
-                            "$ref": "#/definitions/UpdatesReturnTypes200"
-                        }
-                    }
-                }
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Microsoft Security Updates API"
+  },
+  "host": "api.msrc.microsoft.com",
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/Updates": {
+      "get": {
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "description": "Get all updates with a link to the CVRF document\n",
+        "parameters": [
+          {
+            "name": "api-version",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "default": "2016-08-01"
+          },
+          {
+            "name": "api-key",
+            "in": "header",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful responset",
+            "schema": {
+              "$ref": "#/definitions/UpdatesReturnTypes200"
             }
-        },
-        "/Updates('{id}')": {
-            "get": {
-                "produces": [
-                    "application/json",
-                    "application/xml"
-                ],
-                "description": "Get updates with a link to the CVRF document for a particular ID.\n\nID can be:\n\n  * Update ID (ie: 2016-Aug)\n  * Vulnerability ID (ie: CVE-2016-0128)\n  * Year (ie: 2016)\n",
-                "parameters": [
-                    {
-                        "name": "api-version",
-                        "in": "query",
-                        "required": true,
-                        "type": "string",
-                        "default": "2016-08-01"
-                    },
-                    {
-                        "name": "api-key",
-                        "in": "header",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Successful responset",
-                        "schema": {
-                            "$ref": "#/definitions/UpdatesReturnTypes200"
-                        }
-                    }
-                }
-            }
-        },
-        "/cvrf/{id}": {
-            "get": {
-                "produces": [
-                    "application/xml",
-                    "application/json"
-                ],
-                "description": "Gets a CVRF document by ID (ie: 2016-Aug)\n\nNote: to view the correct XML response, please change *$ref: '#/definitions/cvrfReturnTypes200'* to *$ref: '#/definitions/cvrfReturnTypes200_xml'* in the swagger.json or swagger.yaml file\n",
-                "parameters": [
-                    {
-                        "name": "api-version",
-                        "in": "query",
-                        "required": true,
-                        "type": "string",
-                        "default": "2016-08-01"
-                    },
-                    {
-                        "name": "api-key",
-                        "in": "header",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Successful responset",
-                        "schema": {
-						    "__comment": "#CHANGE THIS $ref TO '#/definitions/cvrfReturnTypes200_xml' IF YOU WANT ACCURATE XML RESPONSE DEFFINITIONS!",
-                            "$ref": "#/definitions/cvrfReturnTypes200"
-                        }
-                    }
-                }
-            }
+          }
         }
+      }
     },
-    "definitions": {
-        "UpdatesReturnTypes200": {
-            "title": "Sucessful returned Updates object",
-            "type": "object",
-            "properties": {
-                "@odata.context": {
-                    "type": "string"
-                },
-                "value": {
-                    "type": "array",
-                    "description": "array of files returned",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "Alias": {
-                                "type": "string"
-                            },
-                            "CurrentReleaseDate": {
-                                "type": "string"
-                            },
-                            "CvrfUrl": {
-                                "type": "string"
-                            },
-                            "DocumentTitle": {
-                                "type": "string"
-                            },
-                            "ID": {
-                                "type": "string"
-                            },
-                            "InitialReleaseData": {
-                                "type": "string"
-                            },
-                            "Severity": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                }
+    "/Updates('{id}')": {
+      "get": {
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "description": "Get updates with a link to the CVRF document for a particular ID.\n\nID can be:\n\n  * Update ID (ie: 2016-Aug)\n  * Vulnerability ID (ie: CVE-2016-0128)\n  * Year (ie: 2016)\n",
+        "parameters": [
+          {
+            "name": "api-version",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "default": "2016-08-01"
+          },
+          {
+            "name": "api-key",
+            "in": "header",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful responset",
+            "schema": {
+              "$ref": "#/definitions/UpdatesReturnTypes200"
             }
+          }
+        }
+      }
+    },
+    "/cvrf/{id}": {
+      "get": {
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "description": "Gets a CVRF document by ID (ie: 2016-Aug)\n\nNote: to view the correct XML response, please change *$ref: '#/definitions/cvrfReturnTypes200'* to *$ref: '#/definitions/cvrfReturnTypes200_xml'* in the swagger.json or swagger.yaml file\n",
+        "parameters": [
+          {
+            "name": "api-version",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "default": "2016-08-01"
+          },
+          {
+            "name": "api-key",
+            "in": "header",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful responset",
+            "schema": {
+			  "__comment": "#CHANGE THIS $ref TO '#/definitions/cvrfReturnTypes200_xml' IF YOU WANT ACCURATE XML RESPONSE DEFFINITIONS!",
+              "$ref": "#/definitions/cvrfReturnTypes200"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "UpdatesReturnTypes200": {
+      "title": "Sucessful returned Updates object",
+      "type": "object",
+      "properties": {
+        "@odata.context": {
+          "type": "string"
         },
-        "cvrfReturnTypes200": {
-            "title": "Sucessful returned cvrf json",
+        "value": {
+          "type": "array",
+          "description": "array of files returned",
+          "items": {
             "type": "object",
             "properties": {
-                "DocumentTitle": {
-                    "type": "object",
-                    "properties": {
-                        "Value": {
-                            "type": "string"
-                        }
+              "Alias": {
+                "type": "string"
+              },
+              "CurrentReleaseDate": {
+                "type": "string"
+              },
+              "CvrfUrl": {
+                "type": "string"
+              },
+              "DocumentTitle": {
+                "type": "string"
+              },
+              "ID": {
+                "type": "string"
+              },
+              "InitialReleaseData": {
+                "type": "string"
+              },
+              "Severity": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "cvrfReturnTypes200": {
+      "title": "Sucessful returned cvrf json",
+      "type": "object",
+      "properties": {
+        "DocumentTitle": {
+          "type": "object",
+          "properties": {
+            "Value": {
+              "type": "string"
+            }
+          }
+        },
+        "DocumentType": {
+          "type": "object",
+          "properties": {
+            "Value": {
+              "type": "string"
+            }
+          }
+        },
+        "DocumentPublisher": {
+          "type": "object",
+          "properties": {
+            "ContactDetails": {
+              "type": "object",
+              "properties": {
+                "Value": {
+                  "type": "string"
+                }
+              }
+            },
+            "IssuingAthority": {
+              "type": "object",
+              "properties": {
+                "Value": {
+                  "type": "string"
+                }
+              }
+            },
+            "Type": {
+              "type": "integer"
+            }
+          }
+        },
+        "DocumentTracking": {
+          "type": "object",
+          "properties": {
+            "Identification": {
+              "type": "object",
+              "properties": {
+                "ID": {
+                  "type": "object",
+                  "properties": {
+                    "Value": {
+                      "type": "string"
                     }
+                  }
                 },
-                "DocumentType": {
-                    "type": "object",
-                    "properties": {
-                        "Value": {
-                            "type": "string"
-                        }
+                "Alias": {
+                  "type": "object",
+                  "properties": {
+                    "Value": {
+                      "type": "string"
                     }
-                },
-                "DocumentPublisher": {
+                  }
+                }
+              }
+            },
+            "Status": {
+              "type": "integer"
+            },
+            "Version": {
+              "type": "string"
+            },
+            "RevisionHistory": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "Number": {
+                    "type": "string"
+                  },
+                  "Date": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "Description": {
                     "type": "object",
                     "properties": {
-                        "ContactDetails": {
+                      "Value": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "InitialReleaseDate": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "CurrentReleaseDate": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        },
+        "DocumentNotes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "Title": {
+                "type": "string"
+              },
+              "Audience": {
+                "type": "string"
+              },
+              "Type": {
+                "type": "integer"
+              },
+              "Ordinal": {
+                "type": "string"
+              },
+              "Value": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "ProductTree": {
+          "type": "object",
+          "properties": {
+            "Branch": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "Items": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "Items": {
+                          "type": "array",
+                          "items": {
                             "type": "object",
                             "properties": {
-                                "Value": {
-                                    "type": "string"
-                                }
+                              "ProductID": {
+                                "type": "string"
+                              },
+                              "Value": {
+                                "type": "string"
+                              }
                             }
-                        },
-                        "IssuingAthority": {
-                            "type": "object",
-                            "properties": {
-                                "Value": {
-                                    "type": "string"
-                                }
-                            }
+                          }
                         },
                         "Type": {
-                            "type": "integer"
+                          "type": "integer"
+                        },
+                        "Name": {
+                          "type": "string"
                         }
+                      }
                     }
-                },
-                "DocumentTracking": {
-                    "type": "object",
-                    "properties": {
-                        "Identification": {
-                            "type": "object",
-                            "properties": {
-                                "ID": {
-                                    "type": "object",
-                                    "properties": {
-                                        "Value": {
-                                            "type": "string"
-                                        }
-                                    }
-                                },
-                                "Alias": {
-                                    "type": "object",
-                                    "properties": {
-                                        "Value": {
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            }
-                        },
-                        "Status": {
-                            "type": "integer"
-                        },
-                        "Version": {
-                            "type": "string"
-                        },
-                        "RevisionHistory": {
-                            "type": "array",
-                            "items": {
-                                "type": "object",
-                                "properties": {
-                                    "Number": {
-                                        "type": "string"
-                                    },
-                                    "Date": {
-                                        "type": "string",
-                                        "format": "date-time"
-                                    },
-                                    "Description": {
-                                        "type": "object",
-                                        "properties": {
-                                            "Value": {
-                                                "type": "string"
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        },
-                        "InitialReleaseDate": {
-                            "type": "string",
-                            "format": "date-time"
-                        },
-                        "CurrentReleaseDate": {
-                            "type": "string",
-                            "format": "date-time"
-                        }
-                    }
-                },
-                "DocumentNotes": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "Title": {
-                                "type": "string"
-                            },
-                            "Audience": {
-                                "type": "string"
-                            },
-                            "Type": {
-                                "type": "integer"
-                            },
-                            "Ordinal": {
-                                "type": "string"
-                            },
-                            "Value": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                },
-                "ProductTree": {
-                    "type": "object",
-                    "properties": {
-                        "Branch": {
-                            "type": "array",
-                            "items": {
-                                "type": "object",
-                                "properties": {
-                                    "Items": {
-                                        "type": "array",
-                                        "items": {
-                                            "type": "object",
-                                            "properties": {
-                                                "Items": {
-                                                    "type": "array",
-                                                    "items": {
-                                                        "type": "object",
-                                                        "properties": {
-                                                            "ProductID": {
-                                                                "type": "string"
-                                                            },
-                                                            "Value": {
-                                                                "type": "string"
-                                                            }
-                                                        }
-                                                    }
-                                                },
-                                                "Type": {
-                                                    "type": "integer"
-                                                },
-                                                "Name": {
-                                                    "type": "string"
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        },
-                        "FullProductName": {
-                            "type": "array",
-                            "items": {
-                                "type": "object",
-                                "properties": {
-                                    "ProductID": {
-                                        "type": "string"
-                                    },
-                                    "Value": {
-                                        "type": "string"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "Vulnerability": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "Title": {
-                                "type": "object",
-                                "properties": {
-                                    "Value": {
-                                        "type": "string"
-                                    }
-                                }
-                            },
-                            "Notes": {
-                                "type": "array",
-                                "items": {
-                                    "type": "object",
-                                    "properties": {
-                                        "Title": {
-                                            "type": "string"
-                                        },
-                                        "Type": {
-                                            "type": "integer"
-                                        },
-                                        "Ordinal": {
-                                            "type": "string"
-                                        },
-                                        "Value": {
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            },
-                            "DiscoveryDateSpecified": {
-                                "type": "boolean"
-                            },
-                            "ReleaseDateSpecified": {
-                                "type": "boolean"
-                            },
-                            "CVE": {
-                                "type": "string"
-                            },
-                            "ProductStatuses": {
-                                "type": "array",
-                                "items": {
-                                    "type": "object",
-                                    "properties": {
-                                        "ProductID": {
-                                            "type": "array",
-                                            "items": {
-                                                "type": "string"
-                                            }
-                                        },
-                                        "Type": {
-                                            "type": "integer"
-                                        }
-                                    }
-                                }
-                            },
-                            "Threats": {
-                                "type": "array",
-                                "items": {
-                                    "type": "object",
-                                    "properties": {
-                                        "Description": {
-                                            "type": "object",
-                                            "properties": {
-                                                "Value": {
-                                                    "type": "string"
-                                                }
-                                            }
-                                        },
-                                        "ProductID": {
-                                            "type": "array",
-                                            "items": {
-                                                "type": "string"
-                                            }
-                                        },
-                                        "Type": {
-                                            "type": "integer"
-                                        },
-                                        "DateSpecified": {
-                                            "type": "boolean"
-                                        }
-                                    }
-                                }
-                            },
-                            "CVSSScoreSets": {
-                                "type": "array",
-                                "items": {
-                                    "type": "object",
-                                    "properties": {
-                                        "BaseScore": {
-                                            "type": "number"
-                                        },
-                                        "TemporalScore": {
-                                            "type": "number"
-                                        },
-                                        "Vector": {
-                                            "type": "string"
-                                        },
-                                        "ProductID": {
-                                            "type": "array",
-                                            "items": {
-                                                "type": "string"
-                                            }
-                                        }
-                                    }
-                                }
-                            },
-                            "Remediations": {
-                                "type": "array",
-                                "items": {
-                                    "type": "object",
-                                    "properties": {
-                                        "Description": {
-                                            "type": "object",
-                                            "properties": {
-                                                "Value": {
-                                                    "type": "string"
-                                                }
-                                            }
-                                        },
-                                        "URL": {
-                                            "type": "string"
-                                        },
-                                        "Supercedence": {
-                                            "type": "string"
-                                        },
-                                        "ProductID": {
-                                            "type": "array",
-                                            "items": {
-                                                "type": "string"
-                                            }
-                                        },
-                                        "Type": {
-                                            "type": "integer"
-                                        },
-                                        "DateSpecified": {
-                                            "type": "boolean"
-                                        },
-                                        "AffectedFiles": {
-                                            "type": "array",
-                                            "items": {
-                                                "type": "object",
-                                                "properties": {
-                                                    "ProductId": {
-                                                        "type": "string"
-                                                    },
-                                                    "FileName": {
-                                                        "type": "string"
-                                                    },
-                                                    "FileVersion": {
-                                                        "type": "string"
-                                                    },
-                                                    "FilePath": {
-                                                        "type": "string"
-                                                    },
-                                                    "FileLastModified": {
-                                                        "type": "string",
-                                                        "format": "date-time"
-                                                    },
-                                                    "FileArchitecture": {
-                                                        "type": "string"
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            },
-                            "Acknowledgements": {
-                                "type": "array",
-                                "items": {
-                                    "type": "object",
-                                    "properties": {
-                                        "Name": {
-                                            "type": "array",
-                                            "items": {
-                                                "type": "object",
-                                                "properties": {
-                                                    "Value": {
-                                                        "type": "string"
-                                                    }
-                                                }
-                                            }
-                                        },
-                                        "URL": {
-                                            "type": "array",
-                                            "items": {
-                                                "type": "string"
-                                            }
-                                        }
-                                    }
-                                }
-                            },
-                            "Ordinal": {
-                                "type": "string"
-                            },
-                            "RevisionHistory": {
-                                "type": "array",
-                                "items": {
-                                    "type": "object",
-                                    "properties": {
-                                        "Number": {
-                                            "type": "string"
-                                        },
-                                        "Date": {
-                                            "type": "string",
-                                            "format": "date-time"
-                                        },
-                                        "Description": {
-                                            "type": "object",
-                                            "properties": {
-                                                "Value": {
-                                                    "type": "string"
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
+                  }
                 }
+              }
+            },
+            "FullProductName": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "ProductID": {
+                    "type": "string"
+                  },
+                  "Value": {
+                    "type": "string"
+                  }
+                }
+              }
             }
+          }
         },
-        "cvrfReturnTypes200_xml": {
-            "title": "Sucessful returned cvrf object __XML__",
-            "description": "Swagger has some limitations and can not display complex XML documents in a model, please refer to the ICASI CVRF schema online. for a more exact specification on return schema.",
+        "Vulnerability": {
+          "type": "array",
+          "items": {
             "type": "object",
             "properties": {
-                "cvrfdoc": {
-                    "xml": {
+              "Title": {
+                "type": "object",
+                "properties": {
+                  "Value": {
+                    "type": "string"
+                  }
+                }
+              },
+              "Notes": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "Title": {
+                      "type": "string"
+                    },
+                    "Type": {
+                      "type": "integer"
+                    },
+                    "Ordinal": {
+                      "type": "string"
+                    },
+                    "Value": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "DiscoveryDateSpecified": {
+                "type": "boolean"
+              },
+              "ReleaseDateSpecified": {
+                "type": "boolean"
+              },
+              "CVE": {
+                "type": "string"
+              },
+              "ProductStatuses": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "ProductID": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "Type": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              },
+              "Threats": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "Description": {
+                      "type": "object",
+                      "properties": {
+                        "Value": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "ProductID": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "Type": {
+                      "type": "integer"
+                    },
+                    "DateSpecified": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              },
+              "CVSSScoreSets": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "BaseScore": {
+                      "type": "number"
+                    },
+                    "TemporalScore": {
+                      "type": "number"
+                    },
+                    "Vector": {
+                      "type": "string"
+                    },
+                    "ProductID": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              },
+              "Remediations": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "Description": {
+                      "type": "object",
+                      "properties": {
+                        "Value": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "URL": {
+                      "type": "string"
+                    },
+                    "Supercedence": {
+                      "type": "string"
+                    },
+                    "ProductID": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "Type": {
+                      "type": "integer"
+                    },
+                    "DateSpecified": {
+                      "type": "boolean"
+                    },
+                    "AffectedFiles": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "ProductId": {
+                            "type": "string"
+                          },
+                          "FileName": {
+                            "type": "string"
+                          },
+                          "FileVersion": {
+                            "type": "string"
+                          },
+                          "FilePath": {
+                            "type": "string"
+                          },
+                          "FileLastModified": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "FileArchitecture": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "SubType": {
+                      "type": "string"
+                    },
+                    "RestartRequired": {
+                      "type": "object",
+                      "properties": {
+                        "Value": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "Acknowledgements": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "Name": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "Value": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "URL": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              },
+              "Ordinal": {
+                "type": "string"
+              },
+              "RevisionHistory": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "Number": {
+                      "type": "string"
+                    },
+                    "Date": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "Description": {
+                      "type": "object",
+                      "properties": {
+                        "Value": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "cvrfReturnTypes200_xml": {
+      "title": "Sucessful returned cvrf object __XML__",
+      "description": "Swagger has some limitations and can not display complex XML documents in a model, please refer to the ICASI CVRF schema online. for a more exact specification on return schema.",
+      "type": "object",
+      "properties": {
+        "cvrfdoc": {
+          "xml": {
+            "prefix": "cvrf"
+          },
+          "type": "object",
+          "properties": {
+            "DocumentTitle": {
+              "xml": {
+                "prefix": "cvrf"
+              },
+              "type": "string"
+            },
+            "DocumentType": {
+              "xml": {
+                "prefix": "cvrf"
+              },
+              "type": "string"
+            },
+            "DocumentPublisher": {
+              "type": "object",
+              "properties": {
+                "Type": {
+                  "type": "string",
+                  "xml": {
+                    "attribute": true
+                  }
+                },
+                "ContactDetails": {
+                  "type": "string",
+                  "xml": {
+                    "prefix": "cvrf"
+                  }
+                },
+                "IssuingAuthority": {
+                  "type": "string",
+                  "xml": {
+                    "prefix": "cvrf"
+                  }
+                }
+              }
+            },
+            "DocumentTracking": {
+              "xml": {
+                "prefix": "cvrf"
+              },
+              "type": "object",
+              "properties": {
+                "Identification": {
+                  "xml": {
+                    "prefix": "cvrf"
+                  },
+                  "type": "object",
+                  "properties": {
+                    "ID": {
+                      "xml": {
                         "prefix": "cvrf"
+                      },
+                      "type": "string"
+                    },
+                    "Alias": {
+                      "xml": {
+                        "prefix": "cvrf"
+                      },
+                      "type": "string"
+                    }
+                  }
+                },
+                "Status": {
+                  "xml": {
+                    "prefix": "cvrf"
+                  },
+                  "type": "string"
+                },
+                "Version": {
+                  "xml": {
+                    "prefix": "cvrf"
+                  },
+                  "type": "number"
+                },
+                "RevisionHistory": {
+                  "xml": {
+                    "prefix": "cvrf"
+                  },
+                  "type": "object",
+                  "properties": {
+                    "Revision": {
+                      "xml": {
+                        "prefix": "cvrf"
+                      },
+                      "type": "object",
+                      "properties": {
+                        "Number": {
+                          "xml": {
+                            "prefix": "cvrf"
+                          },
+                          "type": "integer"
+                        },
+                        "Date": {
+                          "xml": {
+                            "prefix": "cvrf"
+                          },
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "Description": {
+                          "xml": {
+                            "prefix": "cvrf"
+                          },
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "InitialReleaseDate": {
+                  "xml": {
+                    "prefix": "cvrf"
+                  },
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "CurrentReleaseDate": {
+                  "xml": {
+                    "prefix": "cvrf"
+                  },
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            },
+            "DocumentNotes": {
+              "xml": {
+                "prefix": "cvrf",
+                "wrapped": false
+              },
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "Note": {
+                    "xml": {
+                      "prefix": "cvrf"
+                    },
+                    "type": "object",
+                    "description": "has a string in <Note>...</Note>",
+                    "properties": {
+                      "Title": {
+                        "xml": {
+                          "attribute": true
+                        },
+                        "type": "string"
+                      },
+                      "Audience": {
+                        "xml": {
+                          "attribute": true
+                        },
+                        "type": "string"
+                      },
+                      "Type": {
+                        "xml": {
+                          "attribute": true
+                        },
+                        "type": "string"
+                      },
+                      "Ordinal": {
+                        "xml": {
+                          "attribute": true
+                        },
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "ProductTree": {
+              "xml": {
+                "prefix": "prod"
+              },
+              "type": "object",
+              "properties": {
+                "Branch": {
+                  "xml": {
+                    "prefix": "prod",
+                    "wrapped": false
+                  },
+                  "type": "array",
+                  "items": {
+                    "xml": {
+                      "prefix": "prod",
+                      "name": "Branch"
                     },
                     "type": "object",
                     "properties": {
-                        "DocumentTitle": {
-                            "xml": {
-                                "prefix": "cvrf"
-                            },
-                            "type": "string"
+                      "Type": {
+                        "xml": {
+                          "attribute": true
                         },
-                        "DocumentType": {
-                            "xml": {
-                                "prefix": "cvrf"
-                            },
-                            "type": "string"
+                        "type": "string"
+                      },
+                      "Name": {
+                        "xml": {
+                          "attribute": true
                         },
-                        "DocumentPublisher": {
-                            "type": "object",
-                            "properties": {
-                                "Type": {
-                                    "type": "string",
-                                    "xml": {
-                                        "attribute": true
-                                    }
-                                },
-                                "ContactDetails": {
-                                    "type": "string",
-                                    "xml": {
-                                        "prefix": "cvrf"
-                                    }
-                                },
-                                "IssuingAuthority": {
-                                    "type": "string",
-                                    "xml": {
-                                        "prefix": "cvrf"
-                                    }
-                                }
-                            }
+                        "type": "string"
+                      },
+                      "Branch": {
+                        "xml": {
+                          "prefix": "prod",
+                          "wrapped": false
                         },
-                        "DocumentTracking": {
-                            "xml": {
-                                "prefix": "cvrf"
+                        "type": "array",
+                        "items": {
+                          "xml": {
+                            "prefix": "prod",
+                            "name": "Branch"
+                          },
+                          "type": "object",
+                          "properties": {
+                            "Type": {
+                              "xml": {
+                                "attribute": true
+                              },
+                              "type": "string"
                             },
-                            "type": "object",
-                            "properties": {
-                                "Identification": {
-                                    "xml": {
-                                        "prefix": "cvrf"
-                                    },
-                                    "type": "object",
-                                    "properties": {
-                                        "ID": {
-                                            "xml": {
-                                                "prefix": "cvrf"
-                                            },
-                                            "type": "string"
-                                        },
-                                        "Alias": {
-                                            "xml": {
-                                                "prefix": "cvrf"
-                                            },
-                                            "type": "string"
-                                        }
-                                    }
-                                },
-                                "Status": {
-                                    "xml": {
-                                        "prefix": "cvrf"
-                                    },
-                                    "type": "string"
-                                },
-                                "Version": {
-                                    "xml": {
-                                        "prefix": "cvrf"
-                                    },
-                                    "type": "number"
-                                },
-                                "RevisionHistory": {
-                                    "xml": {
-                                        "prefix": "cvrf"
-                                    },
-                                    "type": "object",
-                                    "properties": {
-                                        "Revision": {
-                                            "xml": {
-                                                "prefix": "cvrf"
-                                            },
-                                            "type": "object",
-                                            "properties": {
-                                                "Number": {
-                                                    "xml": {
-                                                        "prefix": "cvrf"
-                                                    },
-                                                    "type": "integer"
-                                                },
-                                                "Date": {
-                                                    "xml": {
-                                                        "prefix": "cvrf"
-                                                    },
-                                                    "type": "string",
-                                                    "format": "date-time"
-                                                },
-                                                "Description": {
-                                                    "xml": {
-                                                        "prefix": "cvrf"
-                                                    },
-                                                    "type": "string"
-                                                }
-                                            }
-                                        }
-                                    }
-                                },
-                                "InitialReleaseDate": {
-                                    "xml": {
-                                        "prefix": "cvrf"
-                                    },
-                                    "type": "string",
-                                    "format": "date-time"
-                                },
-                                "CurrentReleaseDate": {
-                                    "xml": {
-                                        "prefix": "cvrf"
-                                    },
-                                    "type": "string",
-                                    "format": "date-time"
-                                }
-                            }
-                        },
-                        "DocumentNotes": {
-                            "xml": {
-                                "prefix": "cvrf",
-                                "wrapped": true
+                            "Name": {
+                              "xml": {
+                                "attribute": true
+                              },
+                              "type": "string"
                             },
-                            "type": "array",
-                            "items": {
+                            "FullProductName": {
+                              "xml": {
+                                "prefix": "prod",
+                                "wrapped": false
+                              },
+                              "type": "array",
+                              "items": {
                                 "type": "object",
                                 "properties": {
-                                    "Note": {
-                                        "xml": {
-                                            "prefix": "cvrf"
-                                        },
-                                        "type": "object",
-                                        "description": "has a string in <Note>...</Note>",
-                                        "properties": {
-                                            "Title": {
-                                                "xml": {
-                                                    "attribute": true
-                                                },
-                                                "type": "string"
-                                            },
-                                            "Audience": {
-                                                "xml": {
-                                                    "attribute": true
-                                                },
-                                                "type": "string"
-                                            },
-                                            "Type": {
-                                                "xml": {
-                                                    "attribute": true
-                                                },
-                                                "type": "string"
-                                            },
-                                            "Ordinal": {
-                                                "xml": {
-                                                    "attribute": true
-                                                },
-                                                "type": "string"
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        },
-                        "ProductTree": {
-                            "xml": {
-                                "prefix": "prodtest"
-                            },
-                            "type": "object",
-                            "properties": {
-                                "Branch": {
+                                  "ProductID": {
                                     "xml": {
-                                        "prefix": "prod",
-                                        "wrapped": false
-                                    },
-                                    "type": "array",
-                                    "items": {
-                                        "xml": {
-                                            "prefix": "prod",
-                                            "name": "Branch"
-                                        },
-                                        "type": "object",
-                                        "properties": {
-                                            "Type": {
-                                                "xml": {
-                                                    "attribute": true
-                                                },
-                                                "type": "string"
-                                            },
-                                            "Name": {
-                                                "xml": {
-                                                    "attribute": true
-                                                },
-                                                "type": "string"
-                                            },
-                                            "Branch": {
-                                                "xml": {
-                                                    "prefix": "prod",
-                                                    "wrapped": false
-                                                },
-                                                "type": "array",
-                                                "items": {
-                                                    "xml": {
-                                                        "prefix": "prod",
-                                                        "name": "Branch"
-                                                    },
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "Type": {
-                                                            "xml": {
-                                                                "attribute": true
-                                                            },
-                                                            "type": "string"
-                                                        },
-                                                        "Name": {
-                                                            "xml": {
-                                                                "attribute": true
-                                                            },
-                                                            "type": "string"
-                                                        },
-                                                        "FullProductName": {
-                                                            "xml": {
-                                                                "prefix": "prod",
-                                                                "wrapped": false
-                                                            },
-                                                            "type": "array",
-                                                            "items": {
-                                                                "type": "object",
-                                                                "properties": {
-                                                                    "ProductID": {
-                                                                        "xml": {
-                                                                            "attribute": true
-                                                                        },
-                                                                        "type": "string"
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                },
-                                "FullProductName": {
-                                    "xml": {
-                                        "prefix": "prod",
-                                        "wrapped": false
-                                    },
-                                    "type": "array",
-                                    "items": {
-                                        "description": "has a string in between <prod:FullProductName>...</prod:FullProductName>",
-                                        "xml": {
-                                            "prefix": "prod",
-                                            "name": "FullProductName"
-                                        },
-                                        "type": "object",
-                                        "properties": {
-                                            "ProductID": {
-                                                "xml": {
-                                                    "attribute": true
-                                                },
-                                                "type": "string"
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        },
-                        "Vulnerability": {
-                            "xml": {
-                                "prefix": "vuln"
-                            },
-                            "type": "object",
-                            "properties": {
-                                "Ordinal": {
-                                    "xml": {
-                                        "attribute": true
+                                      "attribute": true
                                     },
                                     "type": "string"
-                                },
-                                "Title": {
-                                    "xml": {
-                                        "prefix": "vuln"
-                                    },
-                                    "type": "string"
-                                },
-                                "Notes": {
-                                    "xml": {
-                                        "prefix": "vuln"
-                                    },
-                                    "type": "object",
-                                    "properties": {
-                                        "Note": {
-                                            "description": "has a string in <Note>...</Note>",
-                                            "xml": {
-                                                "prefix": "vuln"
-                                            },
-                                            "type": "object",
-                                            "properties": {
-                                                "Title": {
-                                                    "xml": {
-                                                        "attribute": true
-                                                    },
-                                                    "type": "string"
-                                                },
-                                                "Type": {
-                                                    "xml": {
-                                                        "attribute": true
-                                                    },
-                                                    "type": "string"
-                                                },
-                                                "Ordianl": {
-                                                    "xml": {
-                                                        "attribute": true
-                                                    },
-                                                    "type": "string"
-                                                }
-                                            }
-                                        }
-                                    }
-                                },
-                                "CVE": {
-                                    "xml": {
-                                        "prefix": "vuln"
-                                    },
-                                    "type": "string"
-                                },
-                                "ProductStatuses": {
-                                    "xml": {
-                                        "prefix": "vuln",
-                                        "wrapped": true
-                                    },
-                                    "type": "array",
-                                    "items": {
-                                        "xml": {
-                                            "name": "Status",
-                                            "prefix": "vuln"
-                                        },
-                                        "type": "object",
-                                        "properties": {
-                                            "Type": {
-                                                "xml": {
-                                                    "attribute": true
-                                                },
-                                                "type": "string"
-                                            },
-                                            "ProductID": {
-                                                "xml": {
-                                                    "prefix": "vuln"
-                                                },
-                                                "type": "string"
-                                            }
-                                        }
-                                    }
-                                },
-                                "Threats": {
-                                    "xml": {
-                                        "prefix": "vuln",
-                                        "wrapped": false
-                                    },
-                                    "type": "array",
-                                    "items": {
-                                        "type": "object",
-                                        "properties": {
-                                            "Threat": {
-                                                "xml": {
-                                                    "prefix": "vuln"
-                                                },
-                                                "type": "object",
-                                                "properties": {
-                                                    "Type": {
-                                                        "xml": {
-                                                            "attribute": true
-                                                        },
-                                                        "type": "string"
-                                                    },
-                                                    "Description": {
-                                                        "xml": {
-                                                            "prefix": "vuln"
-                                                        },
-                                                        "type": "string"
-                                                    },
-                                                    "ProductID": {
-                                                        "xml": {
-                                                            "prefix": "vuln"
-                                                        },
-                                                        "type": "string"
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                },
-                                "CVSSScoreSets": {
-                                    "xml": {
-                                        "prefix": "vuln",
-                                        "wrapped": true
-                                    },
-                                    "type": "array",
-                                    "items": {
-                                        "xml": {
-                                            "name": "ScoreSet",
-                                            "prefix": "vuln"
-                                        },
-                                        "type": "object",
-                                        "properties": {
-                                            "BaseScore": {
-                                                "xml": {
-                                                    "prefix": "vuln"
-                                                },
-                                                "type": "number"
-                                            },
-                                            "TemporalScore": {
-                                                "xml": {
-                                                    "prefix": "vuln"
-                                                },
-                                                "type": "number"
-                                            },
-                                            "Vector": {
-                                                "xml": {
-                                                    "prefix": "vuln"
-                                                },
-                                                "type": "string"
-                                            },
-                                            "ProductID": {
-                                                "xml": {
-                                                    "prefix": "vuln"
-                                                },
-                                                "type": "number"
-                                            }
-                                        }
-                                    }
-                                },
-                                "Remediations": {
-                                    "xml": {
-                                        "prefix": "vuln"
-                                    },
-                                    "type": "array",
-                                    "items": {
-                                        "xml": {
-                                            "name": "Remediation",
-                                            "prefix": "vuln"
-                                        },
-                                        "type": "object",
-                                        "properties": {
-                                            "Type": {
-                                                "xml": {
-                                                    "attribute": true
-                                                },
-                                                "type": "string"
-                                            },
-                                            "Description": {
-                                                "xml": {
-                                                    "prefix": "vuln"
-                                                },
-                                                "type": "integer"
-                                            },
-                                            "URL": {
-                                                "xml": {
-                                                    "prefix": "vuln"
-                                                },
-                                                "type": "string"
-                                            },
-                                            "Supercedence": {
-                                                "xml": {
-                                                    "prefix": "vuln"
-                                                },
-                                                "type": "string"
-                                            },
-                                            "ProductID": {
-                                                "type": "array",
-                                                "items": {
-                                                    "xml": {
-                                                        "name": "ProductID",
-                                                        "prefix": "vuln"
-                                                    },
-                                                    "type": "string"
-                                                }
-                                            },
-                                            "AffectedFiles": {
-                                                "xml": {
-                                                    "prefix": "vuln",
-                                                    "wrapped": false
-                                                },
-                                                "type": "array",
-                                                "items": {
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "ProductId": {
-                                                            "xml": {
-                                                                "prefix": "vuln"
-                                                            },
-                                                            "type": "string"
-                                                        },
-                                                        "FileName": {
-                                                            "xml": {
-                                                                "prefix": "vuln"
-                                                            },
-                                                            "type": "string"
-                                                        },
-                                                        "FileVersion": {
-                                                            "xml": {
-                                                                "prefix": "vuln"
-                                                            },
-                                                            "type": "string"
-                                                        },
-                                                        "FilePath": {
-                                                            "xml": {
-                                                                "prefix": "vuln"
-                                                            },
-                                                            "type": "string"
-                                                        },
-                                                        "FileLastModified": {
-                                                            "xml": {
-                                                                "prefix": "vuln"
-                                                            },
-                                                            "type": "string",
-                                                            "format": "date-time"
-                                                        },
-                                                        "FileArchitecture": {
-                                                            "xml": {
-                                                                "prefix": "vuln"
-                                                            },
-                                                            "type": "string"
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                },
-                                "Acknowledgements": {
-                                    "xml": {
-                                        "prefix": "vuln",
-                                        "wrapped": true
-                                    },
-                                    "type": "array",
-                                    "items": {
-                                        "xml": {
-                                            "prefix": "vuln",
-                                            "name": "Acknowledgement"
-                                        },
-                                        "type": "object",
-                                        "properties": {
-                                            "Name": {
-                                                "xml": {
-                                                    "prefix": "vuln"
-                                                },
-                                                "type": "string"
-                                            },
-                                            "URL": {
-                                                "xml": {
-                                                    "prefix": "vuln"
-                                                },
-                                                "type": "string"
-                                            }
-                                        }
-                                    }
+                                  }
                                 }
+                              }
                             }
+                          }
                         }
+                      }
                     }
+                  }
+                },
+                "FullProductName": {
+                  "xml": {
+                    "prefix": "prod",
+                    "wrapped": false
+                  },
+                  "type": "array",
+                  "items": {
+                    "description": "has a string in between <prod:FullProductName>...</prod:FullProductName>",
+                    "xml": {
+                      "prefix": "prod",
+                      "name": "FullProductName"
+                    },
+                    "type": "object",
+                    "properties": {
+                      "ProductID": {
+                        "xml": {
+                          "attribute": true
+                        },
+                        "type": "string"
+                      }
+                    }
+                  }
                 }
+              }
+            },
+            "Vulnerability": {
+              "xml": {
+                "prefix": "vuln"
+              },
+              "type": "object",
+              "properties": {
+                "Ordinal": {
+                  "xml": {
+                    "attribute": true
+                  },
+                  "type": "string"
+                },
+                "Title": {
+                  "xml": {
+                    "prefix": "vuln"
+                  },
+                  "type": "string"
+                },
+                "Notes": {
+                  "xml": {
+                    "prefix": "vuln"
+                  },
+                  "type": "object",
+                  "properties": {
+                    "Note": {
+                      "description": "has a string in <Note>...</Note>",
+                      "xml": {
+                        "prefix": "vuln"
+                      },
+                      "type": "object",
+                      "properties": {
+                        "Title": {
+                          "xml": {
+                            "attribute": true
+                          },
+                          "type": "string"
+                        },
+                        "Type": {
+                          "xml": {
+                            "attribute": true
+                          },
+                          "type": "string"
+                        },
+                        "Ordianl": {
+                          "xml": {
+                            "attribute": true
+                          },
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "CVE": {
+                  "xml": {
+                    "prefix": "vuln"
+                  },
+                  "type": "string"
+                },
+                "ProductStatuses": {
+                  "xml": {
+                    "prefix": "vuln",
+                    "wrapped": true
+                  },
+                  "type": "array",
+                  "items": {
+                    "xml": {
+                      "name": "Status",
+                      "prefix": "vuln"
+                    },
+                    "type": "object",
+                    "properties": {
+                      "Type": {
+                        "xml": {
+                          "attribute": true
+                        },
+                        "type": "string"
+                      },
+                      "ProductID": {
+                        "xml": {
+                          "prefix": "vuln"
+                        },
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "Threats": {
+                  "xml": {
+                    "prefix": "vuln",
+                    "wrapped": false
+                  },
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "Threat": {
+                        "xml": {
+                          "prefix": "vuln"
+                        },
+                        "type": "object",
+                        "properties": {
+                          "Type": {
+                            "xml": {
+                              "attribute": true
+                            },
+                            "type": "string"
+                          },
+                          "Description": {
+                            "xml": {
+                              "prefix": "vuln"
+                            },
+                            "type": "string"
+                          },
+                          "ProductID": {
+                            "xml": {
+                              "prefix": "vuln"
+                            },
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "CVSSScoreSets": {
+                  "xml": {
+                    "prefix": "vuln",
+                    "wrapped": true
+                  },
+                  "type": "array",
+                  "items": {
+                    "xml": {
+                      "name": "ScoreSet",
+                      "prefix": "vuln"
+                    },
+                    "type": "object",
+                    "properties": {
+                      "BaseScore": {
+                        "xml": {
+                          "prefix": "vuln"
+                        },
+                        "type": "number"
+                      },
+                      "TemporalScore": {
+                        "xml": {
+                          "prefix": "vuln"
+                        },
+                        "type": "number"
+                      },
+                      "Vector": {
+                        "xml": {
+                          "prefix": "vuln"
+                        },
+                        "type": "string"
+                      },
+                      "ProductID": {
+                        "xml": {
+                          "prefix": "vuln"
+                        },
+                        "type": "number"
+                      }
+                    }
+                  }
+                },
+                "Remediations": {
+                  "xml": {
+                    "prefix": "vuln",
+                    "wrapped": true
+                  },
+                  "type": "array",
+                  "items": {
+                    "xml": {
+                      "name": "Remediation",
+                      "prefix": "vuln"
+                    },
+                    "type": "object",
+                    "properties": {
+                      "Type": {
+                        "xml": {
+                          "attribute": true
+                        },
+                        "type": "string"
+                      },
+                      "Description": {
+                        "xml": {
+                          "prefix": "vuln"
+                        },
+                        "type": "integer"
+                      },
+                      "URL": {
+                        "xml": {
+                          "prefix": "vuln"
+                        },
+                        "type": "string"
+                      },
+                      "Supercedence": {
+                        "xml": {
+                          "prefix": "vuln"
+                        },
+                        "type": "string"
+                      },
+                      "ProductID": {
+                        "type": "array",
+                        "items": {
+                          "xml": {
+                            "name": "ProductID",
+                            "prefix": "vuln"
+                          },
+                          "type": "string"
+                        }
+                      },
+                      "AffectedFiles": {
+                        "xml": {
+                          "prefix": "vuln",
+                          "wrapped": false
+                        },
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "ProductId": {
+                              "xml": {
+                                "prefix": "vuln"
+                              },
+                              "type": "string"
+                            },
+                            "FileName": {
+                              "xml": {
+                                "prefix": "vuln"
+                              },
+                              "type": "string"
+                            },
+                            "FileVersion": {
+                              "xml": {
+                                "prefix": "vuln"
+                              },
+                              "type": "string"
+                            },
+                            "FilePath": {
+                              "xml": {
+                                "prefix": "vuln"
+                              },
+                              "type": "string"
+                            },
+                            "FileLastModified": {
+                              "xml": {
+                                "prefix": "vuln"
+                              },
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "FileArchitecture": {
+                              "xml": {
+                                "prefix": "vuln"
+                              },
+                              "type": "string"
+                            }
+                          }
+                        }
+                      },
+                      "RestartRequired": {
+                        "xml": {
+                          "prefix": "vuln"
+                        },
+                        "type": "string"
+                      },
+                      "SubType": {
+                        "xml": {
+                          "prefix": "vuln"
+                        },
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "Acknowledgements": {
+                  "xml": {
+                    "prefix": "vuln",
+                    "wrapped": true
+                  },
+                  "type": "array",
+                  "items": {
+                    "xml": {
+                      "prefix": "vuln",
+                      "name": "Acknowledgement"
+                    },
+                    "type": "object",
+                    "properties": {
+                      "Name": {
+                        "xml": {
+                          "prefix": "vuln"
+                        },
+                        "type": "string"
+                      },
+                      "URL": {
+                        "xml": {
+                          "prefix": "vuln"
+                        },
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "RevisionHistory": {
+                  "xml": {
+                    "prefix": "vuln",
+                    "wrapped": true
+                  },
+                  "type": "array",
+                  "items": {
+                    "xml": {
+                      "prefix": "vuln",
+                      "name": "Revision"
+                    },
+                    "type": "object",
+                    "properties": {
+                      "Number": {
+                        "xml": {
+                          "prefix": "vuln"
+                        },
+                        "type": "number"
+                      },
+                      "Date": {
+                        "xml": {
+                          "prefix": "vuln"
+                        },
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "Description": {
+                        "xml": {
+                          "prefix": "vuln"
+                        },
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
             }
+          }
         }
+      }
     }
+  }
 }

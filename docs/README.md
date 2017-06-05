@@ -9,3 +9,6 @@ For more information on CVRF, please view the following links:
 https://cve.mitre.org/cve/cvrf.html
 
 http://www.icasi.org/the-common-vulnerability-reporting-framework-cvrf-v1-1/
+
+**Note: there is [currently a bug](https://github.com/swagger-api/swagger-editor/issues/1303
+) in the new swagger editor (http://editor.swagger.io). If you see the error "Semantic error at paths./Updates('{id}') Partial path templating is not allowed.", don't be alarmed. the older swagger editor (http://editor2.swagger.io) will render the swagger without errors. There shouldn't be any issue with how the new editor displays the endpoint or its responses, it just puts an error at the top of the page**
