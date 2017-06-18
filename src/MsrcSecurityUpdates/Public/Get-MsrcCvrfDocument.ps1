@@ -110,11 +110,18 @@ Process {
     
             Write-Verbose -Message "Calling $($RestMethod.uri)"
 
-            Invoke-RestMethod @RestMethod
+            $response = Invoke-RestMethod @RestMethod
      
         } catch {
             Write-Error "HTTP Get failed with status code $($_.Exception.Response.StatusCode): $($_.Exception.Response.StatusDescription)"       
         }
+    
+        # Invoke-RestMethod will return an string on PowerShell 4.0 and earlier
+        # if the JSON-formatted response is larger than about two million characters
+        if (-not $AsXml -and $response -is [string]) {
+            $response = ParseJsonString($response)
+        }
+        $response
     }
 }
 End {}
