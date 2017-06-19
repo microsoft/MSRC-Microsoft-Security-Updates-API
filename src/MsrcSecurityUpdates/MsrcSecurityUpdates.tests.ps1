@@ -165,24 +165,25 @@ Describe 'Function: Get-MsrcVulnerabilityReportHtml (generates the MSRC Vulnerab
     }
 }
 
+InModuleScope MsrcSecurityUpdates {
+	Describe 'Function: Get-KBDownloadUrl (generates the html for KBArticle downloads used in the vulnerability report affected software table)' {
+		It 'Get-KBDownloadUrl by pipeline' {
+			{
+				$doc = Get-MsrcCvrfDocument -ID 2017-May
+				$af = $doc | Get-MsrcCvrfAffectedSoftware 
+				$af.KBArticle | Get-KBDownloadUrl
+			} |
+			Should Not Throw
+		}
 
-Describe 'Function: Get-KBDownloadUrl (generates the html for KBArticle downloads used in the vulnerability report affected software table)' {
-    It 'Get-KBDownloadUrl by pipeline' {
-        {
-            $doc = Get-MsrcCvrfDocument -ID 2017-May
-            $af = $doc | Get-MsrcCvrfAffectedSoftware 
-            $af.KBArticle | Get-KBDownloadUrl
-        } |
-        Should Not Throw
-    }
 
-
-    It "Get-KBDownloadUrl by parameters" {
-        {
-            $doc = Get-MsrcCvrfDocument -ID 2017-May
-            $af = $doc | Get-MsrcCvrfAffectedSoftware 
-            Get-KBDownloadUrl -KBArticleObject $af.KBArticle
-        } |
-        Should Not Throw
-    }
+		It "Get-KBDownloadUrl by parameters" {
+			{
+				$doc = Get-MsrcCvrfDocument -ID 2017-May
+				$af = $doc | Get-MsrcCvrfAffectedSoftware 
+				Get-KBDownloadUrl -KBArticleObject $af.KBArticle
+			} |
+			Should Not Throw
+		}
+	}
 }
