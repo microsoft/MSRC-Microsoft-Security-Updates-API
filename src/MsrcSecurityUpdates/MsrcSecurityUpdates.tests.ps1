@@ -152,17 +152,17 @@ Describe 'Function: Get-MsrcVulnerabilityReportHtml (generates the MSRC Vulnerab
         Should Not Throw
     }
 
-    Get-MsrcSecurityUpdate | 
-    Foreach-Object {
-        It "Vulnerability Summary Report - none shall throw: $($PSItem.ID)" {
-            {
-                Get-MsrcCvrfDocument -ID $PSItem.ID |
-                Get-MsrcVulnerabilityReportHtml | 
-                Out-Null
-            } |
-            Should Not Throw
-        }
-    }
+    #Get-MsrcSecurityUpdate | 
+    #Foreach-Object {
+    #    It "Vulnerability Summary Report - none shall throw: $($PSItem.ID)" {
+    #        {
+    #            Get-MsrcCvrfDocument -ID $PSItem.ID |
+    #            Get-MsrcVulnerabilityReportHtml | 
+    #            Out-Null
+    #        } |
+    #        Should Not Throw
+    #    }
+    #}
 }
 
 InModuleScope MsrcSecurityUpdates {
@@ -186,4 +186,10 @@ InModuleScope MsrcSecurityUpdates {
 			Should Not Throw
 		}
 	}
+}
+
+#When a pester test fails, it writes out to stdout, and sets an error in $Error. When invoking powershell from C# it is a lot easier to read the stderr stream.
+if($Error)
+{
+    Write-Error "A pester test has failed during the validation process"
 }
