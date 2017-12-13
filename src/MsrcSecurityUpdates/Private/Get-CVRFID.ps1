@@ -39,11 +39,13 @@ Process {
         if ($ID) {
 
             (Invoke-RestMethod @RestMethod).Value | 
-            Where-Object { $_.ID -eq $ID }
+            Where-Object { $_.ID -eq $ID } | 
+            Where-Object { $_ -ne '2017-May-B' }
     
         } else {
         
-            ((Invoke-RestMethod @RestMethod).Value).ID
+            ((Invoke-RestMethod @RestMethod).Value).ID | 
+            Where-Object { $_ -ne '2017-May-B' }
         }
 
     } catch {
