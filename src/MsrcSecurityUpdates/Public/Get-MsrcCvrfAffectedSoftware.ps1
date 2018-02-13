@@ -87,10 +87,10 @@ Process {
                         "$($_)"
                     }
                 ) ;
-                CvssScoreSet = $( [PSCustomObject] @{ 
-                        base=    ($v.CVSSScoreSets | Where-Object { $_.ProductID -contains $id } ).BaseScore;
-                        temporal=($v.CVSSScoreSets | Where-Object { $_.ProductID -contains $id } ).TemporalScore;;
-                        vector=  ($v.CVSSScoreSets | Where-Object { $_.ProductID -contains $id } ).Vector;
+                CvssScoreSet = $( [PSCustomObject]@{ 
+                        base=    ($v.CVSSScoreSets | Where-Object { $_.ProductID -contains $id } | Select-Object -First 1).BaseScore;
+                        temporal=($v.CVSSScoreSets | Where-Object { $_.ProductID -contains $id } | Select-Object -First 1).TemporalScore;;
+                        vector=  ($v.CVSSScoreSets | Where-Object { $_.ProductID -contains $id } | Select-Object -First 1).Vector;
                     }
                 ) ;
             }
