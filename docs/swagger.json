@@ -470,7 +470,7 @@
                     "URL": {
                       "type": "string"
                     },
-                    "Supercedence": {
+                    "Supersedence": {
                       "type": "string"
                     },
                     "ProductID": {
@@ -1063,7 +1063,7 @@
                         },
                         "type": "string"
                       },
-                      "Supercedence": {
+                      "Supersedence": {
                         "xml": {
                           "prefix": "vuln"
                         },
