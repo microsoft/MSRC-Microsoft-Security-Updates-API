@@ -107,7 +107,7 @@ Process {
         }
 
         try {
-    
+            [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
             Write-Verbose -Message "Calling $($RestMethod.uri)"
 
             $response = Invoke-RestMethod @RestMethod
