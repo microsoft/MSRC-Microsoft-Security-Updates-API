@@ -48,7 +48,7 @@ Describe 'Function: Get-MsrcSecurityUpdateMSRC (calls the /Updates API)' {
     }
 
     It 'Get-MsrcSecurityUpdate - by date - before' {
-        Get-MsrcSecurityUpdate -Before 2017-01-01 | 
+        Get-MsrcSecurityUpdate -Before 2018-01-01 | 
         Should Not BeNullOrEmpty 
     }
 
@@ -58,7 +58,7 @@ Describe 'Function: Get-MsrcSecurityUpdateMSRC (calls the /Updates API)' {
     }
 
     It 'Get-MsrcSecurityUpdate - by date - before and after' {
-        Get-MsrcSecurityUpdate -Before 2017-01-01 -After 2016-10-01 | 
+        Get-MsrcSecurityUpdate -Before 2018-01-01 -After 2017-10-01 | 
         Should Not BeNullOrEmpty 
     }
 }
@@ -75,7 +75,7 @@ Describe 'Function: Get-MsrcCvrfDocument (calls the MSRC /cvrf API)' {
         Should Not BeNullOrEmpty 
     }
 
-    Get-MsrcSecurityUpdate | 
+    Get-MsrcSecurityUpdate | Where-Object { $_.ID -ne '2017-May-B' } |
     Foreach-Object {
         It "Get-MsrcCvrfDocument - none shall throw: $($PSItem.ID)" {
             {
@@ -84,6 +84,14 @@ Describe 'Function: Get-MsrcCvrfDocument (calls the MSRC /cvrf API)' {
             } |
             Should Not Throw
         }
+    }
+
+    It 'Get-MsrcCvrfDocument for 2017-May-B with Get-MsrcCvrfDocument should throw' {
+        {
+            Get-MsrcSecurityUpdate | Where { $_.ID -eq '2017-May-B' } | Foreach-Object {
+            $null = Get-MsrcCvrfDocument -ID $PSItem.ID
+            }
+        } | Should Throw
     }
 }
 
@@ -152,7 +160,7 @@ Describe 'Function: Get-MsrcVulnerabilityReportHtml (generates the MSRC Vulnerab
         Should Not Throw
     }
 
-    Get-MsrcSecurityUpdate | 
+    Get-MsrcSecurityUpdate | Where-Object { $_.ID -ne '2017-May-B' } |
     Foreach-Object {
         It "Vulnerability Summary Report - none shall throw: $($PSItem.ID)" {
             {
