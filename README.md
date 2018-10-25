@@ -24,7 +24,7 @@ Once the module is loaded, check out our [PowerShell samples](https://github.com
 # API Keys
 The Security Updates API requires an API key.  To obtain an API key please visit the [Security Updates Guide](https://portal.msrc.microsoft.com/en-us/security-guidance).  For help using the Security Updates Guide please visit the [Security Updates Guide Community Forum](https://social.technet.microsoft.com/Forums/security/en-us/home?forum=securityupdateguide).
 
-__NOTE: Currently generating api keys requires an @outlook.com, @live.com, or @microsoft.com email address. If you do not have one of these email addresses, you can create a personal outlook account to access this service while we investigate this issue.__
+__NOTE: Currently generating api keys requires an @outlook.com, @live.com, or @microsoft.com email address. If you do not have one of these email addresses, you can create a personal outlook account to access this service while we investigate this issue. Also, you must set your name on the [account.microsoft.com](https://account.microsoft.com/) website, otherwise the generation of the API key might fail silently.__
 
 # Change Log
 **_For up to date major changes, please read the psd1 included in the src folder. This can also be seen on [the Microsoft Powershell Gallery](https://www.powershellgallery.com/packages/MsrcSecurityUpdates)._**
