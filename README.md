@@ -1,5 +1,5 @@
 # Welcome
-Microsoft provides an API for getting security update details using [Common Vulnerability Reporting Format](http://www.icasi.org/cvrf/). View our [blog post](https://blogs.technet.microsoft.com/msrc/2016/11/08/furthering-our-commitment-to-security-updates/) for more info. 
+Microsoft provides an API for getting security update details using [Common Vulnerability Reporting Format](http://www.icasi.org/cvrf/). View our [blog post](https://blogs.technet.microsoft.com/msrc/2016/11/08/furthering-our-commitment-to-security-updates/) for more info.
 
 The [Security Updates Guide](https://portal.msrc.microsoft.com/en-us/security-guidance) is a great place to find security updates in a browser, and the Security Updates API is intended for doing automation around Microsoft security updates.
 
@@ -29,7 +29,7 @@ __NOTE: Currently generating api keys requires an @outlook.com, @live.com, or @m
 # Change Log
 **_For up to date major changes, please read the psd1 included in the src folder. This can also be seen on [the Microsoft Powershell Gallery](https://www.powershellgallery.com/packages/MsrcSecurityUpdates)._**
 
-**May 2017** - Added RestartRequired and SubType to the remediations object in the API response. 
+**May 2017** - Added RestartRequired and SubType to the remediations object in the API response.
 
 
 # Contributing
