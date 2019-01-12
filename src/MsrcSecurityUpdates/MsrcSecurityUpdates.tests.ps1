@@ -77,7 +77,7 @@ Describe 'Function: Get-MsrcCvrfDocument (calls the MSRC /cvrf API)' {
 
     Get-MsrcSecurityUpdate | Where-Object { $_.ID -ne '2017-May-B' } |
     Foreach-Object {
-        It "Get-MsrcCvrfDocument - none shall throw: $($PSItem.ID)" {
+        It 'Get-MsrcCvrfDocument - none shall throw: $($PSItem.ID)' {
             {
                 Get-MsrcCvrfDocument -ID $PSItem.ID | 
                 Out-Null
@@ -185,7 +185,7 @@ InModuleScope MsrcSecurityUpdates {
 		}
 
 
-		It "Get-KBDownloadUrl by parameters" {
+		It 'Get-KBDownloadUrl by parameters' {
 			{
 				$doc = Get-MsrcCvrfDocument -ID 2017-May
 				$af = $doc | Get-MsrcCvrfAffectedSoftware 
@@ -194,4 +194,10 @@ InModuleScope MsrcSecurityUpdates {
 			Should Not Throw
 		}
 	}
+}
+
+#When a pester test fails, it writes out to stdout, and sets an error in $Error. When invoking powershell from C# it is a lot easier to read the stderr stream.
+if($Error)
+{
+    Write-Error 'A pester test has failed during the validation process'
 }

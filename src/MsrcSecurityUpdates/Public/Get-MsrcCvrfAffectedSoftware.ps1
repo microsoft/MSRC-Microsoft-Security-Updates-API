@@ -79,11 +79,11 @@ Process {
                         "$($_)"
                     }
                 ) ;
-                Supercedence = $(
+                Supersedence = $(
                     (
                         $v.Remediations | 
                         Where-Object { $_.ProductID -contains $id }
-                    ).Supercedence | ForEach-Object {
+                    ).Supersedence | ForEach-Object {
                         "$($_)"
                     }
                 ) ;
