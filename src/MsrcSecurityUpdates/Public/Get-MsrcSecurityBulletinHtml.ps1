@@ -326,7 +326,7 @@ Process {
                         'None'
                     } else {
                         ($_.KBArticle | ForEach-Object {
-                            '<a href="https://catalog.update.microsoft.com/v7/site/Search.aspx?q={0}">{0}</a><br>' -f  $_
+                            '<a href="https://www.catalog.update.microsoft.com/Search.aspx?q={0}">{0}</a><br>' -f  $_
                         }) -join '<br />'
                     }
                 ),
