@@ -1,9 +1,9 @@
 # Welcome
-Microsoft provides an API for getting security update details using [Common Vulnerability Reporting Format](http://www.icasi.org/cvrf/). View our [blog post](https://blogs.technet.microsoft.com/msrc/2016/11/08/furthering-our-commitment-to-security-updates/) for more info. 
+Microsoft provides an API for programmatic access to security update details using [Common Vulnerability Reporting Format](http://www.icasi.org/cvrf/). View our [blog post](https://blogs.technet.microsoft.com/msrc/2016/11/08/furthering-our-commitment-to-security-updates/) for more info. 
 
-The [Security Updates Guide](https://portal.msrc.microsoft.com/en-us/security-guidance) is a great place to find security updates in a browser, and the Security Updates API is intended for doing automation around Microsoft security updates.
+The Microsoft [Security Updates Guide](https://portal.msrc.microsoft.com/en-us/security-guidance) is the web experience to find security update detail.
 
-This project contains sample code and documentation for the Microsoft Security Updates API (https://portal.msrc.microsoft.com/en-us/developer), including:
+This repository contains sample code and documentation for the Microsoft Security Updates API (https://portal.msrc.microsoft.com/en-us/developer), including:
 * source code for the [MsrcSecurityUpdates PowerShell module](https://www.powershellgallery.com/packages/MsrcSecurityUpdates)
 * sample code for using the [MsrcSecurityUpdates PowerShell module](https://www.powershellgallery.com/packages/MsrcSecurityUpdates)
 * OpenAPI/Swagger definition for the Microsoft Security Updates API
@@ -13,8 +13,7 @@ Getting started with the MsrcSecurityUpdates module can be done like this:
 ```PowerShell
 ### Install the module from the PowerShell Gallery
 ###  !! Requires PowerShell V5
-###  !! Install-Module requires admin permission
-Install-Module -Name MsrcSecurityUpdates
+Install-Module -Name MsrcSecurityUpdates -Scope CurrentUser
 
 ### Load the module
 Import-Module -Name MsrcSecurityUpdates
@@ -29,8 +28,13 @@ __NOTE: Currently generating api keys requires an @outlook.com, @live.com, or @m
 # Change Log
 **_For up to date major changes, please read the psd1 included in the src folder. This can also be seen on [the Microsoft Powershell Gallery](https://www.powershellgallery.com/packages/MsrcSecurityUpdates)._**
 
-**May 2017** - Added RestartRequired and SubType to the remediations object in the API response. 
-
+# Support
+## Developer Support
+Customers should treat this repository as custom code.  Bug fixes or enhancements can be requested by opening a new issue from the Issues tab.
+## Security Update Support
+For questions about CVEs, security updates and patches, please visit [Microsoft Support](https://support.microsoft.com)
+## Security Update Guide Support
+For questions about the [Microsoft Security Update Guide](https://portal.msrc.microsoft.com) please visit the [Security Update Guide support forum](https://social.technet.microsoft.com/Forums/security/en-us/home?forum=securityupdateguide).
 
 # Contributing
 
