@@ -1,7 +1,7 @@
 ﻿
 # Import module would only work if the module is found in standard locations
 # Import-Module -Name MsrcSecurityUpdates -Force
-Import-Module .\MsrcSecurityUpdates.psd1 -Verbose -Force
+Import-Module (Join-Path -Path $PSScriptRoot -ChildPath 'MsrcSecurityUpdates.psd1') -Verbose -Force
 
 # Set-MSRCApiKey -ApiKey "API KEY PLACEHOLDER" -Verbose
 
@@ -77,7 +77,7 @@ Describe 'Function: Get-MsrcCvrfDocument (calls the MSRC /cvrf API)' {
 
     Get-MsrcSecurityUpdate | Where-Object { $_.ID -ne '2017-May-B' } |
     Foreach-Object {
-        It 'Get-MsrcCvrfDocument - none shall throw: $($PSItem.ID)' {
+        It "Get-MsrcCvrfDocument - none shall throw: $($PSItem.ID)" {
             {
                 Get-MsrcCvrfDocument -ID $PSItem.ID | 
                 Out-Null
