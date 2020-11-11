@@ -12,7 +12,7 @@
 RootModule = 'MsrcSecurityUpdates.psm1'
 
 # Version number of this module.
-ModuleVersion = '1.7.3'
+ModuleVersion = '1.8.4'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -118,6 +118,7 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+October 23, 2020 - Replaced Description with CVSS table in Get-MsrcVulnerabilityReportHtml
 February 9, 2017 - Initial release to https://github.com/Microsoft/MSRC-Microsoft-Security-Updates-API
 March 8, 2017 - Refactored into a script module and added basic Pester tests
 March 14, 2017 - Added some error handling for when fields are not in the returned CVRF api reply
