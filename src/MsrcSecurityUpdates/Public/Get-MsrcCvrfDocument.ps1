@@ -113,7 +113,7 @@ Process {
             $response = Invoke-RestMethod @RestMethod
 
         } catch {
-            Write-Error "HTTP Get failed with status code $($_.Exception.Response.StatusCode): $($_.Exception.Response.StatusDescription)"
+            Write-Error -Message "HTTP Get failed with status code $($_.Exception.Response.StatusCode): $($_.Exception.Response.StatusDescription)"
         }
 
         # Invoke-RestMethod will return an string on PowerShell 4.0 and earlier

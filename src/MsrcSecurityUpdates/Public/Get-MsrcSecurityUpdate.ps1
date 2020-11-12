@@ -204,11 +204,11 @@ Process {
             $r = Invoke-RestMethod @RestMethod
 
         } catch {
-            Write-Error "HTTP Get failed with status code $($_.Exception.Response.StatusCode): $($_.Exception.Response.StatusDescription)"
+            Write-Error -Message "HTTP Get failed with status code $($_.Exception.Response.StatusCode): $($_.Exception.Response.StatusDescription)"
         }
 
         if (-not $r) {
-            Write-Warning 'No results returned from the /Update API'
+            Write-Warning -Message 'No results returned from the /Update API'
         } else {
             $r.Value
         }
