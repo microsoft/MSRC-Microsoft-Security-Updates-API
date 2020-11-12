@@ -79,8 +79,7 @@ Describe 'Function: Get-MsrcCvrfDocument (calls the MSRC /cvrf API)' {
     Foreach-Object {
         It "Get-MsrcCvrfDocument - none shall throw: $($PSItem.ID)" {
             {
-                Get-MsrcCvrfDocument -ID $PSItem.ID |
-                Out-Null
+                $null = Get-MsrcCvrfDocument -ID $PSItem.ID
             } |
             Should Not Throw
         }
@@ -88,8 +87,9 @@ Describe 'Function: Get-MsrcCvrfDocument (calls the MSRC /cvrf API)' {
 
     It 'Get-MsrcCvrfDocument for 2017-May-B with Get-MsrcCvrfDocument should throw' {
         {
-            Get-MsrcSecurityUpdate | Where-Object { $_.ID -eq '2017-May-B' } | Foreach-Object {
-            $null = Get-MsrcCvrfDocument -ID $PSItem.ID
+            Get-MsrcSecurityUpdate | Where-Object { $_.ID -eq '2017-May-B' } |
+            Foreach-Object {
+                $null = Get-MsrcCvrfDocument -ID $PSItem.ID
             }
         } | Should Throw
     }
@@ -154,8 +154,8 @@ InModuleScope MsrcSecurityUpdates {
 Describe 'Function: Get-MsrcVulnerabilityReportHtml (generates the MSRC Vulnerability Summary HTML Report)' {
     It 'Vulnerability Summary Report - does not throw' {
         {
-            Get-MsrcCvrfDocument -ID 2016-Nov |
-            Get-MsrcVulnerabilityReportHtml -Verbose | Out-Null
+            $null = Get-MsrcCvrfDocument -ID 2016-Nov |
+            Get-MsrcVulnerabilityReportHtml -Verbose -ShowNoProgress
         } |
         Should Not Throw
     }
@@ -164,9 +164,8 @@ Describe 'Function: Get-MsrcVulnerabilityReportHtml (generates the MSRC Vulnerab
     Foreach-Object {
         It "Vulnerability Summary Report - none shall throw: $($PSItem.ID)" {
             {
-                Get-MsrcCvrfDocument -ID $PSItem.ID |
-                Get-MsrcVulnerabilityReportHtml |
-                Out-Null
+                $null = Get-MsrcCvrfDocument -ID $PSItem.ID |
+                Get-MsrcVulnerabilityReportHtml -ShowNoProgress
             } |
             Should Not Throw
         }
