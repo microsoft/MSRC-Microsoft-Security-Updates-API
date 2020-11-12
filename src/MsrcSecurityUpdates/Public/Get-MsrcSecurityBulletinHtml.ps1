@@ -14,7 +14,7 @@ Param(
 
     [Parameter(Mandatory,ValueFromPipelineByPropertyName)]
     $DocumentTitle
-)    
+)
 Begin {
 
     $htmlDocumentTemplate = @'
@@ -22,7 +22,7 @@ Begin {
 <head>
     <!-- this is the css from the old bulletin site. Change this to better style your report to your liking -->
     <link rel="stylesheet" href="https://i-technet.sec.s-msft.com/Combined.css?resources=0:ImageSprite,0:TopicResponsive,0:TopicResponsive.MediaQueries,1:CodeSnippet,1:ProgrammingSelector,1:ExpandableCollapsibleArea,0:CommunityContent,1:TopicNotInScope,1:FeedViewerBasic,1:ImageSprite,2:Header.2,2:HeaderFooterSprite,2:Header.MediaQueries,2:Banner.MediaQueries,3:megabladeMenu.1,3:MegabladeMenu.MediaQueries,3:MegabladeMenuSpriteCluster,0:Breadcrumbs,0:Breadcrumbs.MediaQueries,0:ResponsiveToc,0:ResponsiveToc.MediaQueries,1:NavSidebar,0:LibraryMemberFilter,4:StandardRating,2:Footer.2,5:LinkList,2:Footer.MediaQueries,0:BaseResponsive,6:MsdnResponsive,0:Tables.MediaQueries,7:SkinnyRatingResponsive,7:SkinnyRatingV2;/Areas/Library/Content:0,/Areas/Epx/Content/Css:1,/Areas/Epx/Themes/TechNet/Content:2,/Areas/Epx/Themes/Shared/Content:3,/Areas/Global/Content:4,/Areas/Epx/Themes/Base/Content:5,/Areas/Library/Themes/Msdn/Content:6,/Areas/Library/Themes/TechNet/Content:7&amp;v=9192817066EC5D087D15C766A0430C95">
-    
+
     <!-- this style section changes cell widths in the exec header table so that the affected products at the end are wide enough to read -->
     <style>
         #execHeader td:first-child  {{ width: 10% ;}}
@@ -55,9 +55,9 @@ released on the same day as the monthly security updates. Please see the section
 </p>
 
 <p>
-As a reminder, the <a href="https://portal.msrc.microsoft.com/en-us/security-guidance">Security Updates Guide</a> 
-will be replacing security bulletins. Please see our blog post, 
-<a href="https://blogs.technet.microsoft.com/msrc/2016/11/08/furthering-our-commitment-to-security-updates/">Furthering our commitment to security updates</a>, for more details.
+As a reminder, the <a href="https://portal.msrc.microsoft.com/en-us/security-guidance">Security Updates Guide</a>
+will be replacing security bulletins. Please see our blog post,
+ <a href="https://blogs.technet.microsoft.com/msrc/2016/11/08/furthering-our-commitment-to-security-updates/">Furthering our commitment to security updates</a>, for more details.
 </p>
 
 <p>To receive automatic notifications whenever Microsoft Security
@@ -101,7 +101,7 @@ For details on affected software, see the next section, Affected Software.
    <td><b>Vulnerability Title</b></td>
    <td><b>Exploitability Assessment for Latest Software Release</b></td>
    <td><b>Exploitability Assessment for Older Software Release</b></td>
-   <td><b>Denial of Service Exploitability Assessment</b></td>   
+   <td><b>Denial of Service Exploitability Assessment</b></td>
   </tr>
  </thead>
  {2}
@@ -127,16 +127,16 @@ For details on affected software, see the next section, Affected Software.
         security misconfigurations.
     </li>
     <li>
-        Windows Server Update Services (WSUS), Systems Management Server (SMS), 
+        Windows Server Update Services (WSUS), Systems Management Server (SMS),
         and System Center Configuration Manager help administrators distribute security updates.
     </li>
     <li>
-        The Update Compatibility Evaluator components included with Application Compatibility 
+        The Update Compatibility Evaluator components included with Application Compatibility
         Toolkit aid in streamlining the testing and validation of Windows updates against installed applications.
     </li>
 </ul>
 
-<p>For information about these and other tools that are available, see 
+<p>For information about these and other tools that are available, see
     <a href="http://technet.microsoft.com/security/cc297183">Security Tools for IT Pros</a>.
 </p>
 
@@ -157,7 +157,7 @@ information to provide updated protections to customers via their security softw
 or devices, such as antivirus, network-based intrusion detection systems, or host-based
 intrusion prevention systems. To determine whether active protections are available
 from security software providers, please visit the active protections websites provided
-by program partners, listed in 
+by program partners, listed in
 <a href="http://go.microsoft.com/fwlink/?LinkId=215201">Microsoft Active Protections Program (MAPP) Partners</a>.
 </p>
 
@@ -178,7 +178,7 @@ by program partners, listed in
 <h2>IT Pro Security Community</h2>
 
 <p>Learn to improve security and optimize your IT infrastructure,
-and participate with other IT Pros on security topics in 
+and participate with other IT Pros on security topics in
 <a href="http://go.microsoft.com/fwlink/?LinkId=21164">IT Pro Security Community</a>.
 </p>
 
@@ -187,12 +187,12 @@ and participate with other IT Pros on security topics in
 <li>
     The affected software listed has been tested to determine
     which versions are affected. Other versions are past their support life cycle. To
-    determine the support life cycle for your software version, visit 
+    determine the support life cycle for your software version, visit
     <a href="http://go.microsoft.com/fwlink/?LinkId=21742">Microsoft Support Lifecycle</a>.
 </li>
 <li>
     Help protect your computer that is running Windows
-    from viruses and malware: 
+    from viruses and malware:
     <a href="http://support.microsoft.com/contactus/cu_sc_virsec_master">Virus and Security Solution Center</a>
 </li>
 </ul>
@@ -213,7 +213,7 @@ damages so the foregoing limitation may not apply.</p>
 
  </body>
 </html>
-'@ 
+'@
 
     $cveSummaryRowTemplate = @'
 <tr>
@@ -249,8 +249,8 @@ damages so the foregoing limitation may not apply.</p>
                 <td><b>CVE ID</b></td>
                 <td><b>KB Article</b></td>
                 <td><b>Restart Required</b></td>
-                <td><b>Severity</b></td>  
-                <td><b>Impact</b></td>  
+                <td><b>Severity</b></td>
+                <td><b>Impact</b></td>
             </tr>
         {1}
     </table>
@@ -277,7 +277,7 @@ Process {
         ProductTree = $PSBoundParameters['ProductTree']
     }
 
-    Get-MsrcCvrfCVESummary @HT | 
+    Get-MsrcCvrfCVESummary @HT |
     ForEach-Object {
         $cveSummaryTableHtml += $cveSummaryRowTemplate -f @(
             "$($_.CVE)<br><a href=`"http://www.cve.mitre.org/cgi-bin/cvename.cgi?name=$($_.CVE)`">MITRE</a><br><a href=`"https://web.nvd.nist.gov/view/vuln/detail?vulnId=$($_.CVE)`">NVD</a>"
@@ -291,14 +291,14 @@ Process {
 
     #region Exploitability Index Table
 
-    Get-MsrcCvrfExploitabilityIndex -Vulnerability $PSBoundParameters['Vulnerability'] | 
+    Get-MsrcCvrfExploitabilityIndex -Vulnerability $PSBoundParameters['Vulnerability'] |
     ForEach-Object {
         $exploitabilityIndexTableHtml += $exploitabilityRowTemplate -f @(
             $_.CVE #TODO - make this an href
             $_.Title
             $_.LatestSoftwareRelease
             $_.OlderSoftwareRelease
-            'N/A' # was $ExploitStatus.DenialOfService           
+            'N/A' # was $ExploitStatus.DenialOfService
         )
     }
     #endregion
@@ -307,16 +307,16 @@ Process {
 
     $affectedSoftware = Get-MsrcCvrfAffectedSoftware @HT
 
-    $affectedSoftware.FullProductName | 
-    Sort-Object -Unique | 
+    $affectedSoftware.FullProductName |
+    Sort-Object -Unique |
     ForEach-Object {
 
         $PN = $_
-     
+
         $affectedSoftwareTableHtml = ''
-        
-        $affectedSoftware | 
-        Where-Object { $_.FullProductName -eq $PN } | 
+
+        $affectedSoftware |
+        Where-Object { $_.FullProductName -eq $PN } |
         Sort-Object -Unique -Property CVE |
         ForEach-Object {
             $affectedSoftwareTableHtml += $affectedSoftwareRowTemplate -f @(
@@ -351,7 +351,7 @@ Process {
                 $(
                     if (-not($_.Impact)) {
                         'Unknown'
-                    } else { 
+                    } else {
                         ($_.Impact | ForEach-Object {
                             '{0}<br>' -f $_
                         }) -join '<br />'

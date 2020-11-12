@@ -11,9 +11,9 @@ Function Get-MsrcCvrfCVESummary {
 
     .EXAMPLE
         Get-MsrcCvrfDocument -ID 2016-Nov | Get-MsrcCvrfCVESummary
-   
+
         Get the CVE summary from a CVRF document using the pipeline.
-   
+
     .EXAMPLE
         $cvrfDocument = Get-MsrcCvrfDocument -ID 2016-Nov
         Get-MsrcCvrfCVESummary -Vulnerability $cvrfDocument.Vulnerability
@@ -24,7 +24,7 @@ Function Get-MsrcCvrfCVESummary {
 Param (
     [Parameter(Mandatory,ValueFromPipelineByPropertyName)]
     $Vulnerability,
-    
+
     [Parameter(Mandatory,ValueFromPipelineByPropertyName)]
     $ProductTree
 )
