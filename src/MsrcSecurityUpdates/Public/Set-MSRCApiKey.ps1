@@ -1,5 +1,3 @@
-#Requires -Version 3.0
-
 Function Set-MSRCApiKey {
 [CmdletBinding(SupportsShouldProcess)]
 Param(

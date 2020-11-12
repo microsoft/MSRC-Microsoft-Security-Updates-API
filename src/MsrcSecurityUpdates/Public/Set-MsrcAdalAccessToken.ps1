@@ -1,11 +1,9 @@
-#Requires -Version 3.0
-
 Function Set-MSRCAdalAccessToken {
 [CmdletBinding()]
 Param()
 Begin {}
 Process {
-    
+
     $authority = 'https://login.windows.net/microsoft.onmicrosoft.com/'
 
     $authContext = New-Object Microsoft.IdentityModel.Clients.ActiveDirectory.AuthenticationContext($authority)
