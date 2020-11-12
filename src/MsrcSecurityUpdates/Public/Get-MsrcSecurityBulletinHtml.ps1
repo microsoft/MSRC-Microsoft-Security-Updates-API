@@ -16,16 +16,48 @@ Param(
     $DocumentTitle
 )
 Begin {
+$css = @'
+        body {
+          background-color: darkgray;
+        }
 
+        h1 {
+          color: maroon;
+        }
+        table {
+          font-family: Arial, Helvetica, sans-serif;
+          border-collapse: collapse;
+          width: 100%;
+        }
+
+        table td, th {
+          border: 1px solid #ddd;
+          padding: 8px;
+        }
+
+        table tr:nth-child(even){
+          background-color: #ddd;
+        }
+
+        table tr:hover {background-color: #FAF0E6;}
+
+        table th {
+          padding-top: 12px;
+          padding-bottom: 12px;
+          text-align: left;
+          background-color: #C0C0C0;
+        }
+'@
     $htmlDocumentTemplate = @'
 <html>
 <head>
     <!-- Created by module version {4} -->
     <!-- this is the css from the old bulletin site. Change this to better style your report to your liking -->
-    <link rel="stylesheet" href="https://i-technet.sec.s-msft.com/Combined.css?resources=0:ImageSprite,0:TopicResponsive,0:TopicResponsive.MediaQueries,1:CodeSnippet,1:ProgrammingSelector,1:ExpandableCollapsibleArea,0:CommunityContent,1:TopicNotInScope,1:FeedViewerBasic,1:ImageSprite,2:Header.2,2:HeaderFooterSprite,2:Header.MediaQueries,2:Banner.MediaQueries,3:megabladeMenu.1,3:MegabladeMenu.MediaQueries,3:MegabladeMenuSpriteCluster,0:Breadcrumbs,0:Breadcrumbs.MediaQueries,0:ResponsiveToc,0:ResponsiveToc.MediaQueries,1:NavSidebar,0:LibraryMemberFilter,4:StandardRating,2:Footer.2,5:LinkList,2:Footer.MediaQueries,0:BaseResponsive,6:MsdnResponsive,0:Tables.MediaQueries,7:SkinnyRatingResponsive,7:SkinnyRatingV2;/Areas/Library/Content:0,/Areas/Epx/Content/Css:1,/Areas/Epx/Themes/TechNet/Content:2,/Areas/Epx/Themes/Shared/Content:3,/Areas/Global/Content:4,/Areas/Epx/Themes/Base/Content:5,/Areas/Library/Themes/Msdn/Content:6,/Areas/Library/Themes/TechNet/Content:7&amp;v=9192817066EC5D087D15C766A0430C95">
+    <!-- <link rel="stylesheet" href="https://i-technet.sec.s-msft.com/Combined.css?resources=0:ImageSprite,0:TopicResponsive,0:TopicResponsive.MediaQueries,1:CodeSnippet,1:ProgrammingSelector,1:ExpandableCollapsibleArea,0:CommunityContent,1:TopicNotInScope,1:FeedViewerBasic,1:ImageSprite,2:Header.2,2:HeaderFooterSprite,2:Header.MediaQueries,2:Banner.MediaQueries,3:megabladeMenu.1,3:MegabladeMenu.MediaQueries,3:MegabladeMenuSpriteCluster,0:Breadcrumbs,0:Breadcrumbs.MediaQueries,0:ResponsiveToc,0:ResponsiveToc.MediaQueries,1:NavSidebar,0:LibraryMemberFilter,4:StandardRating,2:Footer.2,5:LinkList,2:Footer.MediaQueries,0:BaseResponsive,6:MsdnResponsive,0:Tables.MediaQueries,7:SkinnyRatingResponsive,7:SkinnyRatingV2;/Areas/Library/Content:0,/Areas/Epx/Content/Css:1,/Areas/Epx/Themes/TechNet/Content:2,/Areas/Epx/Themes/Shared/Content:3,/Areas/Global/Content:4,/Areas/Epx/Themes/Base/Content:5,/Areas/Library/Themes/Msdn/Content:6,/Areas/Library/Themes/TechNet/Content:7&amp;v=9192817066EC5D087D15C766A0430C95"> -->
 
     <!-- this style section changes cell widths in the exec header table so that the affected products at the end are wide enough to read -->
     <style>
+{5}
         #execHeader td:first-child  {{ width: 10% ;}}
         #execHeader td:nth-child(5) {{ width: 37% ;}}
     </style>
@@ -372,7 +404,8 @@ Process {
         $cveSummaryTableHtml,           # CVE Summary Rows
         $exploitabilityIndexTableHtml,  # Expoitability Rows
         $affectedSoftwareDocumentHtml,  # Affected Software Rows
-        "$($MyInvocation.MyCommand.Version.ToString())"
+        "$($MyInvocation.MyCommand.Version.ToString())",
+        $css
     )
 
 }
