@@ -10,7 +10,7 @@
 
 Add-Type -Assembly System.Web.Extensions
 
-# .NET JSON Serializer 
+# .NET JSON Serializer
 $javaScriptSerializer = New-Object System.Web.Script.Serialization.JavaScriptSerializer
 $javaScriptSerializer.MaxJsonLength = [System.Int32]::MaxValue
 $javaScriptSerializer.RecursionLimit = 99
