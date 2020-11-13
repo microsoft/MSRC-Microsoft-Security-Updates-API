@@ -12,7 +12,7 @@
 RootModule = 'MsrcSecurityUpdates.psm1'
 
 # Version number of this module.
-ModuleVersion = '1.8.4'
+ModuleVersion = '1.8.5'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -40,7 +40,7 @@ https://portal.msrc.microsoft.com
 '@
 
 # Minimum version of the Windows PowerShell engine required by this module
-PowerShellVersion = '3.0'
+PowerShellVersion = '5.1'
 
 # Name of the Windows PowerShell host required by this module
 # PowerShellHostName = ''
@@ -79,16 +79,28 @@ RequiredAssemblies = @(
 # NestedModules = @()
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-FunctionsToExport = '*'
+# FunctionsToExport = '*'
+FunctionsToExport = @(
+    'Get-KBDownloadUrl',
+    'Get-MsrcCvrfAffectedSoftware',
+    'Get-MsrcCvrfCVESummary',
+    'Get-MsrcCvrfDocument',
+    'Get-MsrcCvrfExploitabilityIndex',
+    'Get-MsrcSecurityBulletinHtml',
+    'Get-MsrcSecurityUpdate',
+    'Get-MsrcVulnerabilityReportHtml',
+    'Set-MSRCAdalAccessToken',
+    'Set-MSRCApiKey'
+)
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
-CmdletsToExport = '*'
+# CmdletsToExport = '*'
 
 # Variables to export from this module
-VariablesToExport = '*'
+# VariablesToExport = '*'
 
 # Aliases to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no aliases to export.
-AliasesToExport = '*'
+# AliasesToExport = '*'
 
 # DSC resources to export from this module
 # DscResourcesToExport = @()
@@ -105,7 +117,7 @@ PrivateData = @{
     PSData = @{
 
         # Tags applied to this module. These help with module discovery in online galleries.
-        Tags = @('MSRC','Security', 'Updates','Microsoft', 'CVRF')
+        Tags = @('MSRC','Security', 'Updates','Microsoft', 'CVRF','PSEdition_Core','PSEdition_Desktop')
 
         # A URL to the license for this module.
         LicenseUri = 'https://github.com/Microsoft/MSRC-Microsoft-Security-Updates-API/blob/master/LICENSE.md'
@@ -123,7 +135,7 @@ February 9, 2017 - Initial release to https://github.com/Microsoft/MSRC-Microsof
 March 8, 2017 - Refactored into a script module and added basic Pester tests
 March 14, 2017 - Added some error handling for when fields are not in the returned CVRF api reply
 March 28, 2017 - Added Get-MsrcVulnerabilityReportHtml
-March 30, 2017 - PR from MVP (https://github.com/p0w3rsh3ll) Split module into public and private functions, etc 
+March 30, 2017 - PR from MVP (https://github.com/p0w3rsh3ll) Split module into public and private functions, etc
 April 5, 2017 - Added ability to use Azure AD tokens, the module now supports calling the APIs with an API key or AAD token
 April 18, 2017 - Small HTML change to Get-MsrcSecurityBulletinHtml.ps1
 April 28, 2017 - Bug fixes and some refactoring

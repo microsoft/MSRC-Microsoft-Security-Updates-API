@@ -23,64 +23,63 @@ Get-Help Get-MsrcSecurityBulletinHtml -Examples
 
 Get-Help Get-MsrcCvrfAffectedSoftware
 Get-Help Get-MsrcCvrfAffectedSoftware -Examples
-#> 
+#>
 
 Describe 'Function: Get-MsrcSecurityUpdateMSRC (calls the /Updates API)' {
 
     It 'Get-MsrcSecurityUpdate - all' {
-        Get-MsrcSecurityUpdate | 
-        Should Not BeNullOrEmpty 
+        Get-MsrcSecurityUpdate |
+        Should Not BeNullOrEmpty
     }
 
     It 'Get-MsrcSecurityUpdate - by year' {
-        Get-MsrcSecurityUpdate -Year 2017 | 
-        Should Not BeNullOrEmpty 
+        Get-MsrcSecurityUpdate -Year 2017 |
+        Should Not BeNullOrEmpty
     }
 
     It 'Get-MsrcSecurityUpdate - by vulnerability' {
-        Get-MsrcSecurityUpdate -Vulnerability CVE-2017-0003 | 
-        Should Not BeNullOrEmpty 
+        Get-MsrcSecurityUpdate -Vulnerability CVE-2017-0003 |
+        Should Not BeNullOrEmpty
     }
 
     It 'Get-MsrcSecurityUpdate - by cvrf' {
-        Get-MsrcSecurityUpdate -Cvrf 2017-Jan | 
-        Should Not BeNullOrEmpty 
+        Get-MsrcSecurityUpdate -Cvrf 2017-Jan |
+        Should Not BeNullOrEmpty
     }
 
     It 'Get-MsrcSecurityUpdate - by date - before' {
-        Get-MsrcSecurityUpdate -Before 2018-01-01 | 
-        Should Not BeNullOrEmpty 
+        Get-MsrcSecurityUpdate -Before 2018-01-01 |
+        Should Not BeNullOrEmpty
     }
 
     It 'Get-MsrcSecurityUpdate - by date - after' {
-        Get-MsrcSecurityUpdate -After 2017-01-01 | 
-        Should Not BeNullOrEmpty 
+        Get-MsrcSecurityUpdate -After 2017-01-01 |
+        Should Not BeNullOrEmpty
     }
 
     It 'Get-MsrcSecurityUpdate - by date - before and after' {
-        Get-MsrcSecurityUpdate -Before 2018-01-01 -After 2017-10-01 | 
-        Should Not BeNullOrEmpty 
+        Get-MsrcSecurityUpdate -Before 2018-01-01 -After 2017-10-01 |
+        Should Not BeNullOrEmpty
     }
 }
 
 Describe 'Function: Get-MsrcCvrfDocument (calls the MSRC /cvrf API)' {
 
     It 'Get-MsrcCvrfDocument - 2016-Nov' {
-        Get-MsrcCvrfDocument -ID 2016-Nov | 
-        Should Not BeNullOrEmpty 
+        Get-MsrcCvrfDocument -ID 2016-Nov |
+        Should Not BeNullOrEmpty
     }
 
     It 'Get-MsrcCvrfDocument - 2016-Nov - as XML' {
-        Get-MsrcCvrfDocument -ID 2016-Nov -AsXml | 
-        Should Not BeNullOrEmpty 
+        Get-MsrcCvrfDocument -ID 2016-Nov -AsXml |
+        Should Not BeNullOrEmpty
     }
 
     Get-MsrcSecurityUpdate | Where-Object { $_.ID -ne '2017-May-B' } |
     Foreach-Object {
         It "Get-MsrcCvrfDocument - none shall throw: $($PSItem.ID)" {
             {
-                Get-MsrcCvrfDocument -ID $PSItem.ID | 
-                Out-Null
+                $null = Get-MsrcCvrfDocument -ID $PSItem.ID
             } |
             Should Not Throw
         }
@@ -88,8 +87,9 @@ Describe 'Function: Get-MsrcCvrfDocument (calls the MSRC /cvrf API)' {
 
     It 'Get-MsrcCvrfDocument for 2017-May-B with Get-MsrcCvrfDocument should throw' {
         {
-            Get-MsrcSecurityUpdate | Where { $_.ID -eq '2017-May-B' } | Foreach-Object {
-            $null = Get-MsrcCvrfDocument -ID $PSItem.ID
+            Get-MsrcSecurityUpdate | Where-Object { $_.ID -eq '2017-May-B' } |
+            Foreach-Object {
+                $null = Get-MsrcCvrfDocument -ID $PSItem.ID
             }
         } | Should Throw
     }
@@ -103,13 +103,13 @@ Describe 'Function: Set-MSRCApiKey with proxy' {
     }
 
     It 'Get-MsrcSecurityUpdate - all' {
-        Get-MsrcSecurityUpdate | 
-        Should Not BeNullOrEmpty 
+        Get-MsrcSecurityUpdate |
+        Should Not BeNullOrEmpty
     }
 
     It 'Get-MsrcCvrfDocument - 2016-Nov' {
-        Get-MsrcCvrfDocument -ID 2016-Nov | 
-        Should Not BeNullOrEmpty 
+        Get-MsrcCvrfDocument -ID 2016-Nov |
+        Should Not BeNullOrEmpty
     }
 }
 
@@ -154,8 +154,8 @@ InModuleScope MsrcSecurityUpdates {
 Describe 'Function: Get-MsrcVulnerabilityReportHtml (generates the MSRC Vulnerability Summary HTML Report)' {
     It 'Vulnerability Summary Report - does not throw' {
         {
-            Get-MsrcCvrfDocument -ID 2016-Nov |
-            Get-MsrcVulnerabilityReportHtml -Verbose | Out-Null
+            $null = Get-MsrcCvrfDocument -ID 2016-Nov |
+            Get-MsrcVulnerabilityReportHtml -Verbose -ShowNoProgress
         } |
         Should Not Throw
     }
@@ -164,9 +164,8 @@ Describe 'Function: Get-MsrcVulnerabilityReportHtml (generates the MSRC Vulnerab
     Foreach-Object {
         It "Vulnerability Summary Report - none shall throw: $($PSItem.ID)" {
             {
-                Get-MsrcCvrfDocument -ID $PSItem.ID |
-                Get-MsrcVulnerabilityReportHtml | 
-                Out-Null
+                $null = Get-MsrcCvrfDocument -ID $PSItem.ID |
+                Get-MsrcVulnerabilityReportHtml -ShowNoProgress
             } |
             Should Not Throw
         }
@@ -178,7 +177,7 @@ InModuleScope MsrcSecurityUpdates {
 		It 'Get-KBDownloadUrl by pipeline' {
 			{
 				$doc = Get-MsrcCvrfDocument -ID 2017-May
-				$af = $doc | Get-MsrcCvrfAffectedSoftware 
+				$af = $doc | Get-MsrcCvrfAffectedSoftware
 				$af.KBArticle | Get-KBDownloadUrl
 			} |
 			Should Not Throw
@@ -188,7 +187,7 @@ InModuleScope MsrcSecurityUpdates {
 		It 'Get-KBDownloadUrl by parameters' {
 			{
 				$doc = Get-MsrcCvrfDocument -ID 2017-May
-				$af = $doc | Get-MsrcCvrfAffectedSoftware 
+				$af = $doc | Get-MsrcCvrfAffectedSoftware
 				Get-KBDownloadUrl -KBArticleObject $af.KBArticle
 			} |
 			Should Not Throw
@@ -199,5 +198,5 @@ InModuleScope MsrcSecurityUpdates {
 #When a pester test fails, it writes out to stdout, and sets an error in $Error. When invoking powershell from C# it is a lot easier to read the stderr stream.
 if($Error)
 {
-    Write-Error 'A pester test has failed during the validation process'
+    Write-Error -Message 'A pester test has failed during the validation process'
 }
