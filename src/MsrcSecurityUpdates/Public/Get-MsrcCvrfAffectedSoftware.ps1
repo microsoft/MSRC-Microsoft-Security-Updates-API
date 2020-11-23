@@ -57,42 +57,48 @@ Process {
                                 }
                             };
                CVE = $v.CVE
-                Severity = $(
+               'Known Issue' = $v.Remediations | where-Object {$_.ProductID -contains $id} | Where-Object {$_.Type -eq 5} | ForEach-Object {
+                                [PSCustomObject]@{
+                                    ID = $_.Description.Value;
+                                    URL= $_.URL;
+                                }
+               }
+               Severity = $(
                     (
                         $v.Threats |
                         Where-Object {$_.Type -eq 3 } |
                         Where-Object { $_.ProductID -contains $id }
                     ).Description.Value
-                ) ;
-                Impact = $(
+               ) ;
+               Impact = $(
                     (
                         $v.Threats |
                         Where-Object {$_.Type -eq 0 } |
                         Where-Object { $_.ProductID -contains $id }
                     ).Description.Value
                 )
-                RestartRequired = $(
+               RestartRequired = $(
                     (
                         $v.Remediations |
                         Where-Object { $_.ProductID -contains $id }
                     ).RestartRequired.Value | ForEach-Object {
                         "$($_)"
                     }
-                ) ;
-                Supercedence = $(
+               ) ;
+               Supercedence = $(
                     (
                         $v.Remediations |
                         Where-Object { $_.ProductID -contains $id }
                     ).Supercedence | ForEach-Object {
                         "$($_)"
                     }
-                ) ;
-                CvssScoreSet = $( [PSCustomObject]@{
+               ) ;
+               CvssScoreSet = $( [PSCustomObject]@{
                         base=    ($v.CVSSScoreSets | Where-Object { $_.ProductID -contains $id } | Select-Object -First 1).BaseScore;
-                        temporal=($v.CVSSScoreSets | Where-Object { $_.ProductID -contains $id } | Select-Object -First 1).TemporalScore;;
+                        temporal=($v.CVSSScoreSets | Where-Object { $_.ProductID -contains $id } | Select-Object -First 1).TemporalScore;
                         vector=  ($v.CVSSScoreSets | Where-Object { $_.ProductID -contains $id } | Select-Object -First 1).Vector;
                     }
-                ) ;
+               ) ;
             }
         }
     }
