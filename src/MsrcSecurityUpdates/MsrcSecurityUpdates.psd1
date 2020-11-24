@@ -12,7 +12,7 @@
 RootModule = 'MsrcSecurityUpdates.psm1'
 
 # Version number of this module.
-ModuleVersion = '1.8.5'
+ModuleVersion = '1.8.6'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -130,6 +130,7 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+November 23, 2020 - Addded known issues to Get-MsrcVulnerabilityReportHtml
 October 23, 2020 - Replaced Description with CVSS table in Get-MsrcVulnerabilityReportHtml
 February 9, 2017 - Initial release to https://github.com/Microsoft/MSRC-Microsoft-Security-Updates-API
 March 8, 2017 - Refactored into a script module and added basic Pester tests
