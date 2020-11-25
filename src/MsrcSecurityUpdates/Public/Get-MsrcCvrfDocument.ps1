@@ -51,7 +51,7 @@ DynamicParam {
         try {
             $allCVRFID = Get-CVRFID
         } catch {
-            Throw 'Unable to get online the list of CVRF ID'
+            Throw "`nUnable to get online the list of CVRF ID because:`n$($_.Exception.Message)"
         }
         if ($allCVRFID) {
             $AttribColl1.Add((New-Object System.Management.Automation.ValidateSetAttribute($allCVRFID)))
