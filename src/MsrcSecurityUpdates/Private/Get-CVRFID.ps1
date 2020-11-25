@@ -36,6 +36,7 @@ Process {
 
     try {
 
+        [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
         if ($ID) {
 
             (Invoke-RestMethod @RestMethod).Value |
