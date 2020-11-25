@@ -12,11 +12,12 @@ This repository contains sample code and documentation for the Microsoft Securit
 Getting started with the MsrcSecurityUpdates module can be done like this:
 ```PowerShell
 ### Install the module from the PowerShell Gallery
-###  !! Requires minimum PowerShell version 5.1
 Install-Module -Name MsrcSecurityUpdates -Scope CurrentUser
 
-### Load the module
-Import-Module -Name MsrcSecurityUpdates
+### Load the module if PowerShell is at least version 5.1
+if ($PSVersionTable.PSVersion -gt [version]'5.1') {
+ Import-Module -Name MsrcSecurityUpdates
+}
 ```
 Once the module is loaded, check out our [PowerShell samples](https://github.com/Microsoft/MSRC-Microsoft-Security-Updates-API/blob/master/src/README.md)
 
