@@ -16,7 +16,7 @@ Param(
     $DocumentTitle
 )
 Begin {
-$css = @'
+    $css = @'
         body {
           background-color: darkgray;
         }
