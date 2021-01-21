@@ -12,7 +12,7 @@
 RootModule = 'MsrcSecurityUpdates.psm1'
 
 # Version number of this module.
-ModuleVersion = '1.8.7'
+ModuleVersion = '1.8.8'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -130,6 +130,7 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+January 17, 2021 - Added Issuing CNA info to Get-MsrcVulnerabilityReportHtml
 December 9, 2020 - Added Executive Summary to Get-MsrcVulnerabilityReportHtml
 November 23, 2020 - Added Known Issues to Get-MsrcVulnerabilityReportHtml
 October 23, 2020 - Replaced Description with CVSS table in Get-MsrcVulnerabilityReportHtml
