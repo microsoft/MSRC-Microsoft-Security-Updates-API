@@ -1,4 +1,3 @@
- @@ -1,48 +0,0 @@
 Function Set-MSRCApiKey {
 [CmdletBinding(SupportsShouldProcess)]
 Param(
@@ -47,4 +46,3 @@ Process {
 }
 End {}
 }
-No newline at end of file
