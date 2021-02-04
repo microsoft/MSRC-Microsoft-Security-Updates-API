@@ -62,6 +62,9 @@ Process {
     # Common
     $RestMethod = @{
         uri = '{0}/cvrf/{1}?{2}' -f $msrcApiUrl,$PSBoundParameters['ID'],$msrcApiVersion
+        Headers = @{
+            'Accept' = if($AsXml){'application/xml'} else {'application/json'}
+        }
         ErrorAction = 'Stop'
     }
 
@@ -80,23 +83,9 @@ Process {
 
     if ($global:MSRCAdalAccessToken) {
 
-        $RestMethod.Add('Header',@{ 'Authorization' = $global:MSRCAdalAccessToken.CreateAuthorizationHeader() })
+        $RestMethod.Headers.Add('Authorization', $global:MSRCAdalAccessToken.CreateAuthorizationHeader())
 
     }    
-
-    if ($AsXml) {
-        if($RestMethod['Header']){
-            $RestMethod.Header.Add('Accept','application/xml')
-        } else {
-            $RestMethod.Add('Header', @{'Accept'='application/xml'})
-        }       
-    } else {
-        if($RestMethod['Header']){
-            $RestMethod.Header.Add('Accept','application/json')
-        } else {
-            $RestMethod.Add('Header', @{'Accept'='application/json'})
-        }       
-    }
 
     try {
         [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
