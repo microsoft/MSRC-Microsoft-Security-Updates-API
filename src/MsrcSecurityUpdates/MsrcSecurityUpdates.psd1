@@ -130,6 +130,7 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+February 3, 2021 - Removed Api-key requirement.
 January 17, 2021 - Added Issuing CNA info to Get-MsrcVulnerabilityReportHtml
 December 9, 2020 - Added Executive Summary to Get-MsrcVulnerabilityReportHtml
 November 23, 2020 - Added Known Issues to Get-MsrcVulnerabilityReportHtml
