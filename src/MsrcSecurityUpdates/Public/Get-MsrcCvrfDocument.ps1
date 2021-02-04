@@ -54,7 +54,7 @@ DynamicParam {
 
         $Dictionary
     }
-    
+
 }
 Begin {}
 Process {
@@ -85,7 +85,7 @@ Process {
 
         $RestMethod.Headers.Add('Authorization', $global:MSRCAdalAccessToken.CreateAuthorizationHeader())
 
-    }    
+    }
 
     try {
         [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
@@ -102,8 +102,8 @@ Process {
     if (-not $AsXml -and $response -is [string]) {
         $response = ParseJsonString($response)
     }
-        $response
-    
+    $response
+
 }
 End {}
 }

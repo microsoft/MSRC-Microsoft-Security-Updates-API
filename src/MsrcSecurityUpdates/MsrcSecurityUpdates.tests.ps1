@@ -3,14 +3,6 @@
 # Import-Module -Name MsrcSecurityUpdates -Force
 Import-Module (Join-Path -Path $PSScriptRoot -ChildPath 'MsrcSecurityUpdates.psd1') -Verbose -Force
 
-# Set-MSRCApiKey -ApiKey "API KEY PLACEHOLDER" -Verbose
-
-if (-not ($global:MSRCApiKey)) {
-
-   Write-Warning -Message 'You need to use Set-MSRCApiKey first to set your API Key'
-   break
-}
-
 <#
 Get-Help Get-MsrcSecurityUpdate
 Get-Help Get-MsrcSecurityUpdate -Examples

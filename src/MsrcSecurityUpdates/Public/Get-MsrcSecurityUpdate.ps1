@@ -109,7 +109,7 @@ DynamicParam {
         $Dictionary.Add($ParameterName,(New-Object System.Management.Automation.RuntimeDefinedParameter($ParameterName, [string], $AttribColl1)))
 
         $Dictionary
-    }    
+    }
 }
 Begin {}
 Process {
@@ -176,7 +176,7 @@ Process {
     {
         $RestMethod.Headers.Add('Authorization' , $global:MSRCAdalAccessToken.CreateAuthorizationHeader())
     }
-    
+
     try {
 
         [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
@@ -193,7 +193,7 @@ Process {
     } else {
         $r.Value
     }
-    
+
 }
 End {}
 }
