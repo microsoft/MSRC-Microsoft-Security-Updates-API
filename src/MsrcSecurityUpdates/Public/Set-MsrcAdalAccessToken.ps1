@@ -18,7 +18,6 @@ Process {
 
         $promptBehavior = [Microsoft.IdentityModel.Clients.ActiveDirectory.PromptBehavior]::Auto
 
-        
 
         $ResourceId = 'https://msrc-api-prod.azurewebsites.net'
 
@@ -26,16 +25,16 @@ Process {
 
         $global:MSRCAdalAccessToken = $null
 
-        if ($authContext.AcquireToken -ne $null) {
+        if ($null -ne $authContext.AcquireToken) {
             $global:MSRCAdalAccessToken = $authContext.AcquireToken($ResourceId, $ClientId, $rUri,$promptBehavior)
-        } elseif ($authContext.AcquireTokenAsync -ne $null) {
+        } elseif ($null -ne $authContext.AcquireTokenAsync) {
             $platformParams = New-Object Microsoft.IdentityModel.Clients.ActiveDirectory.PlatformParameters($promptBehavior)
             $task = $authContext.AcquireTokenAsync($ResourceId, $ClientId, $rUri,$platformParams)
             $task.Wait()
             $global:MSRCAdalAccessToken = $task.Result
         }
 
-	    if ($global:MSRCAdalAccessToken -ne $null) {
+	    if ($null -ne $global:MSRCAdalAccessToken) {
             Write-Verbose -Message "Successfully set your Access Token required by cmdlets of this module.    Calls to the MSRC APIs will now use your access token."
         } else {
             throw "Failed Acquiring Access Token!"

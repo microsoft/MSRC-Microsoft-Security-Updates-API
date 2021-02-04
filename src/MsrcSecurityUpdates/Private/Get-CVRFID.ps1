@@ -27,7 +27,7 @@ Process {
 
         $RestMethod.Headers.Add('Authorization',$($global:MSRCAdalAccessToken.CreateAuthorizationHeader()))
 
-    } 
+    }
 
     try {
 
