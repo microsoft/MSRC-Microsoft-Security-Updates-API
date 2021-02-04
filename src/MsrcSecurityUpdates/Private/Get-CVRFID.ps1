@@ -16,23 +16,18 @@ Process {
         ErrorAction = 'Stop'
     }
     if ($global:msrcProxy){
+
         $RestMethod.Add('Proxy' , $global:msrcProxy)
     }
     if ($global:msrcProxyCredential){
-        $RestMethod.Add('ProxyCredential',$global:msrcProxyCredential)
-    }
-    if ($global:MSRCApiKey) {
 
-        $RestMethod.Headers.Add('Api-Key',$global:MSRCApiKey)
+        $RestMethod.Add('ProxyCredential',$global:msrcProxyCredential)
 
     } elseif ($global:MSRCAdalAccessToken) {
 
         $RestMethod.Headers.Add('Authorization',$($global:MSRCAdalAccessToken.CreateAuthorizationHeader()))
 
-    } else {
-
-        Throw 'You need to use Set-MSRCApiKey first to set your API Key'
-    }
+    } 
 
     try {
 
