@@ -21,11 +21,6 @@ if ($PSVersionTable.PSVersion -gt [version]'5.1') {
 ```
 Once the module is loaded, check out our [PowerShell samples](https://github.com/Microsoft/MSRC-Microsoft-Security-Updates-API/blob/master/src/README.md)
 
-# API Keys
-The Security Updates API requires an API key.  To obtain an API key please visit the [Security Update Guide Developer page](https://portal.msrc.microsoft.com/en-us/developer).  For help using the Security Updates Guide please visit the [Security Updates Guide Community Forum](https://social.technet.microsoft.com/Forums/security/en-us/home?forum=securityupdateguide).
-
-__NOTE: Generating an API key requires signing in with an @outlook.com, @live.com, or @microsoft.com email address. If you do not have one of these email addresses, you can create a personal outlook account to access this service. In the future, we will be removing this authentication requirement entirely.__
-
 # Change Log
 **_For up to date major changes, please read the psd1 included in the src folder. This can also be seen on [the Microsoft Powershell Gallery](https://www.powershellgallery.com/packages/MsrcSecurityUpdates)._**
 

@@ -1,6 +1,6 @@
 # Sample Code
 
-The sample code serves as an example on how to interact with the MSRC Security Updates API through Powershell.  You will need to log into the [MSRC Portal](https://portal.msrc.microsoft.com/en-us/developer) and obtain an API key.   
+The sample code serves as an example on how to interact with the MSRC Security Updates API through Powershell.  
 
 In the PowerShell module, you will see script functions that show how to interact with the API, as well 
 as functions that organize data from the industry-standard [CVRF document format](http://www.icasi.org/cvrf-v1-1-dictionary-of-elements/#40rem)  to show some reporting scenarios.
@@ -64,7 +64,6 @@ In this common scenario, the *Get-MsrcCvrfDocument* and *Get-MsrcVulnerabilityRe
 ### Install the module from the PowerShell Gallery (must be run as Admin)
 Install-Module -Name msrcsecurityupdates -force
 Import-module MsrcSecurityUpdates
-Set-MSRCApiKey -ApiKey "<your API key>" -Verbose
 $monthOfInterest = '2017-Apr'
 
 Get-MsrcCvrfDocument -ID $monthOfInterest -Verbose | 
@@ -77,7 +76,6 @@ You can also build a modified object to pass into *Get-MsrcVulnerabilityReportHt
 Install-Module -Name MsrcSecurityUpdates -Force
 Import-Module -Name MsrcSecurityUpdates -Force
 
-Set-MSRCApiKey -ApiKey "<your API key>" -Verbose
 $monthOfInterest = "2017-Mar"
 
 $CVEsWanted = @(
@@ -103,7 +101,6 @@ Building a report that contains all CVE's:
 ### Install the module from the PowerShell Gallery (must be run as Admin)
 Install-Module -Name MsrcSecurityUpdates -Force
 Import-module MsrcSecurityUpdates
-Set-MSRCApiKey -ApiKey "<your API key>" -Verbose
 $monthOfInterest = '2017-Apr'
 
 Get-MsrcCvrfDocument -ID $monthOfInterest -Verbose | Get-MsrcSecurityBulletinHtml -Verbose | Out-File c:\temp\MSRCAprilSecurityUpdates.html
@@ -115,7 +112,6 @@ Using powershell to filter the report to your liking:
 Install-Module -Name MsrcSecurityUpdates -Force
 Import-Module -Name MsrcSecurityUpdates -Force
 
-Set-MSRCApiKey -ApiKey "<your API key>" -Verbose
 $monthOfInterest = "2017-Mar"
 
 $CVEsWanted = @(
