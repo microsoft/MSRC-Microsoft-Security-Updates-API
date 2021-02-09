@@ -34,8 +34,7 @@ Description = @'
 The Microsoft Security Response Center module gets Microsoft Security Update details
 and CVRF (Common Vulnerability Reporting Format) documents in either JSON or XML.
 
-This module calls the MSRC API (api.msrc.microsoft.com) which requires an API key from:
-https://portal.msrc.microsoft.com
+This module calls the MSRC API (api.msrc.microsoft.com).
 
 '@
 
