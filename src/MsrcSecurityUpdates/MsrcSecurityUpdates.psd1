@@ -12,7 +12,7 @@
 RootModule = 'MsrcSecurityUpdates.psm1'
 
 # Version number of this module.
-ModuleVersion = '1.9.1'
+ModuleVersion = '1.9.2'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -33,7 +33,6 @@ Copyright = '(c) 2017 Microsoft Corporation. All rights reserved.'
 Description = @'
 The Microsoft Security Response Center module gets Microsoft Security Update details
 and CVRF (Common Vulnerability Reporting Format) documents in either JSON or XML.
-
 '@
 
 # Minimum version of the Windows PowerShell engine required by this module
