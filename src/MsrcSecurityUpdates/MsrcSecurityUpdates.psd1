@@ -12,7 +12,7 @@
 RootModule = 'MsrcSecurityUpdates.psm1'
 
 # Version number of this module.
-ModuleVersion = '1.9.2'
+ModuleVersion = '1.9.3'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -129,7 +129,8 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
-February 19, 2021 Updating Vulnerability Report HTML Style
+March 2, 2021 - Fixing mitigation on vulnerability report 
+February 19, 2021 - Updating Vulnerability Report HTML Style
 February 3, 2021 - Removed Api-key requirement
 January 17, 2021 - Added Issuing CNA info to Get-MsrcVulnerabilityReportHtml
 December 9, 2020 - Added Executive Summary to Get-MsrcVulnerabilityReportHtml
