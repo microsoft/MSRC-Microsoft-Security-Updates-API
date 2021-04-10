@@ -76,7 +76,7 @@ Process {
                         Where-Object {$_.Type -eq 0 } |
                         Where-Object { $_.ProductID -contains $id }
                     ).Description.Value
-                )
+                );
                RestartRequired = $(
                     (
                         $v.Remediations |
@@ -84,7 +84,15 @@ Process {
                     ).RestartRequired.Value | ForEach-Object {
                         "$($_)"
                     }
-               ) ;
+               );
+               FixedBuild = $(
+                  (
+                        $v.Remediations |
+                        Where-Object { $_.ProductID -contains $id }
+                    ).FixedBuild | ForEach-Object {
+                        "$($_)"
+                    }
+               );
                Supercedence = $(
                     (
                         $v.Remediations |
