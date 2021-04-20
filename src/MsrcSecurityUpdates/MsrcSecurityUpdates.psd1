@@ -12,7 +12,7 @@
 RootModule = 'MsrcSecurityUpdates.psm1'
 
 # Version number of this module.
-ModuleVersion = '1.9.4'
+ModuleVersion = '1.9.5'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -129,6 +129,7 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+April 20, 2021 - Update API endpoint
 April 7, 2021 - Adding FixedBuild to vulnerability report
 March 2, 2021 - Fixing mitigation on vulnerability report 
 February 19, 2021 - Updating Vulnerability Report HTML Style
