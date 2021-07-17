@@ -313,7 +313,7 @@ Process {
     Get-MsrcCvrfCVESummary @HT |
     ForEach-Object {
         $cveSummaryTableHtml += $cveSummaryRowTemplate -f @(
-            "$($_.CVE)<br><a href=`"http://www.cve.mitre.org/cgi-bin/cvename.cgi?name=$($_.CVE)`">MITRE</a><br><a href=`"https://web.nvd.nist.gov/view/vuln/detail?vulnId=$($_.CVE)`">NVD</a>"
+            "$($_.CVE)<br><a href=`"https://cve.mitre.org/cgi-bin/cvename.cgi?name=$($_.CVE)`">MITRE</a><br><a href=`"https://web.nvd.nist.gov/view/vuln/detail?vulnId=$($_.CVE)`">NVD</a>"
             $_.Description
             $_.'Maximum Severity Rating'
             $_.'Vulnerability Impact' -join ',<br>'
