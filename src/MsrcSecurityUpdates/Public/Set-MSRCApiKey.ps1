@@ -1,5 +1,3 @@
-#Requires -Version 3.0
-
 Function Set-MSRCApiKey {
 [CmdletBinding(SupportsShouldProcess)]
 Param(
@@ -39,7 +37,7 @@ Process {
             $global:msrcProxy = $Proxy
             Write-Verbose -Message "Successfully defined a msrcProxyCredential global variable that points to $($global:msrcProxy)"
         }
-        
+
         if ($global:MSRCAdalAccessToken)
         {
             Remove-Variable -Name MSRCAdalAccessToken -Scope Global

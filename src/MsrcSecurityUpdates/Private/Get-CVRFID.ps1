@@ -16,42 +16,38 @@ Process {
         ErrorAction = 'Stop'
     }
     if ($global:msrcProxy){
+
         $RestMethod.Add('Proxy' , $global:msrcProxy)
     }
     if ($global:msrcProxyCredential){
+
         $RestMethod.Add('ProxyCredential',$global:msrcProxyCredential)
-    }
-    if ($global:MSRCApiKey) {
-        
-        $RestMethod.Headers.Add('Api-Key',$global:MSRCApiKey)
-    
+
     } elseif ($global:MSRCAdalAccessToken) {
-      
+
         $RestMethod.Headers.Add('Authorization',$($global:MSRCAdalAccessToken.CreateAuthorizationHeader()))
 
-    } else {
-    
-        Throw 'You need to use Set-MSRCApiKey first to set your API Key'        
     }
 
     try {
-    
+
+        [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
         if ($ID) {
 
-            (Invoke-RestMethod @RestMethod).Value | 
-            Where-Object { $_.ID -eq $ID } | 
+            (Invoke-RestMethod @RestMethod).Value |
+            Where-Object { $_.ID -eq $ID } |
             Where-Object { $_ -ne '2017-May-B' }
-    
+
         } else {
-        
-            ((Invoke-RestMethod @RestMethod).Value).ID | 
+
+            ((Invoke-RestMethod @RestMethod).Value).ID |
             Where-Object { $_ -ne '2017-May-B' }
         }
 
     } catch {
-        
+
         Throw $_
-    
+
     }
 }
 End {}

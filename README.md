@@ -1,7 +1,7 @@
 # Welcome
-Microsoft provides an API for programmatic access to security update details using [Common Vulnerability Reporting Format](http://www.icasi.org/cvrf/). View our [blog post](https://blogs.technet.microsoft.com/msrc/2016/11/08/furthering-our-commitment-to-security-updates/) for more info. 
+Microsoft provides an API for programmatic access to security update details using [Common Vulnerability Reporting Format](http://www.icasi.org/cvrf/). View our [blog post](https://msrc-blog.microsoft.com/2016/11/08/furthering-our-commitment-to-security-updates/) for more info. 
 
-The Microsoft [Security Updates Guide](https://portal.msrc.microsoft.com/en-us/security-guidance) is the web experience to find security update detail.
+The Microsoft [Security Update Guide](https://msrc.microsoft.com/update-guide) is the web experience to find security update detail.
 
 This repository contains sample code and documentation for the Microsoft Security Updates API (https://portal.msrc.microsoft.com/en-us/developer), including:
 * source code for the [MsrcSecurityUpdates PowerShell module](https://www.powershellgallery.com/packages/MsrcSecurityUpdates)
@@ -12,18 +12,14 @@ This repository contains sample code and documentation for the Microsoft Securit
 Getting started with the MsrcSecurityUpdates module can be done like this:
 ```PowerShell
 ### Install the module from the PowerShell Gallery
-###  !! Requires PowerShell V5
 Install-Module -Name MsrcSecurityUpdates -Scope CurrentUser
 
-### Load the module
-Import-Module -Name MsrcSecurityUpdates
+### Load the module if PowerShell is at least version 5.1
+if ($PSVersionTable.PSVersion -gt [version]'5.1') {
+ Import-Module -Name MsrcSecurityUpdates
+}
 ```
 Once the module is loaded, check out our [PowerShell samples](https://github.com/Microsoft/MSRC-Microsoft-Security-Updates-API/blob/master/src/README.md)
-
-# API Keys
-The Security Updates API requires an API key.  To obtain an API key please visit the [Security Updates Guide](https://portal.msrc.microsoft.com/en-us/security-guidance).  For help using the Security Updates Guide please visit the [Security Updates Guide Community Forum](https://social.technet.microsoft.com/Forums/security/en-us/home?forum=securityupdateguide).
-
-__NOTE: Currently generating api keys requires an @outlook.com, @live.com, or @microsoft.com email address. If you do not have one of these email addresses, you can create a personal outlook account to access this service while we investigate this issue.__
 
 # Change Log
 **_For up to date major changes, please read the psd1 included in the src folder. This can also be seen on [the Microsoft Powershell Gallery](https://www.powershellgallery.com/packages/MsrcSecurityUpdates)._**
@@ -34,7 +30,7 @@ Customers should treat this repository as custom code.  Bug fixes or enhancement
 ## Security Update Support
 For questions about CVEs, security updates and patches, please visit [Microsoft Support](https://support.microsoft.com)
 ## Security Update Guide Support
-For questions about the [Microsoft Security Update Guide](https://portal.msrc.microsoft.com) please visit the [Security Update Guide support forum](https://social.technet.microsoft.com/Forums/security/en-us/home?forum=securityupdateguide).
+For questions about the [Microsoft Security Update Guide](https://msrc.microsoft.com/update-guide) please visit the [Security Update Guide support forum](https://social.technet.microsoft.com/Forums/security/en-us/home?forum=securityupdateguide).
 
 # Contributing
 

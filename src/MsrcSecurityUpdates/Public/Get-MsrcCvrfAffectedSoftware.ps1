@@ -14,12 +14,12 @@ Function Get-MsrcCvrfAffectedSoftware {
     .PARAMETER Vulnerability
 
     .PARAMETER ProductTree
-    
+
     .EXAMPLE
         Get-MsrcCvrfDocument -ID 2016-Nov | Get-MsrcCvrfAffectedSoftware
-   
+
         Get product details from a CVRF document using the pipeline.
-   
+
     .EXAMPLE
         $cvrfDocument = Get-MsrcCvrfDocument -ID 2016-Nov
         Get-MsrcCvrfAffectedSoftware -Vulnerability $cvrfDocument.Vulnerability -ProductTree $cvrfDocument.ProductTree
@@ -42,11 +42,11 @@ Process {
 
         $v.ProductStatuses.ProductID | ForEach-Object {
             $id = $_
-            
+
             [PSCustomObject] @{
                 FullProductName = $(
-                    $ProductTree.FullProductName  | 
-                    Where-Object { $_.ProductID -eq $id} | 
+                    $ProductTree.FullProductName  |
+                    Where-Object { $_.ProductID -eq $id} |
                     Select-Object -ExpandProperty Value
                 ) ;
                 KBArticle = $v.Remediations | where-Object {$_.ProductID -contains $id} | Where-Object {$_.Type -eq 2} | ForEach-Object {
@@ -57,42 +57,56 @@ Process {
                                 }
                             };
                CVE = $v.CVE
-                Severity = $(
+               'Known Issue' = $v.Remediations | where-Object {$_.ProductID -contains $id} | Where-Object {$_.Type -eq 5} | ForEach-Object {
+                                [PSCustomObject]@{
+                                    ID = $_.Description.Value;
+                                    URL= $_.URL;
+                                }
+               }
+               Severity = $(
                     (
-                        $v.Threats | 
-                        Where-Object {$_.Type -eq 3 } | 
+                        $v.Threats |
+                        Where-Object {$_.Type -eq 3 } |
                         Where-Object { $_.ProductID -contains $id }
                     ).Description.Value
-                ) ;
-                Impact = $(
+               ) ;
+               Impact = $(
                     (
-                        $v.Threats | 
-                        Where-Object {$_.Type -eq 0 } | 
+                        $v.Threats |
+                        Where-Object {$_.Type -eq 0 } |
                         Where-Object { $_.ProductID -contains $id }
                     ).Description.Value
-                )
-                RestartRequired = $(
+                );
+               RestartRequired = $(
                     (
-                        $v.Remediations | 
+                        $v.Remediations |
                         Where-Object { $_.ProductID -contains $id }
                     ).RestartRequired.Value | ForEach-Object {
                         "$($_)"
                     }
-                ) ;
-                Supersedence = $(
-                    (
-                        $v.Remediations | 
+               );
+               FixedBuild = $(
+                  (
+                        $v.Remediations |
                         Where-Object { $_.ProductID -contains $id }
-                    ).Supersedence | ForEach-Object {
+                    ).FixedBuild | ForEach-Object {
                         "$($_)"
                     }
-                ) ;
-                CvssScoreSet = $( [PSCustomObject]@{ 
+               );
+               Supercedence = $(
+                    (
+                        $v.Remediations |
+                        Where-Object { $_.ProductID -contains $id }
+                    ).Supercedence | ForEach-Object {
+                        "$($_)"
+                    }
+               ) ;
+               CvssScoreSet = $( [PSCustomObject]@{
                         base=    ($v.CVSSScoreSets | Where-Object { $_.ProductID -contains $id } | Select-Object -First 1).BaseScore;
-                        temporal=($v.CVSSScoreSets | Where-Object { $_.ProductID -contains $id } | Select-Object -First 1).TemporalScore;;
+                        temporal=($v.CVSSScoreSets | Where-Object { $_.ProductID -contains $id } | Select-Object -First 1).TemporalScore;
                         vector=  ($v.CVSSScoreSets | Where-Object { $_.ProductID -contains $id } | Select-Object -First 1).Vector;
                     }
-                ) ;
+               ) ;
             }
         }
     }

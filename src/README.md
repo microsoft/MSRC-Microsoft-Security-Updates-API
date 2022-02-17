@@ -1,6 +1,6 @@
 # Sample Code
 
-The sample code serves as an example on how to interact with the MSRC Security Updates API through Powershell.  You will need to log into the MSRC Portal and obtain an API key.   
+The sample code serves as an example on how to interact with the MSRC Security Updates API through Powershell.  
 
 In the PowerShell module, you will see script functions that show how to interact with the API, as well 
 as functions that organize data from the industry-standard [CVRF document format](http://www.icasi.org/cvrf-v1-1-dictionary-of-elements/#40rem)  to show some reporting scenarios.
@@ -9,42 +9,51 @@ You can clone this repo, or download the latest modules directly from the Micros
 
 ## Installing directly from Microsoft Powershell Gallery
 
-**Must be run as Administrator and running Powershell v3 or higher**  With this solution, you do not need to download code from this Github repository. Instead, you can download the directly from the Microsoft Powershell Gallery.  The Powershell version can be verified by checking the Major variable in the ``$psversiontable.PSVersion``  variable:
+**Must be running Powershell v5.1 or higher** 
+With this solution, you do not need to download code from this Github repository. 
+Instead, you can download the directly from the Microsoft Powershell Gallery.
+The Powershell version can be verified by checking the Major variable in the ``$PSVersionTable.PSVersion`` variable:
 
 ```
-$psversiontable.PSVersion
+$PSVersionTable.PSVersion
 
 Major  Minor  Build  Revision
 -----  -----  -----  --------
 5      1      14393  693     
 ```
 
-Once you meet the above conditions, add the following to your Powershell script to load:
-
+If you're running **as an administrator**  you can install the module in your program files:
 ```Powershell
 Install-Module MSRCSecurityUpdates -Force 
 Import-Module MSRCSecurityUpdates
 ````
 
-Remember, if you are installing from the Powershell Gallery, you **must be run as Administrator and running Powershell v3 or higher**!
+If you're **not running as an administrator**, you can install the module in your profile by providing an additional parameter about the Scope:
+```Powershell
+Install-Module MSRCSecurityUpdates -Force -Scope CurrentUser
+Import-Module MSRCSecurityUpdates
+````
 
 ## Hello, world!
 See *MsrcSecurityUpdates.tests.ps1* which exercises all of the functions.
-
 
 ## Cmdlets
 
 ```Powershell
 Get-Command -Module MsrcSecurityUpdates
 
-CommandType Name                            Version Source
------------ ----                            ------- ------
-Function    Get-MsrcCvrfCVESummary          1.3     MsrcSecurityUpdates
-Function    Get-MsrcCvrfDocument            1.3     MsrcSecurityUpdates
-Function    Get-MsrcCvrfExploitabilityIndex 1.3     MsrcSecurityUpdates
-Function    Get-MsrcSecurityBulletinHtml    1.3     MsrcSecurityUpdates
-Function    Get-MsrcSecurityUpdate          1.3     MsrcSecurityUpdates
-Function    Set-MSRCApiKey                  1.3     MsrcSecurityUpdates
+CommandType     Name                                               Version    Source                                                                                                 
+-----------     ----                                               -------    ------                                                                                                 
+Function        Get-KBDownloadUrl                                  1.8.7      MsrcSecurityUpdates
+Function        Get-MsrcCvrfAffectedSoftware                       1.8.7      MsrcSecurityUpdates
+Function        Get-MsrcCvrfCVESummary                             1.8.7      MsrcSecurityUpdates
+Function        Get-MsrcCvrfDocument                               1.8.7      MsrcSecurityUpdates
+Function        Get-MsrcCvrfExploitabilityIndex                    1.8.7      MsrcSecurityUpdates
+Function        Get-MsrcSecurityBulletinHtml                       1.8.7      MsrcSecurityUpdates
+Function        Get-MsrcSecurityUpdate                             1.8.7      MsrcSecurityUpdates
+Function        Get-MsrcVulnerabilityReportHtml                    1.8.7      MsrcSecurityUpdates
+Function        Set-MSRCAdalAccessToken                            1.8.7      MsrcSecurityUpdates
+Function        Set-MSRCApiKey                                     1.8.7      MsrcSecurityUpdates
 ```
 
 ## Generating a HTML document of Monthly Updates
@@ -54,8 +63,7 @@ In this common scenario, the *Get-MsrcCvrfDocument* and *Get-MsrcVulnerabilityRe
 ```Powershell
 ### Install the module from the PowerShell Gallery (must be run as Admin)
 Install-Module -Name msrcsecurityupdates -force
-Import-module msrcsecurityupdates
-Set-MSRCApiKey -ApiKey "<your API key>" -Verbose
+Import-module MsrcSecurityUpdates
 $monthOfInterest = '2017-Apr'
 
 Get-MsrcCvrfDocument -ID $monthOfInterest -Verbose | 
@@ -65,10 +73,9 @@ Out-File c:\temp\MSRCAprilSecurityUpdates.html
 You can also build a modified object to pass into *Get-MsrcVulnerabilityReportHtml*. This allows more customization of the report being generated. In this example, the generated report will only have the wanted CVE's included:
 
 ```Powershell
-Install-Module -Name msrcsecurityupdates -force
-Import-Module -Name msrcsecurityupdates -Force
+Install-Module -Name MsrcSecurityUpdates -Force
+Import-Module -Name MsrcSecurityUpdates -Force
 
-Set-MSRCApiKey -ApiKey "<your API key>" -Verbose
 $monthOfInterest = "2017-Mar"
 
 $CVEsWanted = @(
@@ -92,9 +99,8 @@ Building a report that contains all CVE's:
 
 ```Powershell
 ### Install the module from the PowerShell Gallery (must be run as Admin)
-Install-Module -Name msrcsecurityupdates -force
-Import-module msrcsecurityupdates
-Set-MSRCApiKey -ApiKey "<your API key>" -Verbose
+Install-Module -Name MsrcSecurityUpdates -Force
+Import-module MsrcSecurityUpdates
 $monthOfInterest = '2017-Apr'
 
 Get-MsrcCvrfDocument -ID $monthOfInterest -Verbose | Get-MsrcSecurityBulletinHtml -Verbose | Out-File c:\temp\MSRCAprilSecurityUpdates.html
@@ -103,10 +109,9 @@ Get-MsrcCvrfDocument -ID $monthOfInterest -Verbose | Get-MsrcSecurityBulletinHtm
 Using powershell to filter the report to your liking:
 
 ```Powershell
-Install-Module -Name msrcsecurityupdates -force
-Import-Module -Name msrcsecurityupdates -Force
+Install-Module -Name MsrcSecurityUpdates -Force
+Import-Module -Name MsrcSecurityUpdates -Force
 
-Set-MSRCApiKey -ApiKey "<your API key>" -Verbose
 $monthOfInterest = "2017-Mar"
 
 $CVEsWanted = @(
@@ -132,7 +137,6 @@ In this scenario, you can use the *Get-MsrcCvrfDocument* and extract the migrati
 
 ```Powershell
 ### Install the module from the PowerShell Gallery (must be run as Admin)
-
 Install-Module -Name MsrcSecurityUpdates
 
 ### Download the March CVRF as an object
@@ -149,7 +153,7 @@ $cvrfDoc.Vulnerability.Remediations | Where Type -EQ 2
 ```
 
 ## Help!
-You'll find help via ``get-help`` for each cmdlet:
+You'll find help via ``Get-Help`` for each cmdlet:
 
 ```Powershell
 Get-Help Get-MsrcSecurityUpdate

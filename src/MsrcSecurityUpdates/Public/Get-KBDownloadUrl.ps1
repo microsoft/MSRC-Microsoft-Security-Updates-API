@@ -13,6 +13,7 @@ Function Get-KBDownloadUrl {
         [PSCustomObject]@{ID="kb123456"; URL="microsoft.com"; SubType="Required"} | Get-KBDownloadUrl
 #>
 [CmdletBinding()]
+[OutputType([System.String])]
 Param (
     [Parameter(Mandatory,ValueFromPipeline)]
     [PSCustomObject]$KBArticleObject
@@ -24,8 +25,8 @@ Process {
     if (-not($KBArticleObject)){
         'None'
     } else {
-        
-        $KBArticleObject | 
+
+        $KBArticleObject |
         ForEach-Object {
             $kb = $_
             #In older months, there won't be a subtype. Handle this so there are not empty ()'s

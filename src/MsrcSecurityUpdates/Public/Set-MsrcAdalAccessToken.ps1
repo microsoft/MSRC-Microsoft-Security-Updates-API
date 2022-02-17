@@ -1,38 +1,44 @@
-#Requires -Version 3.0
-
 Function Set-MSRCAdalAccessToken {
-[CmdletBinding()]
+[CmdletBinding(SupportsShouldProcess)]
 Param()
 Begin {}
 Process {
-    
-    $authority = 'https://login.windows.net/microsoft.onmicrosoft.com/'
+    if ([AppDomain]::CurrentDomain.SetupInformation.TargetFrameworkName -like "*v5.*") {
+        throw ".Net Core v5.x is not currently supported"
+    }
 
-    $authContext = New-Object Microsoft.IdentityModel.Clients.ActiveDirectory.AuthenticationContext($authority)
+    if ($PSCmdlet.ShouldProcess('Set the MSRCApiKey using MSRCAdalAccessToken')) {
+        Add-Type -Path "$PSScriptRoot/../Microsoft.IdentityModel.Clients.ActiveDirectory.dll" -ErrorAction SilentlyContinue -WarningAction SilentlyContinue
 
-    $rUri = New-Object System.Uri -ArgumentList 'https://msrc-api-powershell'
+        $authority = 'https://login.windows.net/microsoft.onmicrosoft.com/'
 
-    $promptBehavior = [Microsoft.IdentityModel.Clients.ActiveDirectory.PromptBehavior]::Auto
+        $authContext = New-Object Microsoft.IdentityModel.Clients.ActiveDirectory.AuthenticationContext($authority)
 
-    $ResourceId = 'https://msrc-api-prod.azurewebsites.net'
+        $rUri = New-Object System.Uri -ArgumentList 'https://msrc-api-powershell'
 
-    $ClientId = 'c7fe3b9e-4d97-462d-ae1b-c16e679be355'
+        $promptBehavior = [Microsoft.IdentityModel.Clients.ActiveDirectory.PromptBehavior]::Auto
 
-    $authResult = $authContext.AcquireToken($ResourceId, $ClientId, $rUri,$promptBehavior)
 
-	$global:MSRCAdalAccessToken = $authResult
-    Write-Verbose -Message "Successfully set your Access Token required by cmdlets of this module.    Calls to the MSRC APIs will now use your access token."
+        $ResourceId = 'https://msrc-api-prod.azurewebsites.net'
 
-    # we also set other shared variables
-    $global:msrcApiUrl     = 'https://api.msrc.microsoft.com'
-    Write-Verbose -Message "Successfully defined a msrcApiUrl global variable that points to $($global:msrcApiUrl)"
+        $ClientId = 'c7fe3b9e-4d97-462d-ae1b-c16e679be355'
 
-    $global:msrcApiVersion = 'api-version=2016-08-01'
-    Write-Verbose -Message "Successfully defined a msrcApiVersion global variable that points to $($global:msrcApiVersion)"
+        $global:MSRCAdalAccessToken = $null
 
-    if ($global:MSRCApiKey)
-    {
-        Remove-Variable -Name MSRCApiKey -Scope Global
+        if ($null -ne $authContext.AcquireToken) {
+            $global:MSRCAdalAccessToken = $authContext.AcquireToken($ResourceId, $ClientId, $rUri,$promptBehavior)
+        } elseif ($null -ne $authContext.AcquireTokenAsync) {
+            $platformParams = New-Object Microsoft.IdentityModel.Clients.ActiveDirectory.PlatformParameters($promptBehavior)
+            $task = $authContext.AcquireTokenAsync($ResourceId, $ClientId, $rUri,$platformParams)
+            $task.Wait()
+            $global:MSRCAdalAccessToken = $task.Result
+        }
+
+	    if ($null -ne $global:MSRCAdalAccessToken) {
+            Write-Verbose -Message "Successfully set your Access Token required by cmdlets of this module.    Calls to the MSRC APIs will now use your access token."
+        } else {
+            throw "Failed Acquiring Access Token!"
+        }
     }
 }
 End {}

@@ -1,5 +1,3 @@
-#Requires -Version 3.0
-
 Function Get-MsrcSecurityUpdate {
 <#
     .SYNOPSIS
@@ -27,27 +25,27 @@ Function Get-MsrcSecurityUpdate {
        Get-MsrcSecurityUpdate
 
        Get all the updates
-    
+
     .EXAMPLE
        Get-MsrcSecurityUpdate -Vulnerability CVE-2017-0003
 
        Get all the updates containing Vulnerability CVE-2017-003
-    
+
     .EXAMPLE
        Get-MsrcSecurityUpdate -Year 2017
 
        Get all the updates for the year 2017
-    
+
     .EXAMPLE
        Get-MsrcSecurityUpdate -Cvrf 2017-Jan
 
        Get all the updates for the CVRF document with ID of 2017-Jan
-    
+
     .EXAMPLE
        Get-MsrcSecurityUpdate -Before 2017-01-01
 
        Get all the updates before January 1st, 2017
-    
+
     .EXAMPLE
        Get-MsrcSecurityUpdate -After 2017-01-01
 
@@ -68,7 +66,7 @@ Function Get-MsrcSecurityUpdate {
         To get an API key, please visit https://portal.msrc.microsoft.com
 
 #>
-[CmdletBinding(DefaultParameterSetName='All')]      
+[CmdletBinding(DefaultParameterSetName='All')]
 Param (
 
     [Parameter(ParameterSetName='ByDate')]
@@ -77,144 +75,125 @@ Param (
     [Parameter(ParameterSetName='ByDate')]
     [DateTime]$Before,
 
-    [Parameter(Mandatory,ParameterSetName='ByYear')]        
+    [Parameter(Mandatory,ParameterSetName='ByYear')]
     [ValidateScript({
         if ($_ -lt 2016 -or $_ -gt [DateTime]::Now.Year) {
             throw 'Year must be between 2016 and this year'
         } else {
             $true
         }
-    })] 
+    })]
     [Int]$Year,
 
     [Parameter(Mandatory,ParameterSetName='ByVulnerability')]
     [String]$Vulnerability
 )
 DynamicParam {
+    $Dictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
 
-    if (-not ($global:MSRCApiKey -or $global:MSRCAdalAccessToken)) {
+    $ParameterName = 'CVRF'
+    $AttribColl1 = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
+    $Param1Att = New-Object System.Management.Automation.ParameterAttribute
+    $Param1Att.Mandatory = $true
+    # $Param1Att.ValueFromPipeline = $true
+    $Param1Att.ParameterSetName = 'ByCVRF'
+    $AttribColl1.Add($Param1Att)
 
-	    Write-Warning -Message 'You need to use Set-MSRCApiKey first to set your API Key'
+    try {
+        $allCVRFID = Get-CVRFID
+    } catch {
+        Throw "`nUnable to get online the list of CVRF ID because:`n$($_.Exception.Message)"
+    }
+    if ($allCVRFID) {
+        $AttribColl1.Add((New-Object System.Management.Automation.ValidateSetAttribute($allCVRFID)))
+        $Dictionary.Add($ParameterName,(New-Object System.Management.Automation.RuntimeDefinedParameter($ParameterName, [string], $AttribColl1)))
 
-    } else {  
-        $Dictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
-
-        $ParameterName = 'CVRF'
-        $AttribColl1 = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
-        $Param1Att = New-Object System.Management.Automation.ParameterAttribute
-        $Param1Att.Mandatory = $true
-        # $Param1Att.ValueFromPipeline = $true
-        $Param1Att.ParameterSetName = 'ByCVRF'
-        $AttribColl1.Add($Param1Att)
-
-        try {
-            $allCVRFID = Get-CVRFID
-        } catch {
-            Throw 'Unable to get online the list of CVRF ID'
-        }
-        if ($allCVRFID) {
-            $AttribColl1.Add((New-Object System.Management.Automation.ValidateSetAttribute($allCVRFID)))
-            $Dictionary.Add($ParameterName,(New-Object System.Management.Automation.RuntimeDefinedParameter($ParameterName, [string], $AttribColl1)))
-        
-            $Dictionary
-        }
+        $Dictionary
     }
 }
 Begin {}
 Process {
 
-    if (-not ($global:MSRCApiKey -or $global:MSRCAdalAccessToken)) {
+    switch ($PSCmdlet.ParameterSetName) {
 
-	    Write-Warning -Message 'You need to use Set-MSRCApiKey first to set your API Key'
+        ByDate {
 
-    } else {    
-        switch ($PSCmdlet.ParameterSetName) {
+            $sb = New-Object System.Text.StringBuilder
 
-            ByDate {
+            $null = $sb.Append("$($msrcApiUrl)/Updates?`$filter=")
 
-                $sb = New-Object System.Text.StringBuilder
-            
-                $null = $sb.Append("$($msrcApiUrl)/Updates?`$filter=")
+            if ($PSBoundParameters.ContainsKey('Before')) {
 
-                if ($PSBoundParameters.ContainsKey('Before')) {
-            
-                    $null = $sb.Append("CurrentReleaseDate lt $($Before.ToString('yyyy-MM-dd'))")
-            
-                    if ($PSBoundParameters.ContainsKey('After')) {
-                        $null = $sb.Append(' and ')
-                    }
-            
-                }
-            
+                $null = $sb.Append("CurrentReleaseDate lt $($Before.ToString('yyyy-MM-dd'))")
+
                 if ($PSBoundParameters.ContainsKey('After')) {
-            
-                    $null = $sb.Append("CurrentReleaseDate gt $($After.ToString('yyyy-MM-dd'))")
-            
+                    $null = $sb.Append(' and ')
                 }
-            
-                $null = $sb.Append("&$($msrcApiVersion)")
-            
-                $url = $sb.ToString()
 
-                break
             }
-            ByYear {
-                $url = "{0}/Updates('{1}')?{2}" -f $msrcApiUrl,$Year,$msrcApiVersion
-                break
+
+            if ($PSBoundParameters.ContainsKey('After')) {
+
+                $null = $sb.Append("CurrentReleaseDate gt $($After.ToString('yyyy-MM-dd'))")
+
             }
-            ByVulnerability {
-                $url = "{0}/Updates('{1}')?{2}" -f $msrcApiUrl,$Vulnerability,$msrcApiVersion
-                break
-            }
-            ByCVRF {
-                $url = "{0}/Updates('{1}')?{2}" -f $msrcApiUrl,$($PSBoundParameters['CVRF']),$msrcApiVersion
-                break
-            }
-            Default {
-                $url = "{0}/Updates?{1}" -f $msrcApiUrl,$msrcApiVersion
-            }
-        }
-        $RestMethod = @{
-            uri = $url
-            Headers = @{ 'Accept' = 'application/json' }
-            ErrorAction = 'Stop'
-        }
-        if ($global:msrcProxy){
-            $RestMethod.Add('Proxy' , $global:msrcProxy)
-        }
-        if ($global:msrcProxyCredential){
-            $RestMethod.Add('ProxyCredential' , $global:msrcProxyCredential)
-        }
-        if ($global:MSRCAdalAccessToken)
-        {
-            $RestMethod.Headers.Add('Authorization' , $global:MSRCAdalAccessToken.CreateAuthorizationHeader())
-        }
-        elseif ($global:MSRCApiKey)
-        {
-            $RestMethod.Headers.Add('Api-Key' , $global:MSRCApiKey)
-        }
-        else
-        {
-            Throw 'You need to use Set-MSRCApiKey first to set your API Key'
-        }
 
-        try {
+            $null = $sb.Append("&$($msrcApiVersion)")
 
-            [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-            Write-Verbose -Message "Calling $($RestMethod.uri)"
+            $url = $sb.ToString()
 
-            $r = Invoke-RestMethod @RestMethod
-
-        } catch {
-            Write-Error "HTTP Get failed with status code $($_.Exception.Response.StatusCode): $($_.Exception.Response.StatusDescription)"       
+            break
         }
-
-        if (-not $r) {
-            Write-Warning 'No results returned from the /Update API'
-        } else {
-            $r.Value
+        ByYear {
+            $url = "{0}/Updates('{1}')?{2}" -f $msrcApiUrl,$Year,$msrcApiVersion
+            break
+        }
+        ByVulnerability {
+            $url = "{0}/Updates('{1}')?{2}" -f $msrcApiUrl,$Vulnerability,$msrcApiVersion
+            break
+        }
+        ByCVRF {
+            $url = "{0}/Updates('{1}')?{2}" -f $msrcApiUrl,$($PSBoundParameters['CVRF']),$msrcApiVersion
+            break
+        }
+        Default {
+            $url = "{0}/Updates?{1}" -f $msrcApiUrl,$msrcApiVersion
         }
     }
+
+    $RestMethod = @{
+        uri = $url
+        Headers = @{ 'Accept' = 'application/json' }
+        ErrorAction = 'Stop'
+    }
+    if ($global:msrcProxy){
+        $RestMethod.Add('Proxy' , $global:msrcProxy)
+    }
+    if ($global:msrcProxyCredential){
+        $RestMethod.Add('ProxyCredential' , $global:msrcProxyCredential)
+    }
+    if ($global:MSRCAdalAccessToken)
+    {
+        $RestMethod.Headers.Add('Authorization' , $global:MSRCAdalAccessToken.CreateAuthorizationHeader())
+    }
+
+    try {
+
+        [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+        Write-Verbose -Message "Calling $($RestMethod.uri)"
+
+        $r = Invoke-RestMethod @RestMethod
+
+    } catch {
+        Write-Error -Message "HTTP Get failed with status code $($_.Exception.Response.StatusCode): $($_.Exception.Response.StatusDescription)"
+    }
+
+    if (-not $r) {
+        Write-Warning -Message 'No results returned from the /Update API'
+    } else {
+        $r.Value
+    }
+
 }
 End {}
 }
