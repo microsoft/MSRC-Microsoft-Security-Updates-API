@@ -118,7 +118,7 @@ For details on affected software, see the next section, Affected Software.
 
 <h1>Exploitability Index</h1>
 
-<p>The following table provides an exploitability assessment of each of the vulnerabilities addressed this month. The vulnerabilities are listed in order of bulletin ID then CVE ID. Only vulnerabilities that have a severity rating of Critical or Important in the bulletins are included.</p>
+<p>The following table provides an exploitability assessment for this vulnerability at the time of original publication.</p>
 
 <p><b>How do I use this table?</b></p>
 
