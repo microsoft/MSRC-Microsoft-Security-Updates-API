@@ -129,6 +129,7 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+April 17, 2023 - Adding compatibility with Linux
 April 13, 2023 - Update Exploitability Index Text
 Feb 17, 2022 - Update Mitre Urls and fix typo
 April 20, 2021 - Update API endpoint
