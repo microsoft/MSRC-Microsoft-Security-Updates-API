@@ -12,7 +12,7 @@
 RootModule = 'MsrcSecurityUpdates.psm1'
 
 # Version number of this module.
-ModuleVersion = '1.9.7'
+ModuleVersion = '1.9.9'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -129,7 +129,8 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
-April 17, 2023 - Adding compatibility with Linux
+April 18, 2023 - Adding compatibility with Linux
+April 17, 2023 - Add Exploitability Index Link
 April 13, 2023 - Update Exploitability Index Text
 Feb 17, 2022 - Update Mitre Urls and fix typo
 April 20, 2021 - Update API endpoint

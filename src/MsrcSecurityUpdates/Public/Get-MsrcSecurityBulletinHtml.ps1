@@ -118,7 +118,7 @@ For details on affected software, see the next section, Affected Software.
 
 <h1>Exploitability Index</h1>
 
-<p>The following table provides an exploitability assessment for this vulnerability at the time of original publication.</p>
+<p>The following table provides an <a href="https://www.microsoft.com/en-us/msrc/exploitability-index?rtc=1">exploitability assessment</a> for this vulnerability at the time of original publication.</p>
 
 <p><b>How do I use this table?</b></p>
 
