@@ -10,10 +10,9 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
-
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+- task: onebranch.pipeline.signing@1
+  inputs:
+    command: 'sign'
+    signing_environment: 'azure-ado'
+    signing_profile: 'external_distribution'
+    search_root: '$(Build.SourcesDirectory)'
