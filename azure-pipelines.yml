@@ -10,9 +10,8 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
-- task: onebranch.pipeline.signing@1
+- task: PublishPipelineArtifact@1
   inputs:
-    command: 'sign'
-    signing_environment: 'azure-ado'
-    signing_profile: 'external_distribution'
-    search_root: '$(Build.SourcesDirectory)'
+    targetPath: '$(Pipeline.Workspace)'
+    artifact: 'build-artificats'
+    publishLocation: 'pipeline'
