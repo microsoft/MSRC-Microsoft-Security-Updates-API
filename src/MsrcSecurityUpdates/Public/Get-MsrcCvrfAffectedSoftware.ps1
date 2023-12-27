@@ -34,7 +34,27 @@ Param (
     [Parameter(Mandatory,ValueFromPipelineByPropertyName)]
     $ProductTree
 )
-Begin {}
+Begin {
+    $MaximumSeverityType = Switch ("$($global:msrcApiUrl)") {
+    'https://api.msrc.microsoft.com/cvrf/v3.0' {'Severity'}
+    'https://api.msrc.microsoft.com/cvrf/v2.0' {3}
+    }
+
+    $ThreatsImpactType = Switch ("$($global:msrcApiUrl)") {
+    'https://api.msrc.microsoft.com/cvrf/v3.0' {'Impact'}
+    'https://api.msrc.microsoft.com/cvrf/v2.0' {0}
+    }
+
+    $RemediationsKBType = Switch ("$($global:msrcApiUrl)") {
+    'https://api.msrc.microsoft.com/cvrf/v3.0' {'VendorFix'}
+    'https://api.msrc.microsoft.com/cvrf/v2.0' {2}
+    }
+
+    $RemediationsKnownIssue = Switch ("$($global:msrcApiUrl)") {
+    'https://api.msrc.microsoft.com/cvrf/v3.0' {'KnownIssue'}
+    'https://api.msrc.microsoft.com/cvrf/v2.0' {5}
+    }
+}
 Process {
     $Vulnerability | ForEach-Object {
 
@@ -49,7 +69,7 @@ Process {
                     Where-Object { $_.ProductID -eq $id} |
                     Select-Object -ExpandProperty Value
                 ) ;
-                KBArticle = $v.Remediations | where-Object {$_.ProductID -contains $id} | Where-Object {$_.Type -eq 2} | ForEach-Object {
+                KBArticle = $v.Remediations | where-Object {$_.ProductID -contains $id} | Where-Object {$_.Type -eq $RemediationsKBType} | ForEach-Object {
                                 [PSCustomObject]@{
                                     ID = $_.Description.Value;
                                     URL= $_.URL;
@@ -57,7 +77,7 @@ Process {
                                 }
                             };
                CVE = $v.CVE
-               'Known Issue' = $v.Remediations | where-Object {$_.ProductID -contains $id} | Where-Object {$_.Type -eq 5} | ForEach-Object {
+               'Known Issue' = $v.Remediations | where-Object {$_.ProductID -contains $id} | Where-Object {$_.Type -eq $RemediationsKnownIssue} | ForEach-Object {
                                 [PSCustomObject]@{
                                     ID = $_.Description.Value;
                                     URL= $_.URL;
@@ -66,14 +86,14 @@ Process {
                Severity = $(
                     (
                         $v.Threats |
-                        Where-Object {$_.Type -eq 3 } |
+                        Where-Object {$_.Type -eq $MaximumSeverityType } |
                         Where-Object { $_.ProductID -contains $id }
                     ).Description.Value
                ) ;
                Impact = $(
                     (
                         $v.Threats |
-                        Where-Object {$_.Type -eq 0 } |
+                        Where-Object {$_.Type -eq $ThreatsImpactType } |
                         Where-Object { $_.ProductID -contains $id }
                     ).Description.Value
                 );

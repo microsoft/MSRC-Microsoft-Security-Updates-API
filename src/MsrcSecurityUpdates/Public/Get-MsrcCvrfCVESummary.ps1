@@ -29,6 +29,17 @@ Param (
     $ProductTree
 )
 Begin {
+
+    $MaximumSeverityType = Switch ("$($global:msrcApiUrl)") {
+    'https://api.msrc.microsoft.com/cvrf/v3.0' {'Severity'}
+    'https://api.msrc.microsoft.com/cvrf/v2.0' {3}
+    }
+
+    $ThreatsImpactType = Switch ("$($global:msrcApiUrl)") {
+    'https://api.msrc.microsoft.com/cvrf/v3.0' {'Impact'}
+    'https://api.msrc.microsoft.com/cvrf/v2.0' {0}
+    }
+
     Function Get-MaxSeverity {
     [CmdletBinding()]
     [OutputType('System.String')]
@@ -62,10 +73,10 @@ Process {
                  ($v.Notes | Where-Object { $_.Title -eq 'Description' }).Value
             ) ;
             'Maximum Severity Rating' = $(
-                Get-MaxSeverity ($v.Threats | Where-Object {$_.Type -eq 3 } ).Description.Value | Select-Object -Unique
+                Get-MaxSeverity ($v.Threats | Where-Object {$_.Type -eq $MaximumSeverityType } ).Description.Value | Select-Object -Unique
             ) ;
             'Vulnerability Impact' = $(
-                ($v.Threats | Where-Object {$_.Type -eq 0 }).Description.Value | Select-Object -Unique
+                ($v.Threats | Where-Object {$_.Type -eq $ThreatsImpactType }).Description.Value | Select-Object -Unique
             ) ;
             'Affected Software' = $(
                 $v.ProductStatuses.ProductID | ForEach-Object {
