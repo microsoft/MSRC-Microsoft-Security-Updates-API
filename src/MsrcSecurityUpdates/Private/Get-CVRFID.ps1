@@ -32,18 +32,30 @@ Process {
     try {
 
         [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-        if ($ID) {
 
-            (Invoke-RestMethod @RestMethod).Value |
-            Where-Object { $_.ID -eq $ID } |
-            Where-Object { $_ -ne '2017-May-B' }
+        Switch ($global:msrcApiUrl) {
+        'https://api.msrc.microsoft.com/cvrf/v2.0' {
+                if ($ID) {
 
-        } else {
-
-            ((Invoke-RestMethod @RestMethod).Value).ID |
-            Where-Object { $_ -ne '2017-May-B' }
+                    (Invoke-RestMethod @RestMethod).Value |
+                    Where-Object { $_.ID -eq $ID } |
+                    Where-Object { $_ -ne '2017-May-B' }
+                } else {
+                    ((Invoke-RestMethod @RestMethod).Value).ID |
+                    Where-Object { $_ -ne '2017-May-B' }
+                }
         }
-
+        'https://api.msrc.microsoft.com/cvrf/v3.0' {
+                if ($ID) {
+                    (Invoke-RestMethod @RestMethod) |
+                    Where-Object { $_.ID -eq $ID } |
+                    Where-Object { $_ -ne '2017-May-B' }
+                } else {
+                    (Invoke-RestMethod @RestMethod).ID |
+                    Where-Object { $_ -ne '2017-May-B' }
+                }
+        }
+        }
     } catch {
 
         Throw $_
