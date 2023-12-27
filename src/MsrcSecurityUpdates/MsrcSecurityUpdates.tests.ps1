@@ -1,22 +1,26 @@
 ﻿
 # Import module would only work if the module is found in standard locations
 # Import-Module -Name MsrcSecurityUpdates -Force
+$Error.Clear()
+Get-Module -Name MsrcSecurityUpdates | Remove-Module -Force -Verbose:$false
 Import-Module (Join-Path -Path $PSScriptRoot -ChildPath 'MsrcSecurityUpdates.psd1') -Verbose -Force
 
-<#
-Get-Help Get-MsrcSecurityUpdate
-Get-Help Get-MsrcSecurityUpdate -Examples
-
-Get-Help Get-MsrcCvrfDocument
-Get-Help Get-MsrcCvrfDocument -Examples
-
-Get-Help Get-MsrcSecurityBulletinHtml
-Get-Help Get-MsrcSecurityBulletinHtml -Examples
-
-Get-Help Get-MsrcCvrfAffectedSoftware
-Get-Help Get-MsrcCvrfAffectedSoftware -Examples
-#>
-
+Describe 'API version after module loading' {
+    It '$msrcApiUrl = https://api.msrc.microsoft.com/cvrf/v3.0' {
+        $msrcApiUrl -eq 'https://api.msrc.microsoft.com/cvrf/v3.0' | Should Be $true
+    }
+    It '$msrcApiVersion = api-version=2023-11-01' {
+        $msrcApiVersion -eq 'api-version=2023-11-01' | Should Be $true
+    }
+    Set-MSRCApiKey -APIVersion 2.0
+    It '$msrcApiUrl = https://api.msrc.microsoft.com/cvrf/v2.0' {
+        $msrcApiUrl -eq 'https://api.msrc.microsoft.com/cvrf/v2.0' | Should Be $true
+    }
+    It '$msrcApiVersion = api-version=2016-08-01' {
+        $msrcApiVersion -eq 'api-version=2016-08-01' | Should Be $true
+    }
+}
+    Set-MSRCApiKey -APIVersion 2.0
 Describe 'Function: Get-MsrcSecurityUpdateMSRC (calls the /Updates API)' {
 
     It 'Get-MsrcSecurityUpdate - all' {
