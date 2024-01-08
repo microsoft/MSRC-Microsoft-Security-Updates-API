@@ -191,7 +191,10 @@ Process {
     if (-not $r) {
         Write-Warning -Message 'No results returned from the /Update API'
     } else {
-        $r.Value
+        Switch ($global:msrcApiUrl) {
+         'https://api.msrc.microsoft.com/cvrf/v2.0' {$r.Value}
+         'https://api.msrc.microsoft.com/cvrf/v3.0' {$r}
+        }
     }
 
 }
