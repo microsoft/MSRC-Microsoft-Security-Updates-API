@@ -35,25 +35,10 @@ Param (
     $ProductTree
 )
 Begin {
-    $MaximumSeverityType = Switch ("$($global:msrcApiUrl)") {
-    'https://api.msrc.microsoft.com/cvrf/v3.0' {'Severity'}
-    'https://api.msrc.microsoft.com/cvrf/v2.0' {3}
-    }
-
-    $ThreatsImpactType = Switch ("$($global:msrcApiUrl)") {
-    'https://api.msrc.microsoft.com/cvrf/v3.0' {'Impact'}
-    'https://api.msrc.microsoft.com/cvrf/v2.0' {0}
-    }
-
-    $RemediationsKBType = Switch ("$($global:msrcApiUrl)") {
-    'https://api.msrc.microsoft.com/cvrf/v3.0' {'VendorFix'}
-    'https://api.msrc.microsoft.com/cvrf/v2.0' {2}
-    }
-
-    $RemediationsKnownIssue = Switch ("$($global:msrcApiUrl)") {
-    'https://api.msrc.microsoft.com/cvrf/v3.0' {'KnownIssue'}
-    'https://api.msrc.microsoft.com/cvrf/v2.0' {5}
-    }
+    $MaximumSeverityType = 3
+    $ThreatsImpactType = 0
+    $RemediationsKBType = 2
+    $RemediationsKnownIssue = 5
 }
 Process {
     $Vulnerability | ForEach-Object {

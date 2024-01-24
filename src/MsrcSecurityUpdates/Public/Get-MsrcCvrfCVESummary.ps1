@@ -30,15 +30,8 @@ Param (
 )
 Begin {
 
-    $MaximumSeverityType = Switch ("$($global:msrcApiUrl)") {
-    'https://api.msrc.microsoft.com/cvrf/v3.0' {'Severity'}
-    'https://api.msrc.microsoft.com/cvrf/v2.0' {3}
-    }
-
-    $ThreatsImpactType = Switch ("$($global:msrcApiUrl)") {
-    'https://api.msrc.microsoft.com/cvrf/v3.0' {'Impact'}
-    'https://api.msrc.microsoft.com/cvrf/v2.0' {0}
-    }
+    $MaximumSeverityType = 3
+    $ThreatsImpactType = 0
 
     Function Get-MaxSeverity {
     [CmdletBinding()]
