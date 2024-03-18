@@ -62,8 +62,7 @@ Function Get-MsrcSecurityUpdate {
         Get all updates between now and the last 60 days
 
     .NOTES
-        An API Key for the MSRC CVRF API is required
-        To get an API key, please visit https://portal.msrc.microsoft.com
+        An API Key for the MSRC CVRF API is not required anymore
 
 #>
 [CmdletBinding(DefaultParameterSetName='All')]
@@ -191,7 +190,10 @@ Process {
     if (-not $r) {
         Write-Warning -Message 'No results returned from the /Update API'
     } else {
-        $r.Value
+        Switch ($global:msrcApiUrl) {
+         'https://api.msrc.microsoft.com/cvrf/v2.0' {$r.Value}
+         'https://api.msrc.microsoft.com/cvrf/v3.0' {$r}
+        }
     }
 
 }
