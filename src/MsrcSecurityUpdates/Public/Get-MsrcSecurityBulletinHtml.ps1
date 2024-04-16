@@ -108,6 +108,7 @@ For details on affected software, see the next section, Affected Software.
   <tr>
    <td><b>CVE ID</b></td>
    <td><b>Vulnerability Description</b></td>
+   <td><b>Weakness</b></td>
    <td><b>Maximum Severity Rating</b></td>
    <td><b>Vulnerability Impact</b></td>
    <td><b>Affected Software</b></td>
@@ -255,6 +256,7 @@ damages so the foregoing limitation may not apply.</p>
      <td>{2}</td>
      <td>{3}</td>
      <td>{4}</td>
+     <td>{5}</td>
  </tr>
 '@
     $cveSummaryTableHtml = ''
@@ -315,6 +317,7 @@ Process {
         $cveSummaryTableHtml += $cveSummaryRowTemplate -f @(
             "$($_.CVE)<br><a href=`"https://cve.mitre.org/cgi-bin/cvename.cgi?name=$($_.CVE)`">MITRE</a><br><a href=`"https://web.nvd.nist.gov/view/vuln/detail?vulnId=$($_.CVE)`">NVD</a>"
             $_.Description
+            if ($_.Weakness) { $_.Weakness } else { 'N/A'}
             $_.'Maximum Severity Rating'
             $_.'Vulnerability Impact' -join ',<br>'
             $_.'Affected Software' -join ',<br>'

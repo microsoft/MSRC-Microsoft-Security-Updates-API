@@ -81,7 +81,8 @@ Process {
                         Where-Object {$_.Type -eq $ThreatsImpactType } |
                         Where-Object { $_.ProductID -contains $id }
                     ).Description.Value
-                );
+               );
+               Weakness = $v.CWE.Value ;
                RestartRequired = $(
                     (
                         $v.Remediations |
