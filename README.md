@@ -3,7 +3,7 @@ Microsoft provides an API for programmatic access to security update details usi
 
 The Microsoft [Security Update Guide](https://msrc.microsoft.com/update-guide) is the web experience to find security update detail.
 
-This repository contains sample code and documentation for the Microsoft Security Updates API (https://api.msrc.microsoft.com/cvrf/v3.0/swagger/v3/swagger.json), including:
+This repository contains sample code and documentation for the Microsoft Security Updates API (https://portal.msrc.microsoft.com/en-us/developer), including:
 * source code for the [MsrcSecurityUpdates PowerShell module](https://www.powershellgallery.com/packages/MsrcSecurityUpdates)
 * sample code for using the [MsrcSecurityUpdates PowerShell module](https://www.powershellgallery.com/packages/MsrcSecurityUpdates)
 * [OpenAPI/Swagger definition](docs) for the Microsoft Security Updates CVRF API
