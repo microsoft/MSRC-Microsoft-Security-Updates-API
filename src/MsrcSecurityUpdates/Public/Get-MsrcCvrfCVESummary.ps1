@@ -62,6 +62,7 @@ Process {
 
         [PSCustomObject]@{
             CVE = $v.CVE
+            Weakness = $(if ($v.CWE) { '{0} : {1}' -f "$($v.CWE.ID)","$($v.CWE.Value)"})
             Description = $(
                  ($v.Notes | Where-Object { $_.Title -eq 'Description' }).Value
             ) ;
