@@ -6,7 +6,7 @@ The Microsoft [Security Update Guide](https://msrc.microsoft.com/update-guide) i
 This repository contains sample code and documentation for the Microsoft Security Updates API (https://portal.msrc.microsoft.com/en-us/developer), including:
 * source code for the [MsrcSecurityUpdates PowerShell module](https://www.powershellgallery.com/packages/MsrcSecurityUpdates)
 * sample code for using the [MsrcSecurityUpdates PowerShell module](https://www.powershellgallery.com/packages/MsrcSecurityUpdates)
-* [OpenAPI/Swagger definition](docs) for the Microsoft Security Updates CVRF API
+* OpenAPI/Swagger definition for the Microsoft Security Updates API
 
 # Getting the MsrcSecurityUpdates PowerShell Module
 Getting started with the MsrcSecurityUpdates module can be done like this:
@@ -29,6 +29,8 @@ Once the module is loaded, check out our [PowerShell samples](https://github.com
 Customers should treat this repository as custom code.  Bug fixes or enhancements can be requested by opening a new issue from the Issues tab.
 ## Security Update Support
 For questions about CVEs, security updates and patches, please visit [Microsoft Support](https://support.microsoft.com)
+## Security Update Guide Support
+For questions about the [Microsoft Security Update Guide](https://msrc.microsoft.com/update-guide) please visit the [Security Update Guide support forum](https://social.technet.microsoft.com/Forums/security/en-us/home?forum=securityupdateguide).
 
 # Contributing
 
