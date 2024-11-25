@@ -129,6 +129,7 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+November 25, 2024 - Adding Customer Action Required field
 April 16, 2024 - Adding CWE info
 April 18, 2023 - Adding compatibility with Linux
 April 17, 2023 - Add Exploitability Index Link
