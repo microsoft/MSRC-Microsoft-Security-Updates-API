@@ -67,7 +67,7 @@ Process {
                  ($v.Notes | Where-Object { $_.Title -eq 'Description' }).Value
             ) ;
             'Customer Action Required' = if ($customerActionNotes = $v.Notes | Where-Object { $_.Title -eq "Customer Action Required" }) {
-                $customerActionNotes
+                $customerActionNotes.Value
             } else {
                 'Yes'
             } ;

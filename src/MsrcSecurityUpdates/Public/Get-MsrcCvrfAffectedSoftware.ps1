@@ -84,7 +84,7 @@ Process {
                );
                Weakness = $v.CWE.Value ;
                'Customer Action Required' = if ($customerActionNotes = $v.Notes | Where-Object { $_.Title -eq "Customer Action Required" }) {
-                  $customerActionNotes
+                  $customerActionNotes.Value
                } else {
                   'Yes'
                } ;
