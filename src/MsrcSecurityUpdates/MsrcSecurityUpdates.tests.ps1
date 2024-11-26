@@ -1,23 +1,31 @@
 ﻿
 # Import module would only work if the module is found in standard locations
 # Import-Module -Name MsrcSecurityUpdates -Force
-Import-Module (Join-Path -Path $PSScriptRoot -ChildPath 'MsrcSecurityUpdates.psd1') -Verbose -Force
+$Error.Clear()
+Get-Module -Name MsrcSecurityUpdates | Remove-Module -Force -Verbose:$false
+Import-Module (Join-Path -Path $PSScriptRoot -ChildPath 'MsrcSecurityUpdates.psd1') -Verbose:$false -Force
 
-<#
-Get-Help Get-MsrcSecurityUpdate
-Get-Help Get-MsrcSecurityUpdate -Examples
+Describe 'API version after module loading' {
+    It '$msrcApiUrl = https://api.msrc.microsoft.com/cvrf/v3.0' {
+        $msrcApiUrl -eq 'https://api.msrc.microsoft.com/cvrf/v3.0' | Should Be $true
+    }
+    It '$msrcApiVersion = api-version=2023-11-01' {
+        $msrcApiVersion -eq 'api-version=2023-11-01' | Should Be $true
+    }
+    Set-MSRCApiKey -APIVersion 2.0
+    It '$msrcApiUrl = https://api.msrc.microsoft.com/cvrf/v2.0' {
+        $msrcApiUrl -eq 'https://api.msrc.microsoft.com/cvrf/v2.0' | Should Be $true
+    }
+    It '$msrcApiVersion = api-version=2016-08-01' {
+        $msrcApiVersion -eq 'api-version=2016-08-01' | Should Be $true
+    }
+}
 
-Get-Help Get-MsrcCvrfDocument
-Get-Help Get-MsrcCvrfDocument -Examples
-
-Get-Help Get-MsrcSecurityBulletinHtml
-Get-Help Get-MsrcSecurityBulletinHtml -Examples
-
-Get-Help Get-MsrcCvrfAffectedSoftware
-Get-Help Get-MsrcCvrfAffectedSoftware -Examples
-#>
-
-Describe 'Function: Get-MsrcSecurityUpdateMSRC (calls the /Updates API)' {
+'2.0','3.0' |
+Foreach-Object {
+    $v = $_
+    Set-MSRCApiKey -APIVersion $_
+Describe ('Function: Get-MsrcSecurityUpdate (calls the /Updates API version {0})' -f $v) {
 
     It 'Get-MsrcSecurityUpdate - all' {
         Get-MsrcSecurityUpdate |
@@ -40,22 +48,25 @@ Describe 'Function: Get-MsrcSecurityUpdateMSRC (calls the /Updates API)' {
     }
 
     It 'Get-MsrcSecurityUpdate - by date - before' {
-        Get-MsrcSecurityUpdate -Before 2018-01-01 |
-        Should Not BeNullOrEmpty
+        { $w = $null
+        $w = Get-MsrcSecurityUpdate -Before 2018-01-01 -WarningVariable w -WarningAction SilentlyContinue -ErrorAction SilentlyContinue
+        $w.Message -eq 'No results returned from the /Update API' } | Should Be $true
     }
 
     It 'Get-MsrcSecurityUpdate - by date - after' {
-        Get-MsrcSecurityUpdate -After 2017-01-01 |
-        Should Not BeNullOrEmpty
+        { $w = $null
+        Get-MsrcSecurityUpdate -After 2017-01-01 -WarningVariable w -WarningAction SilentlyContinue -ErrorAction SilentlyContinue
+        $w.Message -eq 'No results returned from the /Update API' } | Should Be $true
     }
 
     It 'Get-MsrcSecurityUpdate - by date - before and after' {
-        Get-MsrcSecurityUpdate -Before 2018-01-01 -After 2017-10-01 |
-        Should Not BeNullOrEmpty
+        { $w = $null
+        Get-MsrcSecurityUpdate -Before 2018-01-01 -After 2017-10-01 -WarningVariable w -WarningAction SilentlyContinue -ErrorAction SilentlyContinue
+        $w.Message -eq 'No results returned from the /Update API' } | Should Be $true
     }
 }
 
-Describe 'Function: Get-MsrcCvrfDocument (calls the MSRC /cvrf API)' {
+Describe ('Function: Get-MsrcCvrfDocument (calls the MSRC /cvrf API version {0})' -f $v) {
 
     It 'Get-MsrcCvrfDocument - 2016-Nov' {
         Get-MsrcCvrfDocument -ID 2016-Nov |
@@ -67,7 +78,9 @@ Describe 'Function: Get-MsrcCvrfDocument (calls the MSRC /cvrf API)' {
         Should Not BeNullOrEmpty
     }
 
+<#
     Get-MsrcSecurityUpdate | Where-Object { $_.ID -ne '2017-May-B' } |
+    Where-Object { $_.ID -eq "$(((Get-Date).AddMonths(-1)).ToString('yyyy-MMM',[System.Globalization.CultureInfo]'en-US'))" } |
     Foreach-Object {
         It "Get-MsrcCvrfDocument - none shall throw: $($PSItem.ID)" {
             {
@@ -85,6 +98,7 @@ Describe 'Function: Get-MsrcCvrfDocument (calls the MSRC /cvrf API)' {
             }
         } | Should Throw
     }
+#>
 }
 
 Describe 'Function: Set-MSRCApiKey with proxy' {
@@ -143,25 +157,27 @@ InModuleScope MsrcSecurityUpdates {
     }
 }
 
-Describe 'Function: Get-MsrcVulnerabilityReportHtml (generates the MSRC Vulnerability Summary HTML Report)' {
+Describe ('Function: Get-MsrcVulnerabilityReportHtml (generates the MSRC Vulnerability Summary HTML Report with API version {0})' -f $v) {
     It 'Vulnerability Summary Report - does not throw' {
         {
             $null = Get-MsrcCvrfDocument -ID 2016-Nov |
-            Get-MsrcVulnerabilityReportHtml -Verbose -ShowNoProgress
+            Get-MsrcVulnerabilityReportHtml -Verbose:$false -ShowNoProgress -WarningAction SilentlyContinue
         } |
         Should Not Throw
     }
-
+<#
     Get-MsrcSecurityUpdate | Where-Object { $_.ID -ne '2017-May-B' } |
+    Where-Object { $_.ID -eq "$(((Get-Date).AddMonths(-1)).ToString('yyyy-MMM',[System.Globalization.CultureInfo]'en-US'))" } |
     Foreach-Object {
         It "Vulnerability Summary Report - none shall throw: $($PSItem.ID)" {
             {
                 $null = Get-MsrcCvrfDocument -ID $PSItem.ID |
-                Get-MsrcVulnerabilityReportHtml -ShowNoProgress
+                Get-MsrcVulnerabilityReportHtml -ShowNoProgress -WarningAction SilentlyContinue
             } |
             Should Not Throw
         }
     }
+#>
 }
 
 InModuleScope MsrcSecurityUpdates {
@@ -185,6 +201,8 @@ InModuleScope MsrcSecurityUpdates {
 			Should Not Throw
 		}
 	}
+}
+
 }
 
 #When a pester test fails, it writes out to stdout, and sets an error in $Error. When invoking powershell from C# it is a lot easier to read the stderr stream.

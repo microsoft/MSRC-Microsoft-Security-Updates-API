@@ -29,6 +29,10 @@ Param (
     $ProductTree
 )
 Begin {
+
+    $MaximumSeverityType = 3
+    $ThreatsImpactType = 0
+
     Function Get-MaxSeverity {
     [CmdletBinding()]
     [OutputType('System.String')]
@@ -58,14 +62,20 @@ Process {
 
         [PSCustomObject]@{
             CVE = $v.CVE
+            Weakness = $(if ($v.CWE) { '{0} : {1}' -f "$($v.CWE.ID)","$($v.CWE.Value)"})
             Description = $(
                  ($v.Notes | Where-Object { $_.Title -eq 'Description' }).Value
             ) ;
+            'Customer Action Required' = if ($customerActionNotes = $v.Notes | Where-Object { $_.Title -eq "Customer Action Required" }) {
+                $customerActionNotes
+            } else {
+                'Yes'
+            } ;
             'Maximum Severity Rating' = $(
-                Get-MaxSeverity ($v.Threats | Where-Object {$_.Type -eq 3 } ).Description.Value | Select-Object -Unique
+                Get-MaxSeverity ($v.Threats | Where-Object {$_.Type -eq $MaximumSeverityType } ).Description.Value | Select-Object -Unique
             ) ;
             'Vulnerability Impact' = $(
-                ($v.Threats | Where-Object {$_.Type -eq 0 }).Description.Value | Select-Object -Unique
+                ($v.Threats | Where-Object {$_.Type -eq $ThreatsImpactType }).Description.Value | Select-Object -Unique
             ) ;
             'Affected Software' = $(
                 $v.ProductStatuses.ProductID | ForEach-Object {
