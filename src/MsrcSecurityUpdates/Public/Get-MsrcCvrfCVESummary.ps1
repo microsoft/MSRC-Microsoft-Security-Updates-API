@@ -62,9 +62,15 @@ Process {
 
         [PSCustomObject]@{
             CVE = $v.CVE
+            Weakness = $(if ($v.CWE) { '{0} : {1}' -f "$($v.CWE.ID)","$($v.CWE.Value)"})
             Description = $(
                  ($v.Notes | Where-Object { $_.Title -eq 'Description' }).Value
             ) ;
+            'Customer Action Required' = if ($customerActionNotes = $v.Notes | Where-Object { $_.Title -eq "Customer Action Required" }) {
+                $customerActionNotes
+            } else {
+                'Yes'
+            } ;
             'Maximum Severity Rating' = $(
                 Get-MaxSeverity ($v.Threats | Where-Object {$_.Type -eq $MaximumSeverityType } ).Description.Value | Select-Object -Unique
             ) ;

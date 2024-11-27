@@ -129,13 +129,15 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+November 25, 2024 - Adding Customer Action Required field
+April 16, 2024 - Adding CWE info
 April 18, 2023 - Adding compatibility with Linux
 April 17, 2023 - Add Exploitability Index Link
 April 13, 2023 - Update Exploitability Index Text
 Feb 17, 2022 - Update Mitre Urls and fix typo
 April 20, 2021 - Update API endpoint
 April 7, 2021 - Adding FixedBuild to vulnerability report
-March 2, 2021 - Fixing mitigation on vulnerability report 
+March 2, 2021 - Fixing mitigation on vulnerability report
 February 19, 2021 - Updating Vulnerability Report HTML Style
 February 3, 2021 - Removed Api-key requirement
 January 17, 2021 - Added Issuing CNA info to Get-MsrcVulnerabilityReportHtml
