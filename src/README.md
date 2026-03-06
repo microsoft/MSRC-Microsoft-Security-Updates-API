@@ -44,16 +44,16 @@ Get-Command -Module MsrcSecurityUpdates
 
 CommandType     Name                                               Version    Source                                                                                                 
 -----------     ----                                               -------    ------                                                                                                 
-Function        Get-KBDownloadUrl                                  1.8.7      MsrcSecurityUpdates
-Function        Get-MsrcCvrfAffectedSoftware                       1.8.7      MsrcSecurityUpdates
-Function        Get-MsrcCvrfCVESummary                             1.8.7      MsrcSecurityUpdates
-Function        Get-MsrcCvrfDocument                               1.8.7      MsrcSecurityUpdates
-Function        Get-MsrcCvrfExploitabilityIndex                    1.8.7      MsrcSecurityUpdates
-Function        Get-MsrcSecurityBulletinHtml                       1.8.7      MsrcSecurityUpdates
-Function        Get-MsrcSecurityUpdate                             1.8.7      MsrcSecurityUpdates
-Function        Get-MsrcVulnerabilityReportHtml                    1.8.7      MsrcSecurityUpdates
-Function        Set-MSRCAdalAccessToken                            1.8.7      MsrcSecurityUpdates
-Function        Set-MSRCApiKey                                     1.8.7      MsrcSecurityUpdates
+Function        Get-KBDownloadUrl                                  2.0.0      MsrcSecurityUpdates
+Function        Get-MsrcCvrfAffectedSoftware                       2.0.0      MsrcSecurityUpdates
+Function        Get-MsrcCvrfCVESummary                             2.0.0      MsrcSecurityUpdates
+Function        Get-MsrcCvrfDocument                               2.0.0      MsrcSecurityUpdates
+Function        Get-MsrcCvrfExploitabilityIndex                    2.0.0      MsrcSecurityUpdates
+Function        Get-MsrcSecurityBulletinHtml                       2.0.0      MsrcSecurityUpdates
+Function        Get-MsrcSecurityUpdate                             2.0.0      MsrcSecurityUpdates
+Function        Get-MsrcVulnerabilityReportHtml                    2.0.1      MsrcSecurityUpdates
+Function        Set-MSRCMsalAccessToken                            2.0.0      MsrcSecurityUpdates
+Function        Set-MSRCApiKey                                     2.0.0      MsrcSecurityUpdates
 ```
 
 ## Generating a HTML document of Monthly Updates
