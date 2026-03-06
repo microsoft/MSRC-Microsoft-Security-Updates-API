@@ -23,10 +23,10 @@ Process {
 
         $RestMethod.Add('ProxyCredential',$global:msrcProxyCredential)
 
-    } elseif ($global:MSRCAdalAccessToken) {
+    } elseif ($script:MSRCMsalAccessToken) {
 
-        $RestMethod.Headers.Add('Authorization',$($global:MSRCAdalAccessToken.CreateAuthorizationHeader()))
-
+        $RestMethod.Headers.Add('Authorization',"Bearer $($script:MSRCMsalAccessToken.AccessToken)")
+    
     }
 
     try {

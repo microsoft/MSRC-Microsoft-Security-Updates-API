@@ -5,6 +5,23 @@ $Error.Clear()
 Get-Module -Name MsrcSecurityUpdates | Remove-Module -Force -Verbose:$false
 Import-Module (Join-Path -Path $PSScriptRoot -ChildPath 'MsrcSecurityUpdates.psd1') -Verbose:$false -Force
 
+Describe 'MSAL Authentication Migration' {
+    It 'Set-MSRCMsalAccessToken function should be available' {
+        Get-Command Set-MSRCMsalAccessToken -ErrorAction SilentlyContinue | Should Not BeNullOrEmpty
+    }
+    
+    It 'Module should not have legacy authentication DLL requirements' {
+        $manifest = Import-PowerShellDataFile (Join-Path -Path $PSScriptRoot -ChildPath 'MsrcSecurityUpdates.psd1')
+        $manifest.RequiredAssemblies | Where-Object { $_ -like '*ActiveDirectory*' } | Should BeNullOrEmpty
+    }
+    
+    It 'Module should require MSAL.PS module' {
+        $manifest = Import-PowerShellDataFile (Join-Path -Path $PSScriptRoot -ChildPath 'MsrcSecurityUpdates.psd1')
+        $msalRequired = $manifest.RequiredModules | Where-Object { $_.ModuleName -eq 'MSAL.PS' }
+        $msalRequired | Should Not BeNullOrEmpty
+    }
+}
+
 Describe 'API version after module loading' {
     It '$msrcApiUrl = https://api.msrc.microsoft.com/cvrf/v3.0' {
         $msrcApiUrl -eq 'https://api.msrc.microsoft.com/cvrf/v3.0' | Should Be $true

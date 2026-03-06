@@ -80,9 +80,9 @@ Process {
 
     }
 
-    if ($global:MSRCAdalAccessToken) {
-
-        $RestMethod.Headers.Add('Authorization', $global:MSRCAdalAccessToken.CreateAuthorizationHeader())
+    if ($script:MSRCMsalAccessToken) {
+        
+        $RestMethod.Headers.Add('Authorization', "Bearer $($script:MSRCMsalAccessToken.AccessToken)")
 
     }
 
