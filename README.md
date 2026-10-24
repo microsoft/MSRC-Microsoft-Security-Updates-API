@@ -1,4 +1,4 @@
-# Welcome
+# We
 Microsoft provides an API for programmatic access to security update details using [Common Vulnerability Reporting Format](http://www.icasi.org/cvrf/). View our [blog post](https://msrc-blog.microsoft.com/2016/11/08/furthering-our-commitment-to-security-updates/) for more info. 
 
 The Microsoft [Security Update Guide](https://msrc.microsoft.com/update-guide) is the web experience to find security update detail.
@@ -14,12 +14,11 @@ Getting started with the MsrcSecurityUpdates module can be done like this:
 ### Install the module from the PowerShell Gallery
 Install-Module -Name MsrcSecurityUpdates -Scope CurrentUser
 
-### Load the module if PowerShell is at least version 5.1
+### Loading the module if PowerShell is at least version 5.1
 if ($PSVersionTable.PSVersion -gt [version]'5.1') {
  Import-Module -Name MsrcSecurityUpdates
 }
-```
-Once the module is loaded, check out our [PowerShell samples](https://github.com/Microsoft/MSRC-Microsoft-Security-Updates-API/blob/master/src/README.md)
+``` start check out our [PowerShell samples](https://github.com/Microsoft/MSRC-Microsoft-Security-Updates-API/blob/master/src/README.md)
 
 # Change Log
 **_For up to date major changes, please read the psd1 included in the src folder. This can also be seen on [the Microsoft Powershell Gallery](https://www.powershellgallery.com/packages/MsrcSecurityUpdates)._**
